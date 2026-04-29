@@ -24,6 +24,7 @@ import {
 } from "./components/ui";
 import annaPhoto from "./assets/anna-photo.png";
 import { featuredRequests, findRequest, formatRubles, getPercent, requests } from "./data/requests";
+import { getBrowserPath, getRoutePath } from "./lib/routing";
 import "./styles.css";
 
 const completedStories = [
@@ -99,44 +100,6 @@ const completedStories = [
   },
 ];
 
-const helperTransfers = [
-  {
-    person: "Игорь",
-    city: "Новосибирск",
-    amount: 1000,
-    date: "Сегодня, 12:40",
-    status: "Чек на проверке",
-    receipt: "sbp-igor-1000.png",
-    image: requests[1].image,
-  },
-  {
-    person: "Мария",
-    city: "Ростов-на-Дону",
-    amount: 500,
-    date: "22 апреля 2026",
-    status: "Подтверждено",
-    receipt: "maria-500.pdf",
-    image: requests[2].image,
-  },
-  {
-    person: "Дмитрий",
-    city: "Краснодар",
-    amount: 300,
-    date: "18 апреля 2026",
-    status: "Есть видеоотчет",
-    receipt: "dmitry-study.jpg",
-    image: requests[5].image,
-  },
-];
-
-const applicantSteps = [
-  { title: "Заявка отправлена", text: "Анкета сохранена и доступна модератору.", done: true },
-  { title: "Документы проверяются", text: "Проверяем договор и выписку по задолженности.", done: true },
-  { title: "Карточка опубликована", text: "После подтверждения заявка появится в каталоге.", done: true },
-  { title: "Сбор идет", text: "Помощь поступает напрямую на указанные реквизиты.", done: false },
-  { title: "Видеоотчет", text: "После закрытия сбора нужно прикрепить видео и подтверждение оплаты.", done: false },
-];
-
 const adminTasks = [
   { type: "Заявка", title: "Елена, Воронеж", detail: "Проверить счет клиники и справку о доходах", status: "Нужно проверить", tone: "peach" },
   { type: "Чек", title: "Игорь, 1 000 ₽", detail: "Пользователь приложил чек СБП", status: "На сверке", tone: "mint" },
@@ -144,18 +107,28 @@ const adminTasks = [
   { type: "Документы", title: "Амир, Москва", detail: "Не хватает фото договора с подрядчиком", status: "Запросить файл", tone: "peach" },
 ];
 
+const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee754e402be74953f";
+const ADMIN_SESSION_KEY = "100spasibo:admin-unlocked";
+
+async function getSha256(value: string) {
+  const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 function usePath() {
-  const [path, setPath] = useState(window.location.pathname);
+  const [path, setPath] = useState(getRoutePath());
 
   useEffect(() => {
-    const handlePop = () => setPath(window.location.pathname);
+    const handlePop = () => setPath(getRoutePath());
     window.addEventListener("popstate", handlePop);
     return () => window.removeEventListener("popstate", handlePop);
   }, []);
 
   const navigate: NavigateFn = (nextPath) => {
-    if (window.location.pathname !== nextPath) {
-      window.history.pushState({}, "", nextPath);
+    if (getRoutePath() !== nextPath) {
+      window.history.pushState({}, "", getBrowserPath(nextPath));
       setPath(nextPath);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -167,6 +140,7 @@ function usePath() {
 export default function App() {
   const { path, navigate } = usePath();
   const [toast, setToast] = useState("");
+  const [adminUnlocked, setAdminUnlocked] = useState(() => window.localStorage.getItem(ADMIN_SESSION_KEY) === "true");
 
   const showToast = (message: string) => {
     setToast(message);
@@ -179,9 +153,29 @@ export default function App() {
     if (path === "/apply") return <ApplyPage onToast={showToast} />;
     if (path === "/how-it-works") return <HowItWorksPage onNavigate={navigate} />;
     if (path === "/stories") return <StoriesPage onNavigate={navigate} />;
-    if (path === "/helper") return <HelperDashboardPage onNavigate={navigate} />;
-    if (path === "/applicant") return <ApplicantDashboardPage onToast={showToast} />;
-    if (path === "/admin") return <AdminDashboardPage onNavigate={navigate} onToast={showToast} />;
+    if (path === "/admin") {
+      return adminUnlocked ? (
+        <AdminDashboardPage
+          onNavigate={navigate}
+          onToast={showToast}
+          onLogout={() => {
+            window.localStorage.removeItem(ADMIN_SESSION_KEY);
+            setAdminUnlocked(false);
+            showToast("Админ-панель закрыта.");
+          }}
+        />
+      ) : (
+        <AdminAccessPage
+          onNavigate={navigate}
+          onToast={showToast}
+          onUnlock={() => {
+            window.localStorage.setItem(ADMIN_SESSION_KEY, "true");
+            setAdminUnlocked(true);
+            showToast("Админ-панель открыта.");
+          }}
+        />
+      );
+    }
     if (path === "/safety") return <SafetyPage />;
     if (path === "/faq") return <FaqPage />;
     return <HomePage onNavigate={navigate} />;
@@ -575,131 +569,62 @@ function SidebarCard({ icon, title, items, ordered = false }: { icon: "file" | "
   );
 }
 
-function HelperDashboardPage({ onNavigate }: { onNavigate: NavigateFn }) {
-  const total = helperTransfers.reduce((sum, item) => sum + item.amount, 0);
+function AdminAccessPage({ onNavigate, onToast, onUnlock }: { onNavigate: NavigateFn; onToast: (message: string) => void; onUnlock: () => void }) {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const passwordHash = await getSha256(password.trim());
+    if (passwordHash !== ADMIN_PASSWORD_HASH) {
+      setError("Пожалуйста, проверьте пароль администратора.");
+      onToast("Пароль не подошел.");
+      return;
+    }
+    setError("");
+    onUnlock();
+  };
+
   return (
-    <section className="page shell dashboard-page helper-dashboard">
-      <DashboardHero
-        badge="Кабинет помогающего"
-        title="Ваши переводы, чеки и отчеты в одном месте"
-        text="Здесь видно, кому вы помогли, какие чеки уже подтверждены и когда получатель опубликовал отчет."
-      />
-      <div className="dashboard-stats">
-        <DashboardStat icon="heart" label="Помощи отправлено" value={formatRubles(total)} />
-        <DashboardStat icon="users" label="Людей поддержано" value={`${helperTransfers.length}`} />
-        <DashboardStat icon="check" label="Чеков подтверждено" value="2 из 3" />
-        <DashboardStat icon="video" label="Отчетов получено" value="1" />
-      </div>
-      <div className="dashboard-layout">
-        <section className="dashboard-card dashboard-card-large">
-          <div className="dashboard-card-head">
-            <div>
-              <h2>История помощи</h2>
-              <p>Переводы идут напрямую получателям, а чек помогает подтвердить участие в сборе.</p>
-            </div>
-            <Button variant="mint" onClick={() => onNavigate("/requests")}>Помочь еще</Button>
-          </div>
-          <div className="transfer-list">
-            {helperTransfers.map((item) => (
-              <article className="transfer-row" key={item.person + item.date}>
-                <img src={item.image} alt={`${item.person}, ${item.city}`} width="64" height="64" />
-                <div>
-                  <h3>{item.person}</h3>
-                  <p>{item.city} · {item.date}</p>
-                  <span>{item.receipt}</span>
-                </div>
-                <strong>{formatRubles(item.amount)}</strong>
-                <Badge tone={item.status === "Подтверждено" || item.status === "Есть видеоотчет" ? "mint" : "peach"} icon={item.status === "Есть видеоотчет" ? "video" : "check"}>
-                  {item.status}
-                </Badge>
-              </article>
-            ))}
-          </div>
-        </section>
-        <aside className="dashboard-stack">
-          <section className="dashboard-card">
-            <h2>Уведомления</h2>
-            <div className="notice-list">
-              <Notice icon="video" title="Мария опубликовала видеоотчет" text="Можно посмотреть результат вашей помощи." />
-              <Notice icon="shield" title="Чек по Игорю проверяется" text="Обычно это занимает до одного рабочего дня." />
-              <Notice icon="heart" title="Сбор Дмитрия закрыт" text="Спасибо, ваша помощь стала частью результата." />
-            </div>
-          </section>
-          <section className="dashboard-card soft-dashboard-card">
-            <h2>Быстрое действие</h2>
-            <p>Выберите человека, которому хотите помочь сегодня. Даже небольшая сумма может закрыть важный кусочек сбора.</p>
-            <Button onClick={() => onNavigate("/requests")}>
-              <Icon name="heart" filled />
-              Перейти к заявкам
+    <section className="page shell admin-access-page">
+      <div className="admin-access-card">
+        <Badge icon="lock">Закрытый раздел</Badge>
+        <h1>Вход в админ-панель</h1>
+        <p>
+          Админка вынесена отдельно от публичного сайта. Введите пароль администратора, чтобы открыть очередь заявок,
+          чеков и отчетов.
+        </p>
+        <form className="admin-access-form" onSubmit={handleSubmit}>
+          <label className="form-field">
+            <span>Пароль администратора<b>*</b></span>
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Введите пароль"
+              autoComplete="current-password"
+              required
+            />
+          </label>
+          {error ? <p className="form-error"><Icon name="shield" />{error}</p> : null}
+          <div className="admin-access-actions">
+            <Button type="submit">
+              <Icon name="lock" />
+              Войти
             </Button>
-          </section>
-        </aside>
+            <Button variant="soft" onClick={() => onNavigate("/")}>На сайт</Button>
+          </div>
+        </form>
+        <div className="admin-access-note">
+          <Icon name="shield" />
+          <span>Это статичная защита для MVP. Чувствительные данные нельзя хранить в таком интерфейсе без backend-авторизации.</span>
+        </div>
       </div>
     </section>
   );
 }
 
-function ApplicantDashboardPage({ onToast }: { onToast: (message: string) => void }) {
-  const request = findRequest("anna");
-  const percent = getPercent(request);
-  return (
-    <section className="page shell dashboard-page applicant-dashboard">
-      <DashboardHero
-        badge="Кабинет заявителя"
-        title="Анна, ваша заявка опубликована"
-        text="Следите за сбором, обновляйте документы и подготовьте отчет после получения помощи."
-      />
-      <div className="dashboard-layout">
-        <section className="dashboard-card dashboard-card-large">
-          <div className="applicant-progress-head">
-            <img src={annaPhoto} alt="Анна, Казань" width="120" height="120" />
-            <div>
-              <Badge tone="mint" icon="shield">Документы проверены</Badge>
-              <h2>Сбор на погашение долга</h2>
-              <p>{request.reason}</p>
-            </div>
-          </div>
-          <div className="collection-stats applicant-stats">
-            <div><span>Цель</span><strong>{formatRubles(request.targetAmount)}</strong></div>
-            <div><span>Собрано</span><strong>{formatRubles(request.collectedAmount)}</strong></div>
-            <div><span>Прогресс</span><strong>{percent}%</strong></div>
-          </div>
-          <ProgressBar percent={percent} />
-          <div className="applicant-actions">
-            <Button variant="soft" onClick={() => onToast("Обновление сохранено в черновике.")}>Добавить обновление</Button>
-            <Button variant="mint" onClick={() => onToast("Отчет будет доступен после закрытия сбора.")}>Загрузить отчет</Button>
-          </div>
-        </section>
-        <aside className="dashboard-stack">
-          <section className="dashboard-card">
-            <h2>Статус заявки</h2>
-            <ol className="status-steps">
-              {applicantSteps.map((step) => (
-                <li className={step.done ? "done" : ""} key={step.title}>
-                  <span><Icon name={step.done ? "check" : "calendar"} /></span>
-                  <div>
-                    <h3>{step.title}</h3>
-                    <p>{step.text}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </section>
-          <section className="dashboard-card">
-            <h2>Документы</h2>
-            <div className="document-check-list">
-              {request.documents.map((document) => (
-                <span key={document}><Icon name="check" />{document}</span>
-              ))}
-            </div>
-          </section>
-        </aside>
-      </div>
-    </section>
-  );
-}
-
-function AdminDashboardPage({ onNavigate, onToast }: { onNavigate: NavigateFn; onToast: (message: string) => void }) {
+function AdminDashboardPage({ onNavigate, onToast, onLogout }: { onNavigate: NavigateFn; onToast: (message: string) => void; onLogout: () => void }) {
   return (
     <section className="page shell dashboard-page admin-dashboard">
       <DashboardHero
@@ -707,6 +632,10 @@ function AdminDashboardPage({ onNavigate, onToast }: { onNavigate: NavigateFn; o
         title="Модерация заявок, чеков и отчетов"
         text="Рабочий экран команды: что проверить сейчас, какие чеки подтвердить и какие отчеты можно публиковать."
       />
+      <div className="admin-session-bar">
+        <span><Icon name="lock" />Доступ открыт для администратора</span>
+        <Button variant="soft" onClick={onLogout}>Выйти</Button>
+      </div>
       <div className="dashboard-stats admin-stats">
         <DashboardStat icon="file" label="Заявок на проверке" value="18" />
         <DashboardStat icon="copy" label="Чеков ожидают сверки" value="7" />

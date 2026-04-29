@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { getBrowserPath } from "../lib/routing";
 import applyIllustration from "../assets/apply-illustration.png";
 import handsIllustration from "../assets/hands-illustration.png";
 import homeIllustration from "../assets/home-illustration.png";
@@ -286,7 +287,7 @@ export function AppLink({
 }) {
   return (
     <a
-      href={to}
+      href={getBrowserPath(to)}
       className={className}
       onClick={(event) => {
         event.preventDefault();
@@ -449,7 +450,6 @@ export function Header({ onNavigate }: { onNavigate: NavigateFn }) {
     { label: "Нужна помощь", to: "/apply" },
     { label: "Хочу помочь", to: "/requests" },
     { label: "Истории", to: "/stories" },
-    { label: "Кабинет", to: "/helper" },
   ];
 
   const handleNavigate = (to: string) => {
@@ -503,8 +503,6 @@ export function Footer({ onNavigate }: { onNavigate: NavigateFn }) {
         ["Нужна помощь", "/apply"],
         ["Хочу помочь", "/requests"],
         ["Истории", "/stories"],
-        ["Кабинет помогающего", "/helper"],
-        ["Кабинет заявителя", "/applicant"],
         ["Вопросы и ответы", "/faq"],
       ],
     },
@@ -515,7 +513,6 @@ export function Footer({ onNavigate }: { onNavigate: NavigateFn }) {
         ["Правила платформы", "/safety"],
         ["Безопасность", "/safety"],
         ["Отчеты", "/stories"],
-        ["Админ-панель", "/admin"],
         ["Контакты", "/faq"],
       ],
     },

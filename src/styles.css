@@ -3645,8 +3645,7 @@ textarea {
 }
 
 .dashboard-stat > span,
-.notice-item > span,
-.status-steps li > span {
+.notice-item > span {
   width: 54px;
   height: 54px;
   display: grid;
@@ -3657,8 +3656,7 @@ textarea {
 }
 
 .dashboard-stat:nth-child(even) > span,
-.notice-item:nth-child(even) > span,
-.status-steps li.done > span {
+.notice-item:nth-child(even) > span {
   color: var(--mint-strong);
   background: var(--mint-soft);
 }
@@ -3711,7 +3709,6 @@ textarea {
   font-weight: 800;
 }
 
-.dashboard-layout,
 .admin-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 360px;
@@ -3754,15 +3751,12 @@ textarea {
   width: fit-content;
 }
 
-.transfer-list,
 .notice-list,
-.admin-task-list,
-.document-check-list {
+.admin-task-list {
   display: grid;
   gap: 10px;
 }
 
-.transfer-row,
 .admin-task {
   display: grid;
   gap: 14px;
@@ -3773,39 +3767,17 @@ textarea {
   border-radius: 14px;
 }
 
-.transfer-row {
-  grid-template-columns: 64px minmax(0, 1fr) auto auto;
-}
-
-.transfer-row img {
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
-  border: 3px solid #fff;
-  border-radius: 50%;
-}
-
-.transfer-row h3,
 .notice-item h3,
-.admin-task h3,
-.status-steps h3 {
+.admin-task h3 {
   font-family: Manrope, Inter, sans-serif;
   font-size: 16px;
   font-weight: 900;
 }
 
-.transfer-row p,
-.transfer-row span,
 .notice-item p,
-.admin-task p,
-.status-steps p {
+.admin-task p {
   color: var(--muted);
   font-size: 13px;
-}
-
-.transfer-row strong {
-  color: var(--coral);
-  white-space: nowrap;
 }
 
 .notice-item {
@@ -3819,53 +3791,9 @@ textarea {
   border-radius: 14px;
 }
 
-.notice-item > span,
-.status-steps li > span {
+.notice-item > span {
   width: 42px;
   height: 42px;
-}
-
-.applicant-progress-head {
-  display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 18px;
-  align-items: center;
-}
-
-.applicant-progress-head img {
-  width: 110px;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 18px;
-}
-
-.applicant-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.status-steps {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.status-steps li {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
-  align-items: start;
-}
-
-.document-check-list span {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--mint-strong);
-  font-weight: 800;
 }
 
 .admin-task {
@@ -3889,12 +3817,91 @@ textarea {
   font-size: 13px;
 }
 
+.admin-access-page {
+  min-height: 62vh;
+  display: grid;
+  place-items: center;
+}
+
+.admin-access-card {
+  width: min(100%, 620px);
+  display: grid;
+  gap: 18px;
+  padding: clamp(24px, 4vw, 38px);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.admin-access-card h1 {
+  font-size: clamp(38px, 5vw, 58px);
+}
+
+.admin-access-card > p {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+.admin-access-form {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-access-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.form-error,
+.admin-access-note,
+.admin-session-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 16px;
+}
+
+.form-error {
+  margin: 0;
+  padding: 12px 14px;
+  color: var(--coral);
+  background: var(--warning-soft);
+  border: 1px solid rgba(255, 107, 87, 0.22);
+  font-weight: 800;
+}
+
+.admin-access-note {
+  align-items: flex-start;
+  padding: 14px;
+  color: var(--mint-strong);
+  background: var(--mint-soft);
+  border: 1px solid rgba(94, 155, 131, 0.2);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.admin-session-bar {
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: rgba(234, 248, 241, 0.72);
+  border: 1px solid rgba(94, 155, 131, 0.2);
+}
+
+.admin-session-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mint-strong);
+  font-weight: 900;
+}
+
 @media (max-width: 1180px) {
   .dashboard-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .dashboard-layout,
   .admin-layout {
     grid-template-columns: 1fr;
   }
@@ -3911,21 +3918,11 @@ textarea {
 
   .dashboard-card-head,
   .stories-cta,
-  .applicant-actions {
+  .admin-session-bar {
     display: grid;
   }
 
-  .transfer-row,
   .admin-task {
-    grid-template-columns: 1fr;
-  }
-
-  .transfer-row img {
-    width: 74px;
-    height: 74px;
-  }
-
-  .applicant-progress-head {
     grid-template-columns: 1fr;
   }
 
