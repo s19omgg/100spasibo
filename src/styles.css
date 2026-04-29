@@ -31,12 +31,16 @@
 }
 
 html {
+  width: 100%;
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
+  width: 100%;
+  overflow-x: hidden;
   padding: 14px;
   background: #eee8df;
   color: var(--text);
@@ -4224,12 +4228,16 @@ body {
 }
 
 #root {
+  width: 100%;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .telegram-mini-app {
+  width: 100%;
   min-height: 100vh;
-  padding: max(12px, env(safe-area-inset-top)) 0 calc(88px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+  padding: max(10px, env(safe-area-inset-top)) 0 calc(84px + env(safe-area-inset-bottom));
   background:
     radial-gradient(circle at 8% 0%, rgba(255, 227, 216, 0.72), transparent 18rem),
     radial-gradient(circle at 94% 12%, rgba(234, 248, 241, 0.78), transparent 18rem),
@@ -4237,29 +4245,37 @@ body {
   color: var(--text);
 }
 
+.telegram-mini-app *,
+.telegram-mini-app *::before,
+.telegram-mini-app *::after {
+  min-width: 0;
+}
+
 .telegram-mini-app .shell {
   width: 100%;
-  max-width: 540px;
+  max-width: 430px;
   margin: 0 auto;
-  padding-inline: 14px;
+  padding-inline: 12px;
 }
 
 .telegram-mini-main {
-  max-width: 540px;
+  width: 100%;
+  max-width: 430px;
   margin: 0 auto;
+  overflow-x: hidden;
 }
 
 .telegram-topbar {
   position: sticky;
   top: 0;
   z-index: 220;
-  width: min(100%, 540px);
+  width: min(100%, 430px);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   margin: 0 auto;
-  padding: 10px 14px 8px;
+  padding: 9px 12px 7px;
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(18px);
 }
@@ -4267,7 +4283,7 @@ body {
 .telegram-brand {
   min-width: 0;
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-columns: 38px minmax(0, 1fr);
   align-items: center;
   gap: 10px;
   padding: 0;
@@ -4287,8 +4303,8 @@ body {
 }
 
 .telegram-brand-mark {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
 }
 
 .telegram-brand-mark .icon {
@@ -4302,7 +4318,7 @@ body {
 }
 
 .telegram-brand strong {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 950;
   line-height: 1;
 }
@@ -4314,14 +4330,14 @@ body {
 .telegram-brand small {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   line-height: 1.1;
 }
 
 .telegram-contact-link {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   flex: 0 0 auto;
   text-decoration: none;
 }
@@ -4336,21 +4352,21 @@ body {
   left: 50%;
   bottom: max(10px, env(safe-area-inset-bottom));
   z-index: 230;
-  width: min(calc(100% - 24px), 500px);
+  width: min(calc(100% - 18px), 420px);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
   padding: 8px;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(120, 80, 50, 0.12);
-  border-radius: 24px;
+  border-radius: 22px;
   box-shadow: 0 18px 48px rgba(80, 49, 31, 0.18);
   backdrop-filter: blur(18px);
   transform: translateX(-50%);
 }
 
 .telegram-bottom-nav button {
-  min-height: 54px;
+  min-height: 50px;
   display: grid;
   place-items: center;
   gap: 4px;
@@ -4359,7 +4375,7 @@ body {
   background: transparent;
   border: 0;
   border-radius: 18px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 900;
 }
 
@@ -4382,17 +4398,25 @@ body {
 }
 
 .telegram-mini-app h1 {
-  font-size: clamp(31px, 9vw, 40px);
+  font-size: clamp(28px, 8.4vw, 36px);
   line-height: 1.02;
+  overflow-wrap: anywhere;
 }
 
 .telegram-mini-app h2 {
-  font-size: 25px;
+  font-size: 23px;
+  overflow-wrap: anywhere;
 }
 
 .telegram-mini-app .badge {
   min-height: 30px;
-  padding: 7px 11px;
+  max-width: 100%;
+  padding: 7px 10px;
+  overflow-wrap: anywhere;
+}
+
+.telegram-mini-app :is(h3, p, li, blockquote, small, strong, a, button, label, span) {
+  overflow-wrap: anywhere;
 }
 
 .telegram-mini-app .hero,
@@ -4414,10 +4438,10 @@ body {
 
 .telegram-mini-app .hero-copy {
   gap: 14px;
-  padding: 18px;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid rgba(120, 80, 50, 0.12);
-  border-radius: 28px;
+  border-radius: 24px;
   box-shadow: var(--shadow);
 }
 
@@ -4431,7 +4455,7 @@ body {
 .telegram-mini-app .hero-copy p,
 .telegram-mini-app .catalog-hero p,
 .telegram-mini-app .apply-hero p {
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .telegram-mini-app .hero-actions,
@@ -4445,9 +4469,11 @@ body {
 .telegram-mini-app .button,
 .telegram-mini-app .hero-actions .button {
   width: 100%;
-  min-height: 48px;
+  min-height: 46px;
+  padding-inline: 12px;
   justify-content: center;
   border-radius: 16px;
+  white-space: normal;
 }
 
 .telegram-mini-app .social-proof {
@@ -4475,9 +4501,9 @@ body {
 
 .telegram-mini-app .step-card {
   min-height: 0;
-  grid-template-columns: 68px 1fr;
-  padding: 16px;
-  border-radius: 22px;
+  grid-template-columns: 58px 1fr;
+  padding: 14px;
+  border-radius: 20px;
 }
 
 .telegram-mini-app .steps-grid {
@@ -4500,10 +4526,10 @@ body {
 }
 
 .telegram-mini-app .trust-card {
-  padding: 16px;
+  padding: 14px;
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid rgba(120, 80, 50, 0.12);
-  border-radius: 22px;
+  border-radius: 20px;
 }
 
 .telegram-mini-app .trust-card:not(:last-child) {
@@ -4525,8 +4551,8 @@ body {
 .telegram-mini-app .stories-cta,
 .telegram-mini-app .admin-access-card,
 .telegram-mini-app .dashboard-card,
-.telegram-mini-app .dashboard-stat {
-  border-radius: 24px;
+  .telegram-mini-app .dashboard-stat {
+  border-radius: 20px;
 }
 
 .telegram-mini-app .request-card-compact {
@@ -4569,14 +4595,14 @@ body {
 .telegram-mini-app .request-hero-card {
   grid-template-columns: 1fr;
   gap: 16px;
-  padding: 16px;
+  padding: 14px;
   background: rgba(255, 255, 255, 0.78);
   border: 1px solid rgba(120, 80, 50, 0.12);
   box-shadow: var(--shadow);
 }
 
 .telegram-mini-app .request-hero-card h1 {
-  font-size: 30px;
+  font-size: 28px;
 }
 
 .telegram-mini-app .chip-row {
@@ -4584,12 +4610,12 @@ body {
 }
 
 .telegram-mini-app .collection-card {
-  padding: 18px;
+  padding: 16px;
 }
 
 .telegram-mini-app .donation-panel {
   position: static;
-  padding: 18px;
+  padding: 16px;
 }
 
 .telegram-mini-app .donation-panel h2,
@@ -4599,7 +4625,7 @@ body {
 
 .telegram-mini-app .video-placeholder {
   grid-template-columns: 1fr;
-  padding: 18px;
+  padding: 16px;
   border-radius: 24px;
 }
 
@@ -4612,8 +4638,8 @@ body {
 }
 
 .telegram-mini-app .form-section {
-  padding: 16px;
-  border-radius: 24px;
+  padding: 14px;
+  border-radius: 20px;
 }
 
 .telegram-mini-app .form-section h2 {
@@ -4632,28 +4658,28 @@ body {
 .telegram-mini-app textarea,
 .telegram-mini-app .pretty-select-trigger {
   min-height: 48px;
-  padding: 12px 14px;
+  padding: 11px 12px;
   border-radius: 16px;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .telegram-mini-app .date-picker-control input {
-  padding-right: 58px;
+  padding-right: 54px;
 }
 
 .telegram-mini-app .date-picker-control button {
   inset: 1px 1px 1px auto;
-  width: 52px;
+  width: 48px;
   border-radius: 0 15px 15px 0;
 }
 
 .telegram-mini-app .date-picker-popover,
 .telegram-mini-app .pretty-select-menu {
   position: fixed;
-  left: 14px;
-  right: 14px;
+  left: 12px;
+  right: 12px;
   width: auto;
-  max-width: 512px;
+  max-width: 406px;
   margin-inline: auto;
 }
 
@@ -4685,7 +4711,7 @@ body {
 }
 
 .telegram-mini-app .story-featured {
-  padding: 16px;
+  padding: 14px;
 }
 
 .telegram-mini-app .story-featured img {
