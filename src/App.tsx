@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
   Badge,
+  BrandMark,
   Button,
   DonationPanel,
   FilterSidebar,
@@ -263,7 +264,7 @@ function MiniAppTopBar({ onNavigate }: { onNavigate: NavigateFn }) {
     <header className="telegram-topbar">
       <button className="telegram-brand" type="button" onClick={() => onNavigate("/")}>
         <span className="telegram-brand-mark">
-          <Icon name="heart" />
+          <BrandMark />
         </span>
         <span>
           <strong><span>100</span>spasibo</strong>

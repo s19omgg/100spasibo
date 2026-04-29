@@ -8,6 +8,7 @@
   --peach: #ffe3d8;
   --mint: #9ad6be;
   --mint-strong: #5e9b83;
+  --brand-mint: #6faea4;
   --mint-soft: #eaf8f1;
   --text: #2b2b2b;
   --muted: #6f6f6f;
@@ -168,15 +169,14 @@ p {
 }
 
 .logo-mark {
-  width: 54px;
-  height: 54px;
+  width: 66px;
+  height: 66px;
   display: grid;
   place-items: center;
-  color: var(--coral);
-  background: #fff;
-  border: 2px solid var(--peach);
-  border-radius: 18px;
-  box-shadow: 0 10px 24px rgba(255, 107, 87, 0.12);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .logo-mark .icon {
@@ -199,15 +199,21 @@ p {
   color: var(--coral);
 }
 
+.brand-mark-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .logo-copy {
   display: grid;
   gap: 1px;
 }
 
 .logo-title {
-  color: var(--text);
+  color: var(--brand-mint);
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 900;
   line-height: 1;
 }
 
@@ -5151,5 +5157,54 @@ body {
   .telegram-mini-app .request-head img {
     width: 46px;
     height: 46px;
+  }
+}
+
+/* Brand mark from the final 100spasibo identity reference. */
+.logo-mark,
+.telegram-brand-mark {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.logo-mark {
+  width: 66px;
+  height: 66px;
+}
+
+.logo-title,
+.telegram-brand strong {
+  color: var(--brand-mint);
+}
+
+.logo-title span,
+.telegram-brand strong span {
+  color: var(--coral);
+}
+
+.logo-mark .brand-mark-svg,
+.telegram-brand-mark .brand-mark-svg {
+  filter: drop-shadow(0 8px 18px rgba(255, 107, 87, 0.1));
+}
+
+.telegram-brand {
+  grid-template-columns: 42px minmax(0, 1fr);
+}
+
+.telegram-brand-mark {
+  width: 42px;
+  height: 42px;
+}
+
+@media (max-width: 360px) {
+  .telegram-brand {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .telegram-brand-mark {
+    width: 38px;
+    height: 38px;
   }
 }

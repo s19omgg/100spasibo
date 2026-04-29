@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { getBrowserPath } from "../lib/routing";
 import applyIllustration from "../assets/apply-illustration.png";
 import handsIllustration from "../assets/hands-illustration.png";
@@ -232,38 +232,89 @@ export function Icon({ name, className = "", filled = false }: { name: IconName;
   }
 }
 
+export function BrandMark({ className = "" }: { className?: string }) {
+  const rawId = useId().replace(/:/g, "");
+  const coralId = `${rawId}-coral`;
+  const peachId = `${rawId}-peach`;
+  const mintId = `${rawId}-mint`;
+
+  return (
+    <svg className={`brand-mark-svg ${className}`} viewBox="6 4 84 88" aria-hidden="true">
+      <defs>
+        <linearGradient id={coralId} x1="24" y1="18" x2="67" y2="73" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFB58C" />
+          <stop offset="0.58" stopColor="#FF7564" />
+          <stop offset="1" stopColor="#F7A2A8" />
+        </linearGradient>
+        <linearGradient id={peachId} x1="6" y1="38" x2="44" y2="91" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#FFB16C" />
+          <stop offset="1" stopColor="#FF8D75" />
+        </linearGradient>
+        <linearGradient id={mintId} x1="58" y1="38" x2="88" y2="88" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#9FCBC4" />
+          <stop offset="1" stopColor="#6FAEA4" />
+        </linearGradient>
+      </defs>
+
+      <circle cx="19" cy="35" r="6.5" fill={`url(#${coralId})`} opacity="0.68" />
+      <circle cx="33" cy="25" r="6.5" fill={`url(#${peachId})`} opacity="0.78" />
+      <circle cx="63" cy="25" r="6.5" fill="#FFC17C" opacity="0.74" />
+      <circle cx="77" cy="35" r="6.5" fill={`url(#${mintId})`} opacity="0.74" />
+      <path
+        d="M48 10.5c3.6-6 13.2-5.7 15.6 1.4 1.9 5.8-3.8 10.8-15.6 19.4-11.8-8.6-17.5-13.6-15.6-19.4 2.4-7.1 12-7.4 15.6-1.4Z"
+        fill="#F8A0A6"
+        opacity="0.86"
+      />
+      <circle cx="48" cy="33" r="2.6" fill="#FF8B78" />
+
+      <path
+        d="M20 43c-4.2 2.2-8.4 6.6-9.5 13.9-1.9 12.7 8.4 25.4 24.6 29.9 7.8 2.1 15.4 1.7 21.6-.7-16.8-4.2-25.5-13.5-28.5-27.1C26.7 52.7 24.8 47 20 43Z"
+        fill={`url(#${peachId})`}
+      />
+      <path
+        d="M76 43c4.2 2.2 8.4 6.6 9.5 13.9 1.9 12.7-8.4 25.4-24.6 29.9-7.8 2.1-15.4 1.7-21.6-.7 16.8-4.2 25.5-13.5 28.5-27.1C69.3 52.7 71.2 47 76 43Z"
+        fill={`url(#${mintId})`}
+      />
+      <path
+        d="M48 37.3c6.8-10.1 22-7.9 24.4 3.5 2.3 11.2-8.9 20.9-24.4 32.1-15.5-11.2-26.7-20.9-24.4-32.1 2.4-11.4 17.6-13.6 24.4-3.5Z"
+        fill={`url(#${coralId})`}
+      />
+      <path
+        d="M21.6 47.4c5.2-7.8 14.3-11.7 26.2-11.7M74.4 47.4C69.2 39.6 60.1 35.7 48.2 35.7"
+        fill="none"
+        stroke="#FFF8F2"
+        strokeWidth="5.4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M34.7 75.2c5.7 1.2 10 4.7 13.3 10.2 3.3-5.5 7.6-9 13.3-10.2M48 85.4v6.1"
+        fill="none"
+        stroke={`url(#${mintId})`}
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <text
+        x="48"
+        y="57.5"
+        textAnchor="middle"
+        fill="#fff"
+        fontFamily="Manrope, Inter, Arial, sans-serif"
+        fontSize="19"
+        fontWeight="900"
+        letterSpacing="-1"
+      >
+        100
+      </text>
+    </svg>
+  );
+}
+
 export function Logo({ onNavigate }: { onNavigate: NavigateFn }) {
   return (
     <button className="logo" type="button" onClick={() => onNavigate("/")} aria-label="100spasibo, на главную">
       <span className="logo-mark">
-        <svg className="logo-mark-svg" viewBox="0 0 64 64" aria-hidden="true">
-          <path
-            d="M32 16.8c4.5-8 17.5-8.5 21.6.8 3.9 8.8-2.4 17.7-9.9 24.2L32 52.1 20.3 41.8C12.8 35.2 6.5 26.4 10.4 17.6c4.1-9.3 17.1-8.8 21.6-.8Z"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="4.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M14.4 33.5c3.2 1.4 6.3 3.2 8.4 6.1l4.1 5.6c1.2 1.7.8 4.1-.9 5.3-1.5 1.1-3.7.9-5-.4l-6.1-6.2c-2.3-2.4-4.1-5.1-5.3-8.1-.5-1.2.3-2.5 1.6-2.7 1-.2 2.1 0 3.2.4Z"
-            fill="currentColor"
-            opacity="0.9"
-          />
-          <path
-            d="M49.6 33.5c-3.2 1.4-6.3 3.2-8.4 6.1l-4.1 5.6c-1.2 1.7-.8 4.1.9 5.3 1.5 1.1 3.7.9 5-.4l6.1-6.2c2.3-2.4 4.1-5.1 5.3-8.1.5-1.2-.3-2.5-1.6-2.7-1-.2-2.1 0-3.2.4Z"
-            fill="currentColor"
-            opacity="0.9"
-          />
-          <path
-            d="M20 34.7c2.5.9 4.6 2.7 6.1 4.9l2.2 3.2M44 34.7c-2.5.9-4.6 2.7-6.1 4.9l-2.2 3.2"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3.1"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <BrandMark />
       </span>
       <span className="logo-copy">
         <span className="logo-title">
