@@ -1,0 +1,986 @@
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import {
+  AppLink,
+  Badge,
+  Button,
+  DonationPanel,
+  FilterSidebar,
+  Footer,
+  Header,
+  Icon,
+  InfoBanner,
+  PrettySelect,
+  ProgressBar,
+  RequestCard,
+  StepCard,
+  Timeline,
+  Toast,
+  TrustCard,
+  UploadBox,
+  VerifiedDocuments,
+  WatercolorHero,
+  catalogCount,
+  type NavigateFn,
+} from "./components/ui";
+import annaPhoto from "./assets/anna-photo.png";
+import { featuredRequests, findRequest, formatRubles, getPercent, requests } from "./data/requests";
+import "./styles.css";
+
+const completedStories = [
+  {
+    name: "Мария",
+    age: 31,
+    city: "Ростов-на-Дону",
+    image: requests[2].image,
+    category: "Коммунальные платежи",
+    amount: 15000,
+    helpers: 87,
+    closedAt: "Июнь 2024",
+    title: "Дома снова спокойно: свет и тепло оплачены",
+    quote:
+      "Мне помогли закрыть долг по коммунальным платежам. Я показала оплату на видео и до сих пор пересматриваю сообщения поддержки.",
+    result: "Задолженность погашена напрямую по реквизитам Марии. Видеоотчет и подтверждение оплаты опубликованы после закрытия сбора.",
+  },
+  {
+    name: "Игорь",
+    age: 29,
+    city: "Новосибирск",
+    image: requests[1].image,
+    category: "Аренда жилья",
+    amount: 30000,
+    helpers: 126,
+    closedAt: "Июль 2024",
+    title: "Игорь сохранил жилье и спокойно вышел на новую работу",
+    quote:
+      "Самое важное было не остаться одному в моменте, когда нужно было просто продержаться один месяц.",
+    result: "Аренда оплачена прямыми переводами получателю. Игорь записал короткий отчет с квитанцией и благодарностью.",
+  },
+  {
+    name: "Дмитрий",
+    age: 22,
+    city: "Краснодар",
+    image: requests[5].image,
+    category: "Образование",
+    amount: 40000,
+    helpers: 214,
+    closedAt: "Август 2024",
+    title: "Семестр оплачен, учебу не пришлось прерывать",
+    quote:
+      "Я боялся брать академический отпуск, но много маленьких переводов сложились в нужную сумму.",
+    result: "Оплата учебы закрыта. Дмитрий показал счет и подтверждение перевода в видеоотчете.",
+  },
+  {
+    name: "Сергей",
+    age: 42,
+    city: "Екатеринбург",
+    image: requests[3].image,
+    category: "Лечение и здоровье",
+    amount: 45000,
+    helpers: 173,
+    closedAt: "Сентябрь 2024",
+    title: "Курс восстановления после операции начался вовремя",
+    quote:
+      "Поддержка пришла очень бережно. Не как жалость, а как спокойное человеческое плечо.",
+    result: "Лекарства и реабилитация оплачены. После сбора Сергей прислал видеоотчет и безопасные подтверждения расходов.",
+  },
+  {
+    name: "Ольга",
+    age: 38,
+    city: "Самара",
+    image: requests[4].image,
+    category: "Долги и кредиты",
+    amount: 60000,
+    helpers: 302,
+    closedAt: "Октябрь 2024",
+    title: "Просрочка закрыта, новые начисления остановлены",
+    quote:
+      "Мне было стыдно просить о помощи, но на платформе я почувствовала, что ситуацию можно решить без осуждения.",
+    result: "Переводы поступали напрямую Ольге. После закрытия она показала оплату и выписку о погашении просрочки.",
+  },
+];
+
+const helperTransfers = [
+  {
+    person: "Игорь",
+    city: "Новосибирск",
+    amount: 1000,
+    date: "Сегодня, 12:40",
+    status: "Чек на проверке",
+    receipt: "sbp-igor-1000.png",
+    image: requests[1].image,
+  },
+  {
+    person: "Мария",
+    city: "Ростов-на-Дону",
+    amount: 500,
+    date: "22 апреля 2026",
+    status: "Подтверждено",
+    receipt: "maria-500.pdf",
+    image: requests[2].image,
+  },
+  {
+    person: "Дмитрий",
+    city: "Краснодар",
+    amount: 300,
+    date: "18 апреля 2026",
+    status: "Есть видеоотчет",
+    receipt: "dmitry-study.jpg",
+    image: requests[5].image,
+  },
+];
+
+const applicantSteps = [
+  { title: "Заявка отправлена", text: "Анкета сохранена и доступна модератору.", done: true },
+  { title: "Документы проверяются", text: "Проверяем договор и выписку по задолженности.", done: true },
+  { title: "Карточка опубликована", text: "После подтверждения заявка появится в каталоге.", done: true },
+  { title: "Сбор идет", text: "Помощь поступает напрямую на указанные реквизиты.", done: false },
+  { title: "Видеоотчет", text: "После закрытия сбора нужно прикрепить видео и подтверждение оплаты.", done: false },
+];
+
+const adminTasks = [
+  { type: "Заявка", title: "Елена, Воронеж", detail: "Проверить счет клиники и справку о доходах", status: "Нужно проверить", tone: "peach" },
+  { type: "Чек", title: "Игорь, 1 000 ₽", detail: "Пользователь приложил чек СБП", status: "На сверке", tone: "mint" },
+  { type: "Отчет", title: "Дмитрий, обучение", detail: "Видеоотчет и подтверждение оплаты семестра", status: "Готов к публикации", tone: "white" },
+  { type: "Документы", title: "Амир, Москва", detail: "Не хватает фото договора с подрядчиком", status: "Запросить файл", tone: "peach" },
+];
+
+function usePath() {
+  const [path, setPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    const handlePop = () => setPath(window.location.pathname);
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, []);
+
+  const navigate: NavigateFn = (nextPath) => {
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, "", nextPath);
+      setPath(nextPath);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  return { path, navigate };
+}
+
+export default function App() {
+  const { path, navigate } = usePath();
+  const [toast, setToast] = useState("");
+
+  const showToast = (message: string) => {
+    setToast(message);
+    window.setTimeout(() => setToast(""), 2800);
+  };
+
+  const page = (() => {
+    if (path === "/requests") return <RequestsPage onNavigate={navigate} />;
+    if (path.startsWith("/requests/")) return <RequestDetailPage id={path.split("/").pop()} onNavigate={navigate} onToast={showToast} />;
+    if (path === "/apply") return <ApplyPage onToast={showToast} />;
+    if (path === "/how-it-works") return <HowItWorksPage onNavigate={navigate} />;
+    if (path === "/stories") return <StoriesPage onNavigate={navigate} />;
+    if (path === "/helper") return <HelperDashboardPage onNavigate={navigate} />;
+    if (path === "/applicant") return <ApplicantDashboardPage onToast={showToast} />;
+    if (path === "/admin") return <AdminDashboardPage onNavigate={navigate} onToast={showToast} />;
+    if (path === "/safety") return <SafetyPage />;
+    if (path === "/faq") return <FaqPage />;
+    return <HomePage onNavigate={navigate} />;
+  })();
+
+  return (
+    <div className="browser-shell">
+      <div className="window-dots" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+      <Header onNavigate={navigate} />
+      <main>{page}</main>
+      <Footer onNavigate={navigate} />
+      <Toast message={toast} />
+    </div>
+  );
+}
+
+function HomePage({ onNavigate }: { onNavigate: NavigateFn }) {
+  return (
+    <>
+      <section className="hero shell">
+        <div className="hero-copy">
+          <Badge icon="heart">Люди помогают людям</Badge>
+          <h1>
+            Помощь, которая идет <span>напрямую</span> человеку
+          </h1>
+          <p>
+            Мы проверяем заявки и документы, а вы помогаете напрямую. Даже 100 рублей могут стать важным шагом к
+            решению чьей-то проблемы.
+          </p>
+          <div className="hero-actions">
+            <Button onClick={() => onNavigate("/apply")}>
+              <Icon name="hands" />
+              Мне нужна помощь
+            </Button>
+            <Button variant="mint" onClick={() => onNavigate("/requests")}>
+              <Icon name="heart" />
+              Хочу помочь
+            </Button>
+          </div>
+          <div className="social-proof">
+            <div className="avatar-stack">
+              {requests.slice(0, 5).map((item) => (
+                <img key={item.id} src={item.image} alt="" width="44" height="44" />
+              ))}
+            </div>
+            <p>Уже более 28 000 человек получили поддержку.</p>
+          </div>
+        </div>
+        <WatercolorHero />
+      </section>
+
+      <section className="section shell">
+        <div className="center-heading">
+          <h2>Как это работает</h2>
+        </div>
+        <div className="steps-grid">
+          <StepCard index={1} icon="file" title="Подача заявки" text="Человек заполняет анкету и прикрепляет документы, подтверждающие долг." />
+          <StepCard index={2} icon="shield" title="Проверка документов" text="Мы проверяем документы и ситуацию, чтобы помощь была честной и адресной." />
+          <StepCard index={3} icon="hands" title="Прямая помощь" text="После одобрения заявка публикуется. Люди переводят деньги напрямую получателю." />
+          <StepCard index={4} icon="video" title="Видеоотчет" text="После сбора получатель показывает, как помощь была использована." />
+        </div>
+      </section>
+
+      <section className="section shell">
+        <div className="section-row">
+          <div>
+            <h2>Кому нужна помощь прямо сейчас</h2>
+            <p>Выберите конкретного человека и помогите той суммой, которая сейчас комфортна.</p>
+          </div>
+          <Button variant="soft" onClick={() => onNavigate("/requests")}>Смотреть все заявки</Button>
+        </div>
+        <div className="featured-grid">
+          {featuredRequests.map((request) => (
+            <RequestCard key={request.id} request={request} onNavigate={onNavigate} compact />
+          ))}
+        </div>
+      </section>
+
+      <section className="section shell trust-strip">
+        <TrustCard icon="shield" title="Документы проверены" text="Каждая заявка проходит ручную проверку модераторами платформы." />
+        <TrustCard icon="card" title="Деньги идут напрямую получателю" text="Мы не удерживаем средства — вы помогаете человеку напрямую." />
+        <TrustCard icon="video" title="Есть отчетность" text="Получатель показывает результат, а вы видите, как ваша помощь работает." />
+      </section>
+
+      <section className="section shell role-entry-section">
+        <div className="section-row">
+          <div>
+            <h2>Кабинеты для каждого сценария</h2>
+            <p>Помогающий видит переводы и чеки, заявитель следит за заявкой, команда проверяет документы и отчеты.</p>
+          </div>
+        </div>
+        <div className="role-entry-grid">
+          <RoleEntryCard icon="heart" title="Кабинет помогающего" text="История помощи, чеки, статусы проверки и уведомления по отчетам." to="/helper" onNavigate={onNavigate} />
+          <RoleEntryCard icon="file" title="Кабинет заявителя" text="Статус заявки, документы, ход сбора и загрузка видеоотчета." to="/applicant" onNavigate={onNavigate} />
+          <RoleEntryCard icon="shield" title="Админ-панель" text="Очередь модерации, проверка чеков, публикация заявок и отчетов." to="/admin" onNavigate={onNavigate} />
+        </div>
+      </section>
+    </>
+  );
+}
+
+function RoleEntryCard({ icon, title, text, to, onNavigate }: { icon: "heart" | "file" | "shield"; title: string; text: string; to: string; onNavigate: NavigateFn }) {
+  return (
+    <article className="role-entry-card">
+      <span>
+        <Icon name={icon} />
+      </span>
+      <h3>{title}</h3>
+      <p>{text}</p>
+      <Button variant="soft" onClick={() => onNavigate(to)}>Открыть</Button>
+    </article>
+  );
+}
+
+function RequestsPage({ onNavigate }: { onNavigate: NavigateFn }) {
+  const [query, setQuery] = useState("");
+  const visible = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return requests.slice(0, 8);
+    return requests
+      .filter((item) => `${item.name} ${item.city} ${item.reason} ${item.category}`.toLowerCase().includes(normalized))
+      .slice(0, 8);
+  }, [query]);
+
+  return (
+    <section className="page shell catalog-page">
+      <div className="catalog-hero">
+        <div>
+          <Badge icon="heart">Люди помогают людям</Badge>
+          <h1>Кому нужна помощь</h1>
+          <p>Выберите человека, которому вы хотите помочь сегодня.</p>
+        </div>
+        <WatercolorHero type="hands" />
+      </div>
+
+      <div className="catalog-layout">
+        <FilterSidebar count={catalogCount} />
+        <div className="catalog-main">
+          <div className="banner-grid">
+            <InfoBanner tone="peach" icon="hands" title="Даже 100 рублей имеют значение" text="Небольшая помощь от многих людей меняет чью-то жизнь к лучшему." />
+            <InfoBanner tone="mint" icon="shield" title="Все заявки проходят проверку" text="Мы проверяем документы и историю каждого заявителя, чтобы помощь была честной и адресной." />
+          </div>
+          <div className="catalog-toolbar">
+            <label className="search-box">
+              <Icon name="search" />
+              <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Поиск по имени, городу или ситуации" />
+            </label>
+            <PrettySelect
+              label="Сортировать:"
+              className="sort-box"
+              defaultValue="new"
+              options={[
+                { label: "Сначала новые", value: "new" },
+                { label: "Ближе к цели", value: "progress" },
+                { label: "Сначала срочные", value: "urgent" },
+              ]}
+            />
+          </div>
+          <div className="requests-grid">
+            {visible.map((request) => (
+              <RequestCard key={request.id} request={request} onNavigate={onNavigate} />
+            ))}
+          </div>
+          <nav className="pagination" aria-label="Страницы заявок">
+            <button type="button" aria-label="Предыдущая страница">←</button>
+            <button type="button" className="active">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <span>...</span>
+            <button type="button">8</button>
+            <button type="button" aria-label="Следующая страница">→</button>
+          </nav>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function RequestDetailPage({ id, onNavigate, onToast }: { id: string | undefined; onNavigate: NavigateFn; onToast: (message: string) => void }) {
+  const request = findRequest(id);
+  const targetAmount = request.id === "anna" ? 20000 : request.targetAmount;
+  const collectedAmount = request.id === "anna" ? 13000 : request.collectedAmount;
+  const percent = Math.min(100, Math.round((collectedAmount / targetAmount) * 100));
+  const remaining = targetAmount - collectedAmount;
+  const detailImage = request.id === "anna" ? annaPhoto : request.image;
+
+  return (
+    <section className="page shell detail-page">
+      <button className="back-link" type="button" onClick={() => onNavigate("/requests")}>
+        <Icon name="arrowLeft" />
+        Назад к списку нуждающихся
+      </button>
+      <div className="detail-layout">
+        <div className="detail-main">
+          <div className="request-hero-card">
+            <img className="detail-photo" src={detailImage} alt={`${request.name}, ${request.city}`} width="420" height="420" />
+            <div>
+              <h1>
+                {request.name}, {request.age} года, {request.city}
+              </h1>
+              <Badge icon="heart">Нужна помощь</Badge>
+              <p>{request.story}</p>
+              <div className="chip-row">
+                <Badge tone="mint" icon="shield">Документы проверены</Badge>
+                <Badge tone="white" icon="card">Прямой перевод</Badge>
+                <Badge tone="white" icon="video">Отчет обязателен</Badge>
+              </div>
+            </div>
+          </div>
+
+          <section className="collection-card">
+            <h2>Сбор на погашение долга</h2>
+            <div className="collection-stats">
+              <div><span>Нужно собрать</span><strong>{formatRubles(targetAmount)}</strong></div>
+              <div><span>Собрано</span><strong>{formatRubles(collectedAmount)}</strong></div>
+              <div><span>Осталось собрать</span><strong>{formatRubles(remaining)}</strong></div>
+            </div>
+            <ProgressBar percent={percent} />
+            <div className="collection-bottom">
+              <strong>{percent}%</strong>
+              <span><Icon name="users" /> Уже помогли 25 человек</span>
+            </div>
+          </section>
+
+          <div className="two-column-blocks">
+            <VerifiedDocuments documents={request.documents} />
+            <Timeline items={request.updates} />
+          </div>
+
+          <section className="video-placeholder">
+            <span className="play-button"><Icon name="play" /></span>
+            <div>
+              <h2>Видеоотчет о погашении долга</h2>
+              <p>
+                После полного закрытия долга {request.name} предоставит видеоотчет и документы, подтверждающие оплату.
+                Мы публикуем отчеты — это часть нашей прозрачности.
+              </p>
+            </div>
+          </section>
+        </div>
+        <DonationPanel request={request} onToast={onToast} />
+      </div>
+    </section>
+  );
+}
+
+function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.checkValidity()) {
+      onToast("Пожалуйста, заполните обязательные поля.");
+      form.reportValidity();
+      return;
+    }
+    onToast("Спасибо. Заявка подготовлена для отправки команде 100spasibo.");
+    form.reset();
+  };
+
+  return (
+    <section className="page shell apply-page">
+      <div className="apply-hero">
+        <div>
+          <Badge icon="heart">Люди помогают людям</Badge>
+          <h1>
+            Подать заявку <span>на помощь</span>
+          </h1>
+          <p>
+            Заполните анкету максимально подробно. Вся информация конфиденциальна и помогает нашей команде внимательно
+            рассмотреть вашу ситуацию.
+          </p>
+        </div>
+        <WatercolorHero type="apply" />
+      </div>
+
+      <div className="apply-layout">
+        <form className="application-form" onSubmit={handleSubmit}>
+          <FormSection number={1} title="Личная информация">
+            <Field label="Фамилия, имя, отчество" required placeholder="Иванов Иван Иванович" />
+            <Field label="Дата рождения" type="date" required />
+            <Field label="Город проживания" required placeholder="Например, Казань" />
+            <SelectField label="Семейное положение" options={["Не выбрано", "Не женат / не замужем", "В браке", "Разведен(а)", "Другое"]} />
+            <Field label="Количество иждивенцев" type="number" placeholder="0" />
+          </FormSection>
+
+          <FormSection number={2} title="Контактные данные">
+            <Field label="Телефон" type="tel" required placeholder="+7 (___) ___-__-__" />
+            <Field label="E-mail" type="email" required placeholder="example@mail.ru" />
+            <SelectField label="Предпочтительный способ связи" options={["Телефон", "Telegram", "WhatsApp", "E-mail"]} />
+            <SelectField label="Мессенджер" options={["Telegram", "WhatsApp", "Viber", "Нет"]} />
+          </FormSection>
+
+          <FormSection number={3} title="Информация о долге">
+            <SelectField label="Тип долга" options={["Долги и кредиты", "Лечение и здоровье", "Коммунальные платежи", "Аренда жилья", "Образование", "Другое"]} />
+            <Field label="Организация / МФО / банк / кредитор" required placeholder="Название организации" />
+            <Field label="Номер договора" placeholder="1234567890" />
+            <Field label="Дата договора" type="date" />
+            <SelectField label="Причина возникновения долга" options={["Потеря работы", "Снижение дохода", "Болезнь", "Непредвиденные расходы", "Семейные обстоятельства", "Другое"]} />
+          </FormSection>
+
+          <FormSection number={4} title="Сумма и сроки">
+            <Field label="Запрашиваемая сумма" required type="number" placeholder="Например, 20 000" />
+            <SelectField label="Валюта" options={["Рубли (₽)", "Другая"]} />
+            <SelectField label="На какой срок требуется помощь" options={["Срочно", "В течение недели", "В течение месяца", "Не срочно"]} />
+            <Field label="Крайний срок оплаты" type="date" />
+          </FormSection>
+
+          <FormSection number={5} title="Опишите вашу ситуацию" wide>
+            <label className="form-field form-field-wide">
+              <span>Расскажите, что произошло</span>
+              <textarea required placeholder="Расскажите, что произошло, почему возник долг и почему сейчас вам нужна помощь." />
+              <small>Не нужно писать слишком формально. Главное — честно объяснить ситуацию.</small>
+            </label>
+          </FormSection>
+
+          <FormSection number={6} title="Загрузите документы" wide>
+            <UploadBox />
+            <ul className="example-docs">
+              <li>Копия договора займа или кредита</li>
+              <li>Справка о задолженности</li>
+              <li>График платежей</li>
+              <li>Документы, подтверждающие трудную ситуацию</li>
+            </ul>
+          </FormSection>
+
+          <FormSection number={7} title="Реквизиты для получения помощи">
+            <Field label="ФИО получателя" required placeholder="Полностью, как в паспорте" />
+            <Field label="Банк" required placeholder="Название банка" />
+            <Field label="Номер карты / счета" required placeholder="Номер карты или счета" />
+            <Field label="Телефон для СБП" type="tel" placeholder="+7 (___) ___-__-__" />
+            <p className="form-hint">Эти данные используются только для перевода помощи и проверки заявки.</p>
+          </FormSection>
+
+          <FormSection number={8} title="Согласие и обязательства" wide>
+            <div className="consent-stack">
+              {[
+                "Я соглашаюсь на обработку персональных данных.",
+                "Я подтверждаю, что вся информация в заявке является достоверной.",
+                "Я понимаю, что заявка пройдет ручную проверку.",
+                "Я обязуюсь предоставить отчет после получения помощи.",
+                "Я согласен, что часть информации может быть опубликована на сайте после модерации.",
+              ].map((item) => (
+                <label key={item}>
+                  <input type="checkbox" required />
+                  <span>{item}</span>
+                </label>
+              ))}
+            </div>
+            <p className="policy-links">
+              <a href="/safety">Политика конфиденциальности</a>
+              <a href="/safety">Пользовательское соглашение</a>
+            </p>
+          </FormSection>
+
+          <Button type="submit" className="submit-application">
+            <Icon name="heart" filled />
+            Отправить заявку
+          </Button>
+          <p className="secure-submit"><Icon name="lock" /> Заявка будет отправлена по защищенному соединению.</p>
+        </form>
+
+        <aside className="apply-sidebar">
+          <SidebarCard icon="file" title="Какие документы подготовить" items={["Копия договора займа или кредита", "Справка о задолженности", "Документы, подтверждающие трудную ситуацию", "Выписка по долгу / задолженности"]} />
+          <SidebarCard icon="calendar" title="Что будет после отправки" items={["Команда проверит информацию и документы.", "Мы свяжемся с вами в течение 1-3 рабочих дней.", "Если заявка пройдет проверку, она будет опубликована.", "После получения помощи мы попросим предоставить отчет."]} ordered />
+          <div className="sidebar-card contact-help">
+            <Icon name="heart" />
+            <h3>Нужна помощь?</h3>
+            <p>Если у вас возникли вопросы — мы всегда рядом.</p>
+            <a href="tel:+78005551809"><Icon name="phone" />8 800 555-18-09</a>
+            <a href="mailto:info@100spasibo.ru"><Icon name="mail" />info@100spasibo.ru</a>
+            <a href="https://t.me/" target="_blank" rel="noreferrer"><Icon name="telegram" />Мы в Telegram</a>
+            <div className="safe-note"><Icon name="lock" />Ваша информация в безопасности. Мы не передаем данные третьим лицам.</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function FormSection({ number, title, children, wide = false }: { number: number; title: string; children: ReactNode; wide?: boolean }) {
+  return (
+    <section className={`form-section form-section-${number} ${wide ? "form-section-wide" : ""}`}>
+      <h2><span>{number}</span>{title}</h2>
+      <div className="form-grid">{children}</div>
+    </section>
+  );
+}
+
+function Field({ label, type = "text", placeholder = "", required = false }: { label: string; type?: string; placeholder?: string; required?: boolean }) {
+  return (
+    <label className="form-field">
+      <span>{label}{required ? <b>*</b> : null}</span>
+      <input type={type} placeholder={placeholder} required={required} />
+    </label>
+  );
+}
+
+function SelectField({ label, options }: { label: string; options: string[] }) {
+  return <PrettySelect label={label} options={options} className="form-field pretty-select-form" />;
+}
+
+function SidebarCard({ icon, title, items, ordered = false }: { icon: "file" | "calendar"; title: string; items: string[]; ordered?: boolean }) {
+  const List = ordered ? "ol" : "ul";
+  return (
+    <div className="sidebar-card">
+      <Icon name={icon} />
+      <h3>{title}</h3>
+      <List>
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </List>
+    </div>
+  );
+}
+
+function HelperDashboardPage({ onNavigate }: { onNavigate: NavigateFn }) {
+  const total = helperTransfers.reduce((sum, item) => sum + item.amount, 0);
+  return (
+    <section className="page shell dashboard-page helper-dashboard">
+      <DashboardHero
+        badge="Кабинет помогающего"
+        title="Ваши переводы, чеки и отчеты в одном месте"
+        text="Здесь видно, кому вы помогли, какие чеки уже подтверждены и когда получатель опубликовал отчет."
+      />
+      <div className="dashboard-stats">
+        <DashboardStat icon="heart" label="Помощи отправлено" value={formatRubles(total)} />
+        <DashboardStat icon="users" label="Людей поддержано" value={`${helperTransfers.length}`} />
+        <DashboardStat icon="check" label="Чеков подтверждено" value="2 из 3" />
+        <DashboardStat icon="video" label="Отчетов получено" value="1" />
+      </div>
+      <div className="dashboard-layout">
+        <section className="dashboard-card dashboard-card-large">
+          <div className="dashboard-card-head">
+            <div>
+              <h2>История помощи</h2>
+              <p>Переводы идут напрямую получателям, а чек помогает подтвердить участие в сборе.</p>
+            </div>
+            <Button variant="mint" onClick={() => onNavigate("/requests")}>Помочь еще</Button>
+          </div>
+          <div className="transfer-list">
+            {helperTransfers.map((item) => (
+              <article className="transfer-row" key={item.person + item.date}>
+                <img src={item.image} alt={`${item.person}, ${item.city}`} width="64" height="64" />
+                <div>
+                  <h3>{item.person}</h3>
+                  <p>{item.city} · {item.date}</p>
+                  <span>{item.receipt}</span>
+                </div>
+                <strong>{formatRubles(item.amount)}</strong>
+                <Badge tone={item.status === "Подтверждено" || item.status === "Есть видеоотчет" ? "mint" : "peach"} icon={item.status === "Есть видеоотчет" ? "video" : "check"}>
+                  {item.status}
+                </Badge>
+              </article>
+            ))}
+          </div>
+        </section>
+        <aside className="dashboard-stack">
+          <section className="dashboard-card">
+            <h2>Уведомления</h2>
+            <div className="notice-list">
+              <Notice icon="video" title="Мария опубликовала видеоотчет" text="Можно посмотреть результат вашей помощи." />
+              <Notice icon="shield" title="Чек по Игорю проверяется" text="Обычно это занимает до одного рабочего дня." />
+              <Notice icon="heart" title="Сбор Дмитрия закрыт" text="Спасибо, ваша помощь стала частью результата." />
+            </div>
+          </section>
+          <section className="dashboard-card soft-dashboard-card">
+            <h2>Быстрое действие</h2>
+            <p>Выберите человека, которому хотите помочь сегодня. Даже небольшая сумма может закрыть важный кусочек сбора.</p>
+            <Button onClick={() => onNavigate("/requests")}>
+              <Icon name="heart" filled />
+              Перейти к заявкам
+            </Button>
+          </section>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function ApplicantDashboardPage({ onToast }: { onToast: (message: string) => void }) {
+  const request = findRequest("anna");
+  const percent = getPercent(request);
+  return (
+    <section className="page shell dashboard-page applicant-dashboard">
+      <DashboardHero
+        badge="Кабинет заявителя"
+        title="Анна, ваша заявка опубликована"
+        text="Следите за сбором, обновляйте документы и подготовьте отчет после получения помощи."
+      />
+      <div className="dashboard-layout">
+        <section className="dashboard-card dashboard-card-large">
+          <div className="applicant-progress-head">
+            <img src={annaPhoto} alt="Анна, Казань" width="120" height="120" />
+            <div>
+              <Badge tone="mint" icon="shield">Документы проверены</Badge>
+              <h2>Сбор на погашение долга</h2>
+              <p>{request.reason}</p>
+            </div>
+          </div>
+          <div className="collection-stats applicant-stats">
+            <div><span>Цель</span><strong>{formatRubles(request.targetAmount)}</strong></div>
+            <div><span>Собрано</span><strong>{formatRubles(request.collectedAmount)}</strong></div>
+            <div><span>Прогресс</span><strong>{percent}%</strong></div>
+          </div>
+          <ProgressBar percent={percent} />
+          <div className="applicant-actions">
+            <Button variant="soft" onClick={() => onToast("Обновление сохранено в черновике.")}>Добавить обновление</Button>
+            <Button variant="mint" onClick={() => onToast("Отчет будет доступен после закрытия сбора.")}>Загрузить отчет</Button>
+          </div>
+        </section>
+        <aside className="dashboard-stack">
+          <section className="dashboard-card">
+            <h2>Статус заявки</h2>
+            <ol className="status-steps">
+              {applicantSteps.map((step) => (
+                <li className={step.done ? "done" : ""} key={step.title}>
+                  <span><Icon name={step.done ? "check" : "calendar"} /></span>
+                  <div>
+                    <h3>{step.title}</h3>
+                    <p>{step.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+          <section className="dashboard-card">
+            <h2>Документы</h2>
+            <div className="document-check-list">
+              {request.documents.map((document) => (
+                <span key={document}><Icon name="check" />{document}</span>
+              ))}
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function AdminDashboardPage({ onNavigate, onToast }: { onNavigate: NavigateFn; onToast: (message: string) => void }) {
+  return (
+    <section className="page shell dashboard-page admin-dashboard">
+      <DashboardHero
+        badge="Админ-панель"
+        title="Модерация заявок, чеков и отчетов"
+        text="Рабочий экран команды: что проверить сейчас, какие чеки подтвердить и какие отчеты можно публиковать."
+      />
+      <div className="dashboard-stats admin-stats">
+        <DashboardStat icon="file" label="Заявок на проверке" value="18" />
+        <DashboardStat icon="copy" label="Чеков ожидают сверки" value="7" />
+        <DashboardStat icon="video" label="Отчетов на публикацию" value="4" />
+        <DashboardStat icon="shield" label="Опубликовано сегодня" value="6" />
+      </div>
+      <div className="admin-layout">
+        <section className="dashboard-card admin-board">
+          <div className="dashboard-card-head">
+            <div>
+              <h2>Очередь проверки</h2>
+              <p>Задачи сгруппированы по типу, чтобы команда быстро понимала следующий шаг.</p>
+            </div>
+            <PrettySelect
+              defaultValue="all"
+              options={[
+                { label: "Все задачи", value: "all" },
+                { label: "Заявки", value: "requests" },
+                { label: "Чеки", value: "receipts" },
+                { label: "Отчеты", value: "reports" },
+              ]}
+            />
+          </div>
+          <div className="admin-task-list">
+            {adminTasks.map((task) => (
+              <article className="admin-task" key={task.title}>
+                <Badge tone={task.tone as "peach" | "mint" | "white"} icon={task.type === "Чек" ? "copy" : task.type === "Отчет" ? "video" : "file"}>
+                  {task.type}
+                </Badge>
+                <div>
+                  <h3>{task.title}</h3>
+                  <p>{task.detail}</p>
+                </div>
+                <span>{task.status}</span>
+                <div className="admin-task-actions">
+                  <Button variant="soft" onClick={() => onToast("Открыта карточка проверки.")}>Открыть</Button>
+                  <Button variant="mint" onClick={() => onToast("Статус обновлен.")}>Готово</Button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+        <aside className="dashboard-stack">
+          <section className="dashboard-card soft-dashboard-card">
+            <h2>Быстрые переходы</h2>
+            <Button variant="soft" onClick={() => onNavigate("/requests/anna")}>Открыть заявку Анны</Button>
+            <Button variant="soft" onClick={() => onNavigate("/stories")}>Посмотреть отчеты</Button>
+            <Button onClick={() => onToast("Черновик новой карточки создан.")}>Создать карточку</Button>
+          </section>
+          <section className="dashboard-card">
+            <h2>Правила публикации</h2>
+            <div className="notice-list">
+              <Notice icon="lock" title="Скрывать персональные данные" text="Оригиналы документов не размещаются публично." />
+              <Notice icon="shield" title="Проверять реквизиты" text="Реквизиты должны совпадать с заявителем или доверенным получателем." />
+              <Notice icon="video" title="Отчет после сбора" text="Видео и подтверждение оплаты публикуются в безопасном виде." />
+            </div>
+          </section>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
+function DashboardHero({ badge, title, text }: { badge: string; title: string; text: string }) {
+  return (
+    <div className="dashboard-hero">
+      <Badge icon="spark">{badge}</Badge>
+      <h1>{title}</h1>
+      <p>{text}</p>
+    </div>
+  );
+}
+
+function DashboardStat({ icon, label, value }: { icon: "heart" | "users" | "check" | "video" | "file" | "copy" | "shield"; label: string; value: string }) {
+  return (
+    <article className="dashboard-stat">
+      <span><Icon name={icon} /></span>
+      <div>
+        <strong>{value}</strong>
+        <p>{label}</p>
+      </div>
+    </article>
+  );
+}
+
+function Notice({ icon, title, text }: { icon: "video" | "shield" | "heart" | "lock"; title: string; text: string }) {
+  return (
+    <article className="notice-item">
+      <span><Icon name={icon} /></span>
+      <div>
+        <h3>{title}</h3>
+        <p>{text}</p>
+      </div>
+    </article>
+  );
+}
+
+function StoriesPage({ onNavigate }: { onNavigate: NavigateFn }) {
+  const [mainStory, ...otherStories] = completedStories;
+  const totalHelp = completedStories.reduce((sum, item) => sum + item.amount, 0);
+  const totalHelpers = completedStories.reduce((sum, item) => sum + item.helpers, 0);
+
+  return (
+    <section className="page shell stories-page">
+      <div className="stories-hero">
+        <div>
+          <Badge icon="heart">Истории помощи</Badge>
+          <h1>Люди, которым уже помогли</h1>
+          <p>
+            Здесь собраны завершенные истории: помощь дошла напрямую до человека, документы проверены, а после закрытия
+            сбора получатель показал результат.
+          </p>
+        </div>
+        <div className="stories-summary">
+          <div>
+            <strong>{completedStories.length}</strong>
+            <span>завершенных историй</span>
+          </div>
+          <div>
+            <strong>{formatRubles(totalHelp)}</strong>
+            <span>помощи напрямую</span>
+          </div>
+          <div>
+            <strong>{totalHelpers}</strong>
+            <span>человек помогли</span>
+          </div>
+        </div>
+      </div>
+
+      <article className="story-featured">
+        <img src={mainStory.image} alt={`${mainStory.name}, ${mainStory.city}`} width="420" height="420" />
+        <div className="story-featured-copy">
+          <div className="story-meta">
+            <Badge tone="mint" icon="shield">Сбор закрыт</Badge>
+            <span>{mainStory.closedAt}</span>
+          </div>
+          <h2>{mainStory.title}</h2>
+          <blockquote>{mainStory.quote}</blockquote>
+          <div className="story-result">
+            <Icon name="video" />
+            <p>{mainStory.result}</p>
+          </div>
+          <div className="story-stats">
+            <span>{mainStory.name}, {mainStory.age} год, {mainStory.city}</span>
+            <span>{formatRubles(mainStory.amount)}</span>
+            <span>{mainStory.helpers} помощников</span>
+          </div>
+        </div>
+      </article>
+
+      <div className="stories-grid">
+        {otherStories.map((story) => (
+          <article className="story-card" key={story.name + story.city}>
+            <div className="story-card-head">
+              <img src={story.image} alt={`${story.name}, ${story.city}`} width="112" height="112" loading="lazy" />
+              <div>
+                <Badge tone="mint" icon="check">Помощь получена</Badge>
+                <h2>{story.name}, {story.age}</h2>
+                <p>{story.city} · {story.category}</p>
+              </div>
+            </div>
+            <h3>{story.title}</h3>
+            <blockquote>{story.quote}</blockquote>
+            <div className="story-card-result">
+              <Icon name="video" />
+              <span>Видеоотчет опубликован</span>
+            </div>
+            <div className="story-card-foot">
+              <strong>{formatRubles(story.amount)}</strong>
+              <span>{story.helpers} помощников</span>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="stories-cta">
+        <div>
+          <h2>Новая история может начаться со 100 рублей</h2>
+          <p>Выберите человека из проверенного каталога и помогите напрямую той суммой, которая вам комфортна.</p>
+        </div>
+        <Button onClick={() => onNavigate("/requests")}>
+          <Icon name="heart" filled />
+          Хочу помочь
+        </Button>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorksPage({ onNavigate }: { onNavigate: NavigateFn }) {
+  return (
+    <section className="page shell simple-page">
+      <Badge icon="spark">Просто и прозрачно</Badge>
+      <h1>Как работает 100spasibo</h1>
+      <p>
+        Платформа помогает человеку бережно рассказать о ситуации, пройти проверку и получить поддержку напрямую от
+        людей, которым откликнулась его история.
+      </p>
+      <div className="steps-grid standalone">
+        <StepCard index={1} icon="file" title="Заявка" text="Человек заполняет форму, рассказывает ситуацию и прикладывает подтверждения." />
+        <StepCard index={2} icon="shield" title="Модерация" text="Команда проверяет документы и публикует только безопасную часть информации." />
+        <StepCard index={3} icon="card" title="Перевод напрямую" text="Помогающий видит реквизиты и переводит любую сумму получателю." />
+        <StepCard index={4} icon="video" title="Отчет" text="После завершения получатель показывает, как помощь была использована." />
+      </div>
+      <Button onClick={() => onNavigate("/requests")}>Выбрать человека</Button>
+    </section>
+  );
+}
+
+function SafetyPage() {
+  return (
+    <section className="page shell simple-page">
+      <Badge icon="shield">Безопасность</Badge>
+      <h1>Помощь должна быть теплой и понятной</h1>
+      <div className="text-cards">
+        <TrustCard icon="shield" title="Проверяем документы" text="Платформа проверяет предоставленные документы и публикует только безопасную часть информации." />
+        <TrustCard icon="lock" title="Не раскрываем лишнее" text="Оригиналы документов и персональные данные не размещаются в открытом доступе." />
+        <TrustCard icon="video" title="Просим отчет" text="Получатель помощи обязуется предоставить отчет о целевом использовании средств после завершения сбора." />
+      </div>
+      <div className="legal-note">
+        100spasibo не является банком, микрофинансовой организацией, платежным оператором или благотворительным фондом.
+        Платформа не принимает и не распределяет денежные средства. Переводы осуществляются напрямую от помогающего
+        пользователя к получателю помощи.
+      </div>
+    </section>
+  );
+}
+
+function FaqPage() {
+  const items = [
+    ["100spasibo принимает деньги?", "Нет. Платформа показывает проверенные истории и реквизиты. Перевод идет напрямую получателю помощи."],
+    ["Можно помочь любой суммой?", "Да. Даже 100 рублей могут стать частью большого решения, если помогают многие люди."],
+    ["Что писать в назначении платежа?", "На странице заявки указана мягкая плашка: в назначении платежа нужно указать «Благотворительность»."],
+    ["Как я увижу результат?", "После завершения сбора получатель предоставляет видеоотчет и безопасное подтверждение оплаты."],
+  ];
+  return (
+    <section className="page shell simple-page">
+      <Badge icon="heart">Вопросы и ответы</Badge>
+      <h1>Коротко о важном</h1>
+      <div className="faq-list">
+        {items.map(([question, answer]) => (
+          <details key={question} open={question === items[0][0]}>
+            <summary>{question}</summary>
+            <p>{answer}</p>
+          </details>
+        ))}
+      </div>
+    </section>
+  );
+}
