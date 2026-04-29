@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
   AppLink,
   Badge,
@@ -432,7 +432,7 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
         <form className="application-form" onSubmit={handleSubmit}>
           <FormSection number={1} title="Личная информация">
             <Field label="Фамилия, имя, отчество" required placeholder="Иванов Иван Иванович" />
-            <Field label="Дата рождения" type="date" required />
+            <DateField label="Дата рождения" required />
             <Field label="Город проживания" required placeholder="Например, Казань" />
             <SelectField label="Семейное положение" options={["Не выбрано", "Не женат / не замужем", "В браке", "Разведен(а)", "Другое"]} />
             <Field label="Количество иждивенцев" type="number" placeholder="0" />
@@ -449,7 +449,7 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
             <SelectField label="Тип долга" options={["Долги и кредиты", "Лечение и здоровье", "Коммунальные платежи", "Аренда жилья", "Образование", "Другое"]} />
             <Field label="Организация / МФО / банк / кредитор" required placeholder="Название организации" />
             <Field label="Номер договора" placeholder="1234567890" />
-            <Field label="Дата договора" type="date" />
+            <DateField label="Дата договора" />
             <SelectField label="Причина возникновения долга" options={["Потеря работы", "Снижение дохода", "Болезнь", "Непредвиденные расходы", "Семейные обстоятельства", "Другое"]} />
           </FormSection>
 
@@ -457,7 +457,7 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
             <Field label="Запрашиваемая сумма" required type="number" placeholder="Например, 20 000" />
             <SelectField label="Валюта" options={["Рубли (₽)", "Другая"]} />
             <SelectField label="На какой срок требуется помощь" options={["Срочно", "В течение недели", "В течение месяца", "Не срочно"]} />
-            <Field label="Крайний срок оплаты" type="date" />
+            <DateField label="Крайний срок оплаты" />
           </FormSection>
 
           <FormSection number={5} title="Опишите вашу ситуацию" wide>
@@ -547,6 +547,156 @@ function Field({ label, type = "text", placeholder = "", required = false }: { l
       <span>{label}{required ? <b>*</b> : null}</span>
       <input type={type} placeholder={placeholder} required={required} />
     </label>
+  );
+}
+
+const calendarMonths = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
+const calendarWeekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+function formatDateValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function parseDateValue(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatDateLabel(value: string) {
+  if (!value) return "";
+  const date = parseDateValue(value);
+  return date.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function DateField({ label, required = false }: { label: string; required?: boolean }) {
+  const [value, setValue] = useState("");
+  const [open, setOpen] = useState(false);
+  const [viewDate, setViewDate] = useState(() => new Date());
+  const rootRef = useRef<HTMLDivElement>(null);
+  const inputId = `date-${label.replace(/[^a-zA-Zа-яА-Я0-9]+/g, "-").toLowerCase()}`;
+  const selectedDate = value ? parseDateValue(value) : null;
+  const currentValue = value ? formatDateLabel(value) : "";
+  const todayValue = formatDateValue(new Date());
+
+  const days = useMemo(() => {
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const mondayOffset = (firstDay.getDay() + 6) % 7;
+
+    return Array.from({ length: 42 }, (_, index) => {
+      const date = new Date(year, month, index - mondayOffset + 1);
+      return {
+        date,
+        value: formatDateValue(date),
+        inCurrentMonth: date.getMonth() === month,
+      };
+    });
+  }, [viewDate]);
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsideClick);
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, []);
+
+  const changeMonth = (direction: number) => {
+    setViewDate((current) => new Date(current.getFullYear(), current.getMonth() + direction, 1));
+  };
+
+  const selectDate = (date: Date) => {
+    setValue(formatDateValue(date));
+    setViewDate(date);
+    setOpen(false);
+  };
+
+  return (
+    <div className="form-field date-field" ref={rootRef}>
+      <span>{label}{required ? <b>*</b> : null}</span>
+      <div className="date-picker-control">
+        <input
+          id={inputId}
+          type="text"
+          value={currentValue}
+          placeholder="ДД.ММ.ГГГГ"
+          readOnly
+          required={required}
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          onClick={() => setOpen(true)}
+          onFocus={() => setOpen(true)}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setOpen(true);
+            }
+          }}
+        />
+        <button type="button" aria-label={`Открыть календарь: ${label}`} onClick={() => setOpen((current) => !current)}>
+          <Icon name="calendar" />
+        </button>
+      </div>
+      {open ? (
+        <div className="date-picker-popover" role="dialog" aria-label={`Календарь: ${label}`}>
+          <div className="date-picker-head">
+            <button type="button" className="date-nav date-nav-prev" aria-label="Предыдущий месяц" onClick={() => changeMonth(-1)}>
+              <Icon name="chevron" />
+            </button>
+            <strong>{calendarMonths[viewDate.getMonth()]} {viewDate.getFullYear()}</strong>
+            <button type="button" className="date-nav date-nav-next" aria-label="Следующий месяц" onClick={() => changeMonth(1)}>
+              <Icon name="chevron" />
+            </button>
+          </div>
+          <div className="date-weekdays" aria-hidden="true">
+            {calendarWeekdays.map((day) => (
+              <span key={day}>{day}</span>
+            ))}
+          </div>
+          <div className="date-days">
+            {days.map((day) => {
+              const selected = selectedDate ? day.value === formatDateValue(selectedDate) : false;
+              return (
+                <button
+                  type="button"
+                  key={day.value}
+                  className={[
+                    "date-day",
+                    day.inCurrentMonth ? "" : "date-day-muted",
+                    day.value === todayValue ? "date-day-today" : "",
+                    selected ? "date-day-selected" : "",
+                  ].filter(Boolean).join(" ")}
+                  aria-pressed={selected}
+                  onClick={() => selectDate(day.date)}
+                >
+                  {day.date.getDate()}
+                </button>
+              );
+            })}
+          </div>
+          <div className="date-picker-footer">
+            <button type="button" onClick={() => selectDate(new Date())}>Сегодня</button>
+            <button type="button" onClick={() => setOpen(false)}>Готово</button>
+          </div>
+        </div>
+      ) : null}
+    </div>
   );
 }
 
