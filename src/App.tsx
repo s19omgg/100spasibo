@@ -269,34 +269,7 @@ function HomePage({ onNavigate }: { onNavigate: NavigateFn }) {
         <TrustCard icon="card" title="Деньги идут напрямую получателю" text="Мы не удерживаем средства — вы помогаете человеку напрямую." />
         <TrustCard icon="video" title="Есть отчетность" text="Получатель показывает результат, а вы видите, как ваша помощь работает." />
       </section>
-
-      <section className="section shell role-entry-section">
-        <div className="section-row">
-          <div>
-            <h2>Кабинеты для каждого сценария</h2>
-            <p>Помогающий видит переводы и чеки, заявитель следит за заявкой, команда проверяет документы и отчеты.</p>
-          </div>
-        </div>
-        <div className="role-entry-grid">
-          <RoleEntryCard icon="heart" title="Кабинет помогающего" text="История помощи, чеки, статусы проверки и уведомления по отчетам." to="/helper" onNavigate={onNavigate} />
-          <RoleEntryCard icon="file" title="Кабинет заявителя" text="Статус заявки, документы, ход сбора и загрузка видеоотчета." to="/applicant" onNavigate={onNavigate} />
-          <RoleEntryCard icon="shield" title="Админ-панель" text="Очередь модерации, проверка чеков, публикация заявок и отчетов." to="/admin" onNavigate={onNavigate} />
-        </div>
-      </section>
     </>
-  );
-}
-
-function RoleEntryCard({ icon, title, text, to, onNavigate }: { icon: "heart" | "file" | "shield"; title: string; text: string; to: string; onNavigate: NavigateFn }) {
-  return (
-    <article className="role-entry-card">
-      <span>
-        <Icon name={icon} />
-      </span>
-      <h3>{title}</h3>
-      <p>{text}</p>
-      <Button variant="soft" onClick={() => onNavigate(to)}>Открыть</Button>
-    </article>
   );
 }
 

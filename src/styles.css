@@ -3631,22 +3631,11 @@ textarea {
   }
 }
 
-/* Role entries and dashboard MVP */
+/* Dashboard MVP */
 .desktop-nav {
   gap: 28px;
 }
 
-.role-entry-section {
-  margin-bottom: 34px;
-}
-
-.role-entry-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.role-entry-card,
 .dashboard-card,
 .dashboard-stat {
   background: rgba(255, 255, 255, 0.78);
@@ -3655,13 +3644,6 @@ textarea {
   box-shadow: var(--shadow);
 }
 
-.role-entry-card {
-  display: grid;
-  gap: 12px;
-  padding: 20px;
-}
-
-.role-entry-card > span,
 .dashboard-stat > span,
 .notice-item > span,
 .status-steps li > span {
@@ -3674,16 +3656,11 @@ textarea {
   border-radius: 50%;
 }
 
-.role-entry-card:nth-child(even) > span,
 .dashboard-stat:nth-child(even) > span,
 .notice-item:nth-child(even) > span,
 .status-steps li.done > span {
   color: var(--mint-strong);
   background: var(--mint-soft);
-}
-
-.role-entry-card .button {
-  width: fit-content;
 }
 
 .dashboard-page {
@@ -3913,8 +3890,7 @@ textarea {
 }
 
 @media (max-width: 1180px) {
-  .dashboard-stats,
-  .role-entry-grid {
+  .dashboard-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -3929,8 +3905,7 @@ textarea {
     font-size: 38px;
   }
 
-  .dashboard-stats,
-  .role-entry-grid {
+  .dashboard-stats {
     grid-template-columns: 1fr;
   }
 
