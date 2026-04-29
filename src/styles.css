@@ -4743,3 +4743,398 @@ body {
   width: max-content;
   max-width: calc(100% - 28px);
 }
+
+/* Telegram Mini App compact pass: this sits last on purpose and wins over the desktop site rules. */
+.telegram-mini-app {
+  font-size: 14px;
+  padding-top: max(6px, env(safe-area-inset-top));
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+}
+
+.telegram-mini-app .shell,
+.telegram-mini-main,
+.telegram-topbar {
+  max-width: 390px;
+}
+
+.telegram-mini-app .shell {
+  padding-inline: 10px;
+}
+
+.telegram-topbar {
+  width: min(100%, 390px);
+  gap: 8px;
+  padding: 8px 10px 6px;
+}
+
+.telegram-brand {
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 8px;
+}
+
+.telegram-brand-mark,
+.telegram-contact-link {
+  width: 34px;
+  height: 34px;
+  border-radius: 13px;
+}
+
+.telegram-brand-mark .icon,
+.telegram-contact-link .icon {
+  width: 19px;
+  height: 19px;
+}
+
+.telegram-brand strong {
+  font-size: 18px;
+}
+
+.telegram-brand small {
+  margin-top: 2px;
+  font-size: 10px;
+}
+
+.telegram-bottom-nav {
+  width: min(calc(100% - 14px), 382px);
+  gap: 4px;
+  padding: 7px;
+  border-radius: 20px;
+}
+
+.telegram-bottom-nav button {
+  min-height: 46px;
+  padding: 6px 2px;
+  border-radius: 15px;
+  font-size: 9.5px;
+  line-height: 1.05;
+}
+
+.telegram-bottom-nav .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.telegram-mini-app .page {
+  padding: 8px 0 14px;
+}
+
+.telegram-mini-app .section {
+  padding: 13px 0;
+}
+
+.telegram-mini-app :is(h1, h2, h3, p, li, blockquote, small, strong, a, button, label, span) {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.telegram-mini-app h1,
+.telegram-mini-app .request-hero-card h1 {
+  font-size: clamp(25px, 7.2vw, 31px);
+  line-height: 1.08;
+}
+
+.telegram-mini-app h2,
+.telegram-mini-app .donation-panel h2,
+.telegram-mini-app .dashboard-card h2 {
+  font-size: 21px;
+  line-height: 1.14;
+}
+
+.telegram-mini-app h3 {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.telegram-mini-app .hero {
+  padding-top: 8px;
+}
+
+.telegram-mini-app .hero-copy,
+.telegram-mini-app .request-card,
+.telegram-mini-app .request-card-compact,
+.telegram-mini-app .info-banner,
+.telegram-mini-app .collection-card,
+.telegram-mini-app .report-card,
+.telegram-mini-app .soft-card,
+.telegram-mini-app .sidebar-card,
+.telegram-mini-app .donation-panel,
+.telegram-mini-app .story-card,
+.telegram-mini-app .story-featured,
+.telegram-mini-app .stories-summary,
+.telegram-mini-app .stories-cta,
+.telegram-mini-app .admin-access-card,
+.telegram-mini-app .dashboard-card,
+.telegram-mini-app .dashboard-stat,
+.telegram-mini-app .application-admin-card,
+.telegram-mini-app .form-section {
+  max-width: 100%;
+  padding: 14px;
+  border-radius: 19px;
+  overflow: hidden;
+}
+
+.telegram-mini-app .hero-copy,
+.telegram-mini-app .apply-layout,
+.telegram-mini-app .detail-layout,
+.telegram-mini-app .catalog-layout {
+  gap: 12px;
+}
+
+.telegram-mini-app .hero-copy p,
+.telegram-mini-app .catalog-hero p,
+.telegram-mini-app .apply-hero p,
+.telegram-mini-app .request-card p,
+.telegram-mini-app .request-hero-card p,
+.telegram-mini-app .story-card blockquote,
+.telegram-mini-app .application-admin-card p,
+.telegram-mini-app .soft-card p,
+.telegram-mini-app .sidebar-card p {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.telegram-mini-app .center-heading {
+  margin-bottom: 14px;
+  justify-items: start;
+}
+
+.telegram-mini-app .steps-grid,
+.telegram-mini-app .featured-grid,
+.telegram-mini-app .requests-grid,
+.telegram-mini-app .banner-grid,
+.telegram-mini-app .trust-strip,
+.telegram-mini-app .two-column-blocks,
+.telegram-mini-app .collection-stats,
+.telegram-mini-app .stories-grid,
+.telegram-mini-app .dashboard-stats {
+  gap: 10px;
+}
+
+.telegram-mini-app .step-card,
+.telegram-mini-app .trust-card,
+.telegram-mini-app .info-banner {
+  grid-template-columns: 50px minmax(0, 1fr);
+  align-items: center;
+  min-height: 0;
+  gap: 12px;
+}
+
+.telegram-mini-app .step-icon,
+.telegram-mini-app .trust-icon,
+.telegram-mini-app .info-banner > span {
+  width: 50px;
+  height: 50px;
+}
+
+.telegram-mini-app .step-icon .icon,
+.telegram-mini-app .trust-icon .icon,
+.telegram-mini-app .info-banner > span .icon {
+  width: 25px;
+  height: 25px;
+}
+
+.telegram-mini-app .step-index {
+  left: 8px;
+  top: 8px;
+  width: 23px;
+  height: 23px;
+  font-size: 12px;
+}
+
+.telegram-mini-app .request-head {
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.telegram-mini-app .request-head img {
+  width: 54px;
+  height: 54px;
+}
+
+.telegram-mini-app .request-head h3,
+.telegram-mini-app .request-head span,
+.telegram-mini-app .muted-inline {
+  min-width: 0;
+}
+
+.telegram-mini-app .request-card p {
+  min-height: 0;
+}
+
+.telegram-mini-app .request-money,
+.telegram-mini-app .request-bottom,
+.telegram-mini-app .collection-bottom,
+.telegram-mini-app .story-card-foot,
+.telegram-mini-app .application-admin-meta,
+.telegram-mini-app .application-admin-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.telegram-mini-app .request-money span,
+.telegram-mini-app .request-bottom span,
+.telegram-mini-app .collection-bottom span,
+.telegram-mini-app .story-card-foot span,
+.telegram-mini-app .application-admin-meta span {
+  width: 100%;
+}
+
+.telegram-mini-app .request-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.telegram-mini-app .request-actions .badge,
+.telegram-mini-app .request-actions .button,
+.telegram-mini-app .chip-row .badge {
+  width: 100%;
+  justify-content: center;
+}
+
+.telegram-mini-app .badge {
+  width: fit-content;
+  white-space: normal;
+  line-height: 1.15;
+}
+
+.telegram-mini-app .collection-stats div,
+.telegram-mini-app .dashboard-stat {
+  padding: 12px;
+}
+
+.telegram-mini-app .collection-stats strong,
+.telegram-mini-app .dashboard-stat strong,
+.telegram-mini-app .story-card-foot strong {
+  display: inline;
+  font-size: clamp(20px, 6vw, 25px);
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+.telegram-mini-app .requisite-row {
+  grid-template-columns: minmax(0, 1fr) 38px;
+  gap: 6px 10px;
+}
+
+.telegram-mini-app .requisite-row span,
+.telegram-mini-app .requisite-row strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.telegram-mini-app .quick-amounts {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.telegram-mini-app .tab-row {
+  grid-template-columns: 1fr;
+}
+
+.telegram-mini-app .tab-row button {
+  min-height: 48px;
+}
+
+.telegram-mini-app input,
+.telegram-mini-app select,
+.telegram-mini-app textarea,
+.telegram-mini-app .pretty-select-trigger {
+  min-height: 46px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.telegram-mini-app .search-box input {
+  padding-left: 44px;
+}
+
+.telegram-mini-app .search-box .icon {
+  left: 13px;
+}
+
+.telegram-mini-app .date-picker-control input {
+  padding-right: 50px;
+}
+
+.telegram-mini-app .date-picker-control button {
+  width: 46px;
+  min-height: 44px;
+}
+
+.telegram-mini-app .pretty-select-menu,
+.telegram-mini-app .date-picker-popover {
+  left: 10px;
+  right: 10px;
+  max-width: 370px;
+}
+
+.telegram-mini-app .upload-box,
+.telegram-mini-app .receipt-upload,
+.telegram-mini-app .purpose-note,
+.telegram-mini-app .safe-note,
+.telegram-mini-app .security-note,
+.telegram-mini-app .reassurance {
+  max-width: 100%;
+}
+
+.telegram-mini-app .purpose-note,
+.telegram-mini-app .receipt-upload {
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.telegram-mini-app .purpose-note strong,
+.telegram-mini-app .receipt-upload strong {
+  font-size: 16px;
+}
+
+.telegram-mini-app .pagination {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 360px) {
+  .telegram-mini-app .shell {
+    padding-inline: 8px;
+  }
+
+  .telegram-mini-app h1,
+  .telegram-mini-app .request-hero-card h1 {
+    font-size: 25px;
+  }
+
+  .telegram-mini-app h2,
+  .telegram-mini-app .donation-panel h2,
+  .telegram-mini-app .dashboard-card h2 {
+    font-size: 20px;
+  }
+
+  .telegram-mini-app .hero-copy,
+  .telegram-mini-app .request-card,
+  .telegram-mini-app .request-card-compact,
+  .telegram-mini-app .collection-card,
+  .telegram-mini-app .donation-panel,
+  .telegram-mini-app .form-section,
+  .telegram-mini-app .soft-card,
+  .telegram-mini-app .sidebar-card,
+  .telegram-mini-app .story-card,
+  .telegram-mini-app .dashboard-card,
+  .telegram-mini-app .application-admin-card {
+    padding: 12px;
+  }
+
+  .telegram-mini-app .step-card,
+  .telegram-mini-app .trust-card,
+  .telegram-mini-app .info-banner,
+  .telegram-mini-app .request-head {
+    grid-template-columns: 46px minmax(0, 1fr);
+  }
+
+  .telegram-mini-app .step-icon,
+  .telegram-mini-app .trust-icon,
+  .telegram-mini-app .info-banner > span,
+  .telegram-mini-app .request-head img {
+    width: 46px;
+    height: 46px;
+  }
+}
