@@ -16,11 +16,18 @@ import {
   UploadBox,
   VerifiedDocuments,
   WatercolorHero,
-  catalogCount,
   type NavigateFn,
 } from "./components/ui";
 import annaPhoto from "./assets/anna-photo.png";
-import { featuredRequests, findRequest, formatRubles, getPercent, requests } from "./data/requests";
+import { formatRubles, getPercent, requests as mockRequests, type HelpRequest } from "./data/requests";
+import {
+  createApplication,
+  isBackendConfigured,
+  listApplications,
+  listPublishedRequests,
+  updateApplicationStatus,
+  type ApplicationRecord,
+} from "./lib/applications";
 import { getBrowserPath, getRoutePath } from "./lib/routing";
 import "./styles.css";
 
@@ -29,7 +36,7 @@ const completedStories = [
     name: "Мария",
     age: 31,
     city: "Ростов-на-Дону",
-    image: requests[2].image,
+    image: mockRequests[2].image,
     category: "Коммунальные платежи",
     amount: 15000,
     helpers: 87,
@@ -43,7 +50,7 @@ const completedStories = [
     name: "Игорь",
     age: 29,
     city: "Новосибирск",
-    image: requests[1].image,
+    image: mockRequests[1].image,
     category: "Аренда жилья",
     amount: 30000,
     helpers: 126,
@@ -57,7 +64,7 @@ const completedStories = [
     name: "Дмитрий",
     age: 22,
     city: "Краснодар",
-    image: requests[5].image,
+    image: mockRequests[5].image,
     category: "Образование",
     amount: 40000,
     helpers: 214,
@@ -71,7 +78,7 @@ const completedStories = [
     name: "Сергей",
     age: 42,
     city: "Екатеринбург",
-    image: requests[3].image,
+    image: mockRequests[3].image,
     category: "Лечение и здоровье",
     amount: 45000,
     helpers: 173,
@@ -85,7 +92,7 @@ const completedStories = [
     name: "Ольга",
     age: 38,
     city: "Самара",
-    image: requests[4].image,
+    image: mockRequests[4].image,
     category: "Долги и кредиты",
     amount: 60000,
     helpers: 302,
@@ -95,13 +102,6 @@ const completedStories = [
       "Мне было стыдно просить о помощи, но на платформе я почувствовала, что ситуацию можно решить без осуждения.",
     result: "Переводы поступали напрямую Ольге. После закрытия она показала оплату и выписку о погашении просрочки.",
   },
-];
-
-const adminTasks = [
-  { type: "Заявка", title: "Елена, Воронеж", detail: "Проверить счет клиники и справку о доходах", status: "Нужно проверить", tone: "peach" },
-  { type: "Чек", title: "Игорь, 1 000 ₽", detail: "Пользователь приложил чек СБП", status: "На сверке", tone: "mint" },
-  { type: "Отчет", title: "Дмитрий, обучение", detail: "Видеоотчет и подтверждение оплаты семестра", status: "Готов к публикации", tone: "white" },
-  { type: "Документы", title: "Амир, Москва", detail: "Не хватает фото договора с подрядчиком", status: "Запросить файл", tone: "peach" },
 ];
 
 const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee754e402be74953f";
@@ -190,7 +190,23 @@ export default function App() {
   const { path, navigate } = usePath();
   const [toast, setToast] = useState("");
   const [adminUnlocked, setAdminUnlocked] = useState(() => window.localStorage.getItem(ADMIN_SESSION_KEY) === "true");
+  const [publishedRequests, setPublishedRequests] = useState<HelpRequest[]>([]);
   useTelegramMiniApp(path, navigate);
+
+  const allRequests = useMemo(() => [...publishedRequests, ...mockRequests], [publishedRequests]);
+
+  const refreshPublishedRequests = async () => {
+    try {
+      const items = await listPublishedRequests();
+      setPublishedRequests(items);
+    } catch {
+      setPublishedRequests([]);
+    }
+  };
+
+  useEffect(() => {
+    void refreshPublishedRequests();
+  }, []);
 
   const showToast = (message: string) => {
     setToast(message);
@@ -198,9 +214,9 @@ export default function App() {
   };
 
   const page = (() => {
-    if (path === "/requests") return <RequestsPage onNavigate={navigate} />;
-    if (path.startsWith("/requests/")) return <RequestDetailPage id={path.split("/").pop()} onNavigate={navigate} onToast={showToast} />;
-    if (path === "/apply") return <ApplyPage onToast={showToast} />;
+    if (path === "/requests") return <RequestsPage requests={allRequests} onNavigate={navigate} />;
+    if (path.startsWith("/requests/")) return <RequestDetailPage requests={allRequests} id={path.split("/").pop()} onNavigate={navigate} onToast={showToast} />;
+    if (path === "/apply") return <ApplyPage onToast={showToast} onApplicationCreated={refreshPublishedRequests} />;
     if (path === "/how-it-works") return <HowItWorksPage onNavigate={navigate} />;
     if (path === "/stories") return <StoriesPage onNavigate={navigate} />;
     if (path === "/admin") {
@@ -208,6 +224,7 @@ export default function App() {
         <AdminDashboardPage
           onNavigate={navigate}
           onToast={showToast}
+          onPublished={refreshPublishedRequests}
           onLogout={() => {
             window.localStorage.removeItem(ADMIN_SESSION_KEY);
             setAdminUnlocked(false);
@@ -228,7 +245,7 @@ export default function App() {
     }
     if (path === "/safety") return <SafetyPage />;
     if (path === "/faq") return <FaqPage />;
-    return <HomePage onNavigate={navigate} />;
+    return <HomePage requests={allRequests} onNavigate={navigate} />;
   })();
 
   return (
@@ -283,7 +300,7 @@ function MiniAppBottomNav({ path, onNavigate }: { path: string; onNavigate: Navi
   );
 }
 
-function HomePage({ onNavigate }: { onNavigate: NavigateFn }) {
+function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigate: NavigateFn }) {
   return (
     <>
       <section className="hero shell">
@@ -339,7 +356,7 @@ function HomePage({ onNavigate }: { onNavigate: NavigateFn }) {
           <Button variant="soft" onClick={() => onNavigate("/requests")}>Смотреть все заявки</Button>
         </div>
         <div className="featured-grid">
-          {featuredRequests.map((request) => (
+          {requests.slice(0, 3).map((request) => (
             <RequestCard key={request.id} request={request} onNavigate={onNavigate} compact />
           ))}
         </div>
@@ -354,7 +371,7 @@ function HomePage({ onNavigate }: { onNavigate: NavigateFn }) {
   );
 }
 
-function RequestsPage({ onNavigate }: { onNavigate: NavigateFn }) {
+function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigate: NavigateFn }) {
   const [query, setQuery] = useState("");
   const visible = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -376,7 +393,7 @@ function RequestsPage({ onNavigate }: { onNavigate: NavigateFn }) {
       </div>
 
       <div className="catalog-layout">
-        <FilterSidebar count={catalogCount} />
+        <FilterSidebar count={requests.length} />
         <div className="catalog-main">
           <div className="banner-grid">
             <InfoBanner tone="peach" icon="hands" title="Даже 100 рублей имеют значение" text="Небольшая помощь от многих людей меняет чью-то жизнь к лучшему." />
@@ -418,8 +435,8 @@ function RequestsPage({ onNavigate }: { onNavigate: NavigateFn }) {
   );
 }
 
-function RequestDetailPage({ id, onNavigate, onToast }: { id: string | undefined; onNavigate: NavigateFn; onToast: (message: string) => void }) {
-  const request = findRequest(id);
+function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: HelpRequest[]; id: string | undefined; onNavigate: NavigateFn; onToast: (message: string) => void }) {
+  const request = requests.find((item) => item.id === id) ?? requests[0] ?? mockRequests[0];
   const targetAmount = request.id === "anna" ? 20000 : request.targetAmount;
   const collectedAmount = request.id === "anna" ? 13000 : request.collectedAmount;
   const percent = Math.min(100, Math.round((collectedAmount / targetAmount) * 100));
@@ -486,8 +503,10 @@ function RequestDetailPage({ id, onNavigate, onToast }: { id: string | undefined
   );
 }
 
-function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+function ApplyPage({ onToast, onApplicationCreated }: { onToast: (message: string) => void; onApplicationCreated: () => Promise<void> }) {
+  const [formVersion, setFormVersion] = useState(0);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (!form.checkValidity()) {
@@ -495,8 +514,15 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
       form.reportValidity();
       return;
     }
-    onToast("Спасибо. Заявка подготовлена для отправки команде 100spasibo.");
-    form.reset();
+    try {
+      await createApplication(form);
+      await onApplicationCreated();
+      onToast(isBackendConfigured ? "Заявка отправлена в админ-панель." : "Заявка сохранена в демо-очередь админки.");
+      form.reset();
+      setFormVersion((version) => version + 1);
+    } catch {
+      onToast("Не получилось отправить заявку. Проверьте подключение базы.");
+    }
   };
 
   return (
@@ -516,39 +542,39 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
       </div>
 
       <div className="apply-layout">
-        <form className="application-form" onSubmit={handleSubmit}>
+        <form key={formVersion} className="application-form" onSubmit={handleSubmit}>
           <FormSection number={1} title="Личная информация">
-            <Field label="Фамилия, имя, отчество" required placeholder="Иванов Иван Иванович" />
-            <DateField label="Дата рождения" required />
-            <Field label="Город проживания" required placeholder="Например, Казань" />
-            <SelectField label="Семейное положение" options={["Не выбрано", "Не женат / не замужем", "В браке", "Разведен(а)", "Другое"]} />
-            <Field label="Количество иждивенцев" type="number" placeholder="0" />
+            <Field name="full_name" label="Фамилия, имя, отчество" required placeholder="Иванов Иван Иванович" />
+            <DateField name="birth_date" label="Дата рождения" required />
+            <Field name="city" label="Город проживания" required placeholder="Например, Казань" />
+            <SelectField name="family_status" label="Семейное положение" options={["Не выбрано", "Не женат / не замужем", "В браке", "Разведен(а)", "Другое"]} />
+            <Field name="dependents" label="Количество иждивенцев" type="number" placeholder="0" />
           </FormSection>
 
           <FormSection number={2} title="Контактные данные">
-            <Field label="Telegram для связи" required placeholder="@username" />
-            <SelectField label="Когда удобно написать" options={["В любое время", "Утром", "Днем", "Вечером"]} />
+            <Field name="telegram" label="Telegram для связи" required placeholder="@username" />
+            <SelectField name="contact_time" label="Когда удобно написать" options={["В любое время", "Утром", "Днем", "Вечером"]} />
           </FormSection>
 
           <FormSection number={3} title="Информация о долге">
-            <SelectField label="Тип долга" options={["Долги и кредиты", "Лечение и здоровье", "Коммунальные платежи", "Аренда жилья", "Образование", "Другое"]} />
-            <Field label="Организация / МФО / банк / кредитор" required placeholder="Название организации" />
-            <Field label="Номер договора" placeholder="1234567890" />
-            <DateField label="Дата договора" />
-            <SelectField label="Причина возникновения долга" options={["Потеря работы", "Снижение дохода", "Болезнь", "Непредвиденные расходы", "Семейные обстоятельства", "Другое"]} />
+            <SelectField name="category" label="Тип долга" options={["Долги и кредиты", "Лечение и здоровье", "Коммунальные платежи", "Аренда жилья", "Образование", "Другое"]} />
+            <Field name="creditor" label="Организация / МФО / банк / кредитор" required placeholder="Название организации" />
+            <Field name="contract_number" label="Номер договора" placeholder="1234567890" />
+            <DateField name="contract_date" label="Дата договора" />
+            <SelectField name="debt_reason" label="Причина возникновения долга" options={["Потеря работы", "Снижение дохода", "Болезнь", "Непредвиденные расходы", "Семейные обстоятельства", "Другое"]} />
           </FormSection>
 
           <FormSection number={4} title="Сумма и сроки">
-            <Field label="Запрашиваемая сумма" required type="number" placeholder="Например, 20 000" />
+            <Field name="target_amount" label="Запрашиваемая сумма" required type="number" placeholder="Например, 20 000" />
             <SelectField label="Валюта" options={["Рубли (₽)", "Другая"]} />
-            <SelectField label="На какой срок требуется помощь" options={["Срочно", "В течение недели", "В течение месяца", "Не срочно"]} />
-            <DateField label="Крайний срок оплаты" />
+            <SelectField name="urgency" label="На какой срок требуется помощь" options={["Срочно", "В течение недели", "В течение месяца", "Не срочно"]} />
+            <DateField name="deadline" label="Крайний срок оплаты" />
           </FormSection>
 
           <FormSection number={5} title="Опишите вашу ситуацию" wide>
             <label className="form-field form-field-wide">
               <span>Расскажите, что произошло</span>
-              <textarea required placeholder="Расскажите, что произошло, почему возник долг и почему сейчас вам нужна помощь." />
+              <textarea name="story" required placeholder="Расскажите, что произошло, почему возник долг и почему сейчас вам нужна помощь." />
               <small>Не нужно писать слишком формально. Главное — честно объяснить ситуацию.</small>
             </label>
           </FormSection>
@@ -564,10 +590,10 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
           </FormSection>
 
           <FormSection number={7} title="Реквизиты для получения помощи">
-            <Field label="ФИО получателя" required placeholder="Полностью, как в паспорте" />
-            <Field label="Банк" required placeholder="Название банка" />
-            <Field label="Номер карты / счета" required placeholder="Номер карты или счета" />
-            <Field label="Телефон для СБП" type="tel" placeholder="+7 (___) ___-__-__" />
+            <Field name="recipient_name" label="ФИО получателя" required placeholder="Полностью, как в паспорте" />
+            <Field name="bank" label="Банк" required placeholder="Название банка" />
+            <Field name="card" label="Номер карты / счета" required placeholder="Номер карты или счета" />
+            <Field name="sbp_phone" label="Телефон для СБП" type="tel" placeholder="+7 (___) ___-__-__" />
             <p className="form-hint">Эти данные используются только для перевода помощи и проверки заявки.</p>
           </FormSection>
 
@@ -624,11 +650,11 @@ function FormSection({ number, title, children, wide = false }: { number: number
   );
 }
 
-function Field({ label, type = "text", placeholder = "", required = false }: { label: string; type?: string; placeholder?: string; required?: boolean }) {
+function Field({ name, label, type = "text", placeholder = "", required = false }: { name: string; label: string; type?: string; placeholder?: string; required?: boolean }) {
   return (
     <label className="form-field">
       <span>{label}{required ? <b>*</b> : null}</span>
-      <input type={type} placeholder={placeholder} required={required} />
+      <input name={name} type={type} placeholder={placeholder} required={required} />
     </label>
   );
 }
@@ -654,7 +680,7 @@ function formatDateLabel(value: string) {
   return date.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 
-function DateField({ label, required = false }: { label: string; required?: boolean }) {
+function DateField({ name, label, required = false }: { name: string; label: string; required?: boolean }) {
   const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
   const [viewDate, setViewDate] = useState(() => new Date());
@@ -716,6 +742,7 @@ function DateField({ label, required = false }: { label: string; required?: bool
       <div className="date-picker-control">
         <input
           id={inputId}
+          name={name}
           type="text"
           value={currentValue}
           placeholder="ДД.ММ.ГГГГ"
@@ -783,8 +810,8 @@ function DateField({ label, required = false }: { label: string; required?: bool
   );
 }
 
-function SelectField({ label, options }: { label: string; options: string[] }) {
-  return <PrettySelect label={label} options={options} className="form-field pretty-select-form" />;
+function SelectField({ name, label, options }: { name?: string; label: string; options: string[] }) {
+  return <PrettySelect name={name} label={label} options={options} className="form-field pretty-select-form" />;
 }
 
 function SidebarCard({ icon, title, items, ordered = false }: { icon: "file" | "calendar"; title: string; items: string[]; ordered?: boolean }) {
@@ -857,55 +884,113 @@ function AdminAccessPage({ onNavigate, onToast, onUnlock }: { onNavigate: Naviga
   );
 }
 
-function AdminDashboardPage({ onNavigate, onToast, onLogout }: { onNavigate: NavigateFn; onToast: (message: string) => void; onLogout: () => void }) {
+function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { onNavigate: NavigateFn; onToast: (message: string) => void; onPublished: () => Promise<void>; onLogout: () => void }) {
+  const [applications, setApplications] = useState<ApplicationRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadApplications = async () => {
+    setLoading(true);
+    try {
+      setApplications(await listApplications());
+    } catch {
+      onToast("Не получилось загрузить заявки из базы.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadApplications();
+  }, []);
+
+  const publishApplication = async (id: string) => {
+    try {
+      await updateApplicationStatus(id, "published");
+      await loadApplications();
+      await onPublished();
+      onToast("Заявка опубликована в мини-аппе.");
+    } catch {
+      onToast("Не получилось опубликовать заявку.");
+    }
+  };
+
+  const rejectApplication = async (id: string) => {
+    try {
+      await updateApplicationStatus(id, "rejected");
+      await loadApplications();
+      onToast("Заявка перенесена в отклоненные.");
+    } catch {
+      onToast("Не получилось изменить статус.");
+    }
+  };
+
+  const newApplications = applications.filter((application) => application.status === "new");
+  const publishedApplications = applications.filter((application) => application.status === "published");
+  const rejectedApplications = applications.filter((application) => application.status === "rejected");
+
   return (
     <section className="page shell dashboard-page admin-dashboard">
       <DashboardHero
         badge="Админ-панель"
-        title="Модерация заявок, чеков и отчетов"
-        text="Рабочий экран команды: что проверить сейчас, какие чеки подтвердить и какие отчеты можно публиковать."
+        title="Заявки из мини-аппа"
+        text="Новые анкеты попадают сюда. После проверки нажмите «Опубликовать», и карточка появится в каталоге помощи."
       />
+      {!isBackendConfigured ? (
+        <div className="backend-mode-note">
+          <Icon name="shield" />
+          <p>
+            Сейчас включен демо-режим: заявки сохраняются только в этом браузере. Для живой работы подключите Supabase
+            через переменные `VITE_SUPABASE_URL` и `VITE_SUPABASE_ANON_KEY`.
+          </p>
+        </div>
+      ) : null}
       <div className="admin-session-bar">
         <span><Icon name="lock" />Доступ открыт для администратора</span>
         <Button variant="soft" onClick={onLogout}>Выйти</Button>
       </div>
       <div className="dashboard-stats admin-stats">
-        <DashboardStat icon="file" label="Заявок на проверке" value="18" />
-        <DashboardStat icon="copy" label="Чеков ожидают сверки" value="7" />
-        <DashboardStat icon="video" label="Отчетов на публикацию" value="4" />
-        <DashboardStat icon="shield" label="Опубликовано сегодня" value="6" />
+        <DashboardStat icon="file" label="Новых заявок" value={String(newApplications.length)} />
+        <DashboardStat icon="shield" label="Опубликовано" value={String(publishedApplications.length)} />
+        <DashboardStat icon="copy" label="Всего анкет" value={String(applications.length)} />
+        <DashboardStat icon="video" label="Отклонено" value={String(rejectedApplications.length)} />
       </div>
       <div className="admin-layout">
         <section className="dashboard-card admin-board">
           <div className="dashboard-card-head">
             <div>
-              <h2>Очередь проверки</h2>
-              <p>Задачи сгруппированы по типу, чтобы команда быстро понимала следующий шаг.</p>
+              <h2>Очередь заявок</h2>
+              <p>{loading ? "Загружаем заявки..." : `На проверке: ${newApplications.length}`}</p>
             </div>
-            <PrettySelect
-              defaultValue="all"
-              options={[
-                { label: "Все задачи", value: "all" },
-                { label: "Заявки", value: "requests" },
-                { label: "Чеки", value: "receipts" },
-                { label: "Отчеты", value: "reports" },
-              ]}
-            />
+            <Button variant="soft" onClick={() => void loadApplications()}>Обновить</Button>
           </div>
           <div className="admin-task-list">
-            {adminTasks.map((task) => (
-              <article className="admin-task" key={task.title}>
-                <Badge tone={task.tone as "peach" | "mint" | "white"} icon={task.type === "Чек" ? "copy" : task.type === "Отчет" ? "video" : "file"}>
-                  {task.type}
-                </Badge>
-                <div>
-                  <h3>{task.title}</h3>
-                  <p>{task.detail}</p>
+            {!loading && !newApplications.length ? (
+              <div className="empty-admin-state">
+                <Icon name="file" />
+                <h3>Новых заявок пока нет</h3>
+                <p>Когда человек отправит анкету из мини-аппа, она появится здесь.</p>
+              </div>
+            ) : null}
+            {newApplications.map((application) => (
+              <article className="application-admin-card" key={application.id}>
+                <div className="application-admin-head">
+                  <Badge tone="peach" icon="file">Новая заявка</Badge>
+                  <span>{application.created_at ? new Date(application.created_at).toLocaleDateString("ru-RU") : "Сегодня"}</span>
                 </div>
-                <span>{task.status}</span>
-                <div className="admin-task-actions">
-                  <Button variant="soft" onClick={() => onToast("Открыта карточка проверки.")}>Открыть</Button>
-                  <Button variant="mint" onClick={() => onToast("Статус обновлен.")}>Готово</Button>
+                <h3>{application.full_name || "Без имени"}, {application.city || "город не указан"}</h3>
+                <p>{application.story}</p>
+                <div className="application-admin-meta">
+                  <span><Icon name="telegram" />{application.telegram || "Telegram не указан"}</span>
+                  <span><Icon name="card" />{formatRubles(application.target_amount)}</span>
+                  <span><Icon name="shield" />{application.category}</span>
+                </div>
+                <div className="application-admin-docs">
+                  <strong>Документы:</strong>
+                  <span>{application.documents.length ? application.documents.join(", ") : "файлы не прикреплены"}</span>
+                </div>
+                <div className="application-admin-actions">
+                  <Button variant="mint" onClick={() => void publishApplication(application.id)}>Опубликовать</Button>
+                  <Button variant="soft" onClick={() => void rejectApplication(application.id)}>Отклонить</Button>
                 </div>
               </article>
             ))}
@@ -916,7 +1001,7 @@ function AdminDashboardPage({ onNavigate, onToast, onLogout }: { onNavigate: Nav
             <h2>Быстрые переходы</h2>
             <Button variant="soft" onClick={() => onNavigate("/requests/anna")}>Открыть заявку Анны</Button>
             <Button variant="soft" onClick={() => onNavigate("/stories")}>Посмотреть отчеты</Button>
-            <Button onClick={() => onToast("Черновик новой карточки создан.")}>Создать карточку</Button>
+            <Button onClick={() => onNavigate("/apply")}>Тестовая заявка</Button>
           </section>
           <section className="dashboard-card">
             <h2>Правила публикации</h2>

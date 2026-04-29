@@ -3992,6 +3992,117 @@ textarea {
   font-size: 13px;
 }
 
+.backend-mode-note {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  color: var(--mint-strong);
+  background: var(--mint-soft);
+  border: 1px solid rgba(94, 155, 131, 0.2);
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.application-admin-card,
+.empty-admin-state {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: rgba(255, 248, 242, 0.58);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+
+.application-admin-head,
+.application-admin-meta,
+.application-admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.application-admin-head > span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.application-admin-card h3,
+.empty-admin-state h3 {
+  font-family: Manrope, Inter, sans-serif;
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.application-admin-card p,
+.empty-admin-state p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.application-admin-meta {
+  justify-content: flex-start;
+}
+
+.application-admin-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  color: #56514d;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(120, 80, 50, 0.1);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.application-admin-meta .icon {
+  width: 16px;
+  height: 16px;
+  color: var(--coral);
+}
+
+.application-admin-docs {
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px;
+  background: rgba(234, 248, 241, 0.6);
+  border-radius: 14px;
+  font-size: 13px;
+}
+
+.application-admin-docs strong {
+  color: var(--mint-strong);
+}
+
+.application-admin-actions {
+  justify-content: flex-start;
+}
+
+.application-admin-actions .button {
+  min-height: 40px;
+  padding: 9px 14px;
+  font-size: 13px;
+}
+
+.empty-admin-state {
+  place-items: center;
+  min-height: 180px;
+  text-align: center;
+}
+
+.empty-admin-state .icon {
+  width: 42px;
+  height: 42px;
+  color: var(--coral);
+}
+
 .admin-access-page {
   min-height: 62vh;
   display: grid;

@@ -349,12 +349,14 @@ type SelectOption = string | { label: string; value: string };
 
 export function PrettySelect({
   label,
+  name,
   options,
   placeholder,
   defaultValue,
   className = "",
 }: {
   label?: string;
+  name?: string;
   options: SelectOption[];
   placeholder?: string;
   defaultValue?: string;
@@ -389,6 +391,7 @@ export function PrettySelect({
   return (
     <div className={`pretty-select ${className}`} ref={rootRef}>
       {label ? <span className="pretty-select-label">{label}</span> : null}
+      {name ? <input type="hidden" name={name} value={value} /> : null}
       <button
         type="button"
         className={`pretty-select-trigger ${open ? "is-open" : ""}`}
@@ -836,12 +839,13 @@ export function Timeline({ items }: { items: HelpRequest["updates"] }) {
   );
 }
 
-export function UploadBox() {
+export function UploadBox({ name = "documents" }: { name?: string }) {
   const [files, setFiles] = useState<string[]>([]);
   return (
     <label className="upload-box">
       <input
         type="file"
+        name={name}
         multiple
         accept=".pdf,.jpg,.jpeg,.png"
         onChange={(event) => setFiles(Array.from(event.target.files ?? []).map((file) => file.name))}
