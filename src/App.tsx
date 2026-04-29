@@ -1,12 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
-  AppLink,
   Badge,
   Button,
   DonationPanel,
   FilterSidebar,
-  Footer,
-  Header,
   Icon,
   InfoBanner,
   PrettySelect,
@@ -109,6 +106,26 @@ const adminTasks = [
 
 const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee754e402be74953f";
 const ADMIN_SESSION_KEY = "100spasibo:admin-unlocked";
+const TELEGRAM_CONTACT_URL = "https://t.me/100spasibo";
+
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp?: {
+        ready: () => void;
+        expand: () => void;
+        setHeaderColor?: (color: string) => void;
+        setBackgroundColor?: (color: string) => void;
+        BackButton?: {
+          show: () => void;
+          hide: () => void;
+          onClick: (callback: () => void) => void;
+          offClick: (callback: () => void) => void;
+        };
+      };
+    };
+  }
+}
 
 async function getSha256(value: string) {
   const hashBuffer = await window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
@@ -137,10 +154,43 @@ function usePath() {
   return { path, navigate };
 }
 
+function useTelegramMiniApp(path: string, navigate: NavigateFn) {
+  useEffect(() => {
+    const webApp = window.Telegram?.WebApp;
+    webApp?.ready();
+    webApp?.expand();
+    webApp?.setHeaderColor?.("#fff8f2");
+    webApp?.setBackgroundColor?.("#fff8f2");
+  }, []);
+
+  useEffect(() => {
+    const backButton = window.Telegram?.WebApp?.BackButton;
+    if (!backButton) return undefined;
+
+    const handleBack = () => {
+      if (path.startsWith("/requests/")) {
+        navigate("/requests");
+        return;
+      }
+      navigate("/");
+    };
+
+    if (path === "/") {
+      backButton.hide();
+      return undefined;
+    }
+
+    backButton.show();
+    backButton.onClick(handleBack);
+    return () => backButton.offClick(handleBack);
+  }, [path, navigate]);
+}
+
 export default function App() {
   const { path, navigate } = usePath();
   const [toast, setToast] = useState("");
   const [adminUnlocked, setAdminUnlocked] = useState(() => window.localStorage.getItem(ADMIN_SESSION_KEY) === "true");
+  useTelegramMiniApp(path, navigate);
 
   const showToast = (message: string) => {
     setToast(message);
@@ -182,17 +232,54 @@ export default function App() {
   })();
 
   return (
-    <div className="browser-shell">
-      <div className="window-dots" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-      </div>
-      <Header onNavigate={navigate} />
-      <main>{page}</main>
-      <Footer onNavigate={navigate} />
+    <div className="telegram-mini-app">
+      <MiniAppTopBar onNavigate={navigate} />
+      <main className="telegram-mini-main">{page}</main>
+      {path === "/admin" ? null : <MiniAppBottomNav path={path} onNavigate={navigate} />}
       <Toast message={toast} />
     </div>
+  );
+}
+
+function MiniAppTopBar({ onNavigate }: { onNavigate: NavigateFn }) {
+  return (
+    <header className="telegram-topbar">
+      <button className="telegram-brand" type="button" onClick={() => onNavigate("/")}>
+        <span className="telegram-brand-mark">
+          <Icon name="heart" />
+        </span>
+        <span>
+          <strong><span>100</span>spasibo</strong>
+          <small>мини-апп взаимопомощи</small>
+        </span>
+      </button>
+      <a className="telegram-contact-link" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
+        <Icon name="telegram" />
+      </a>
+    </header>
+  );
+}
+
+function MiniAppBottomNav({ path, onNavigate }: { path: string; onNavigate: NavigateFn }) {
+  const tabs = [
+    { label: "Главная", to: "/", icon: "home" },
+    { label: "Помочь", to: "/requests", icon: "heart" },
+    { label: "Заявка", to: "/apply", icon: "file" },
+    { label: "Истории", to: "/stories", icon: "video" },
+  ] as const;
+
+  return (
+    <nav className="telegram-bottom-nav" aria-label="Навигация мини-приложения">
+      {tabs.map((tab) => {
+        const active = tab.to === "/" ? path === "/" : path.startsWith(tab.to);
+        return (
+          <button key={tab.to} type="button" className={active ? "active" : ""} onClick={() => onNavigate(tab.to)}>
+            <Icon name={tab.icon} />
+            <span>{tab.label}</span>
+          </button>
+        );
+      })}
+    </nav>
   );
 }
 
@@ -439,10 +526,8 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
           </FormSection>
 
           <FormSection number={2} title="Контактные данные">
-            <Field label="Телефон" type="tel" required placeholder="+7 (___) ___-__-__" />
-            <Field label="E-mail" type="email" required placeholder="example@mail.ru" />
-            <SelectField label="Предпочтительный способ связи" options={["Телефон", "Telegram", "WhatsApp", "E-mail"]} />
-            <SelectField label="Мессенджер" options={["Telegram", "WhatsApp", "Viber", "Нет"]} />
+            <Field label="Telegram для связи" required placeholder="@username" />
+            <SelectField label="Когда удобно написать" options={["В любое время", "Утром", "Днем", "Вечером"]} />
           </FormSection>
 
           <FormSection number={3} title="Информация о долге">
@@ -493,7 +578,7 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
                 "Я подтверждаю, что вся информация в заявке является достоверной.",
                 "Я понимаю, что заявка пройдет ручную проверку.",
                 "Я обязуюсь предоставить отчет после получения помощи.",
-                "Я согласен, что часть информации может быть опубликована на сайте после модерации.",
+                "Я согласен, что часть информации может быть опубликована в мини-приложении после модерации.",
               ].map((item) => (
                 <label key={item}>
                   <input type="checkbox" required />
@@ -520,10 +605,8 @@ function ApplyPage({ onToast }: { onToast: (message: string) => void }) {
           <div className="sidebar-card contact-help">
             <Icon name="heart" />
             <h3>Нужна помощь?</h3>
-            <p>Если у вас возникли вопросы — мы всегда рядом.</p>
-            <a href="tel:+78005551809"><Icon name="phone" />8 800 555-18-09</a>
-            <a href="mailto:info@100spasibo.ru"><Icon name="mail" />info@100spasibo.ru</a>
-            <a href="https://t.me/" target="_blank" rel="noreferrer"><Icon name="telegram" />Мы в Telegram</a>
+            <p>Если у вас возникли вопросы — напишите нам в Telegram.</p>
+            <a href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer"><Icon name="telegram" />Написать в Telegram</a>
             <div className="safe-note"><Icon name="lock" />Ваша информация в безопасности. Мы не передаем данные третьим лицам.</div>
           </div>
         </aside>
@@ -741,7 +824,7 @@ function AdminAccessPage({ onNavigate, onToast, onUnlock }: { onNavigate: Naviga
         <Badge icon="lock">Закрытый раздел</Badge>
         <h1>Вход в админ-панель</h1>
         <p>
-          Админка вынесена отдельно от публичного сайта. Введите пароль администратора, чтобы открыть очередь заявок,
+          Админка вынесена отдельно от публичного мини-приложения. Введите пароль администратора, чтобы открыть очередь заявок,
           чеков и отчетов.
         </p>
         <form className="admin-access-form" onSubmit={handleSubmit}>
@@ -762,7 +845,7 @@ function AdminAccessPage({ onNavigate, onToast, onUnlock }: { onNavigate: Naviga
               <Icon name="lock" />
               Войти
             </Button>
-            <Button variant="soft" onClick={() => onNavigate("/")}>На сайт</Button>
+            <Button variant="soft" onClick={() => onNavigate("/")}>В мини-апп</Button>
           </div>
         </form>
         <div className="admin-access-note">

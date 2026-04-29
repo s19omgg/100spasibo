@@ -901,23 +901,24 @@ textarea:focus {
 }
 
 .date-picker-control input {
-  padding-right: 58px;
+  padding-right: 56px;
   cursor: pointer;
 }
 
 .date-picker-control button {
   position: absolute;
-  inset: 5px 5px 5px auto;
-  width: 44px;
+  inset: 1px 1px 1px auto;
+  width: 50px;
   min-height: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   color: var(--coral);
-  background: var(--warning-soft);
-  border: 1px solid rgba(255, 107, 87, 0.18);
-  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 241, 232, 0.92), rgba(255, 227, 216, 0.72));
+  border: 0;
+  border-left: 1px solid rgba(255, 107, 87, 0.16);
+  border-radius: 0 13px 13px 0;
   line-height: 0;
   transition: color 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
 }
@@ -4103,4 +4104,505 @@ textarea {
   .admin-task-actions {
     display: grid;
   }
+}
+
+/* Telegram Mini App shell */
+body {
+  padding: 0;
+  background: var(--bg);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.telegram-mini-app {
+  min-height: 100vh;
+  padding: max(12px, env(safe-area-inset-top)) 0 calc(88px + env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 227, 216, 0.72), transparent 18rem),
+    radial-gradient(circle at 94% 12%, rgba(234, 248, 241, 0.78), transparent 18rem),
+    var(--bg);
+  color: var(--text);
+}
+
+.telegram-mini-app .shell {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  padding-inline: 14px;
+}
+
+.telegram-mini-main {
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.telegram-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 220;
+  width: min(100%, 540px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 auto;
+  padding: 10px 14px 8px;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.telegram-brand {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  text-align: left;
+  background: transparent;
+  border: 0;
+}
+
+.telegram-brand-mark,
+.telegram-contact-link {
+  display: grid;
+  place-items: center;
+  color: var(--coral);
+  background: var(--peach);
+  border: 1px solid rgba(255, 107, 87, 0.16);
+  border-radius: 15px;
+}
+
+.telegram-brand-mark {
+  width: 42px;
+  height: 42px;
+}
+
+.telegram-brand-mark .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.telegram-brand strong,
+.telegram-brand small {
+  display: block;
+}
+
+.telegram-brand strong {
+  font-size: 20px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.telegram-brand strong span {
+  color: var(--coral);
+}
+
+.telegram-brand small {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.telegram-contact-link {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  text-decoration: none;
+}
+
+.telegram-contact-link .icon {
+  width: 21px;
+  height: 21px;
+}
+
+.telegram-bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  z-index: 230;
+  width: min(calc(100% - 24px), 500px);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 18px 48px rgba(80, 49, 31, 0.18);
+  backdrop-filter: blur(18px);
+  transform: translateX(-50%);
+}
+
+.telegram-bottom-nav button {
+  min-height: 54px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  padding: 7px 4px;
+  color: #827871;
+  background: transparent;
+  border: 0;
+  border-radius: 18px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.telegram-bottom-nav button.active {
+  color: var(--coral);
+  background: var(--warning-soft);
+}
+
+.telegram-bottom-nav .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.telegram-mini-app .page {
+  padding: 14px 0 18px;
+}
+
+.telegram-mini-app .section {
+  padding: 18px 0;
+}
+
+.telegram-mini-app h1 {
+  font-size: clamp(31px, 9vw, 40px);
+  line-height: 1.02;
+}
+
+.telegram-mini-app h2 {
+  font-size: 25px;
+}
+
+.telegram-mini-app .badge {
+  min-height: 30px;
+  padding: 7px 11px;
+}
+
+.telegram-mini-app .hero,
+.telegram-mini-app .catalog-hero,
+.telegram-mini-app .apply-hero,
+.telegram-mini-app .catalog-layout,
+.telegram-mini-app .detail-layout,
+.telegram-mini-app .apply-layout,
+.telegram-mini-app .admin-layout,
+.telegram-mini-app .stories-hero,
+.telegram-mini-app .story-featured {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.telegram-mini-app .hero {
+  padding-top: 14px;
+}
+
+.telegram-mini-app .hero-copy {
+  gap: 14px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.telegram-mini-app .hero-copy h1,
+.telegram-mini-app .hero-copy p,
+.telegram-mini-app .catalog-hero p,
+.telegram-mini-app .apply-hero p {
+  max-width: none;
+}
+
+.telegram-mini-app .hero-copy p,
+.telegram-mini-app .catalog-hero p,
+.telegram-mini-app .apply-hero p {
+  font-size: 15px;
+}
+
+.telegram-mini-app .hero-actions,
+.telegram-mini-app .section-row,
+.telegram-mini-app .admin-access-actions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.telegram-mini-app .button,
+.telegram-mini-app .hero-actions .button {
+  width: 100%;
+  min-height: 48px;
+  justify-content: center;
+  border-radius: 16px;
+}
+
+.telegram-mini-app .social-proof {
+  align-items: flex-start;
+}
+
+.telegram-mini-app .watercolor,
+.telegram-mini-app .catalog-hero .watercolor,
+.telegram-mini-app .apply-hero .watercolor {
+  display: none;
+}
+
+.telegram-mini-app .steps-grid,
+.telegram-mini-app .featured-grid,
+.telegram-mini-app .requests-grid,
+.telegram-mini-app .banner-grid,
+.telegram-mini-app .trust-strip,
+.telegram-mini-app .two-column-blocks,
+.telegram-mini-app .collection-stats,
+.telegram-mini-app .stories-grid,
+.telegram-mini-app .footer-grid,
+.telegram-mini-app .dashboard-stats {
+  grid-template-columns: 1fr;
+}
+
+.telegram-mini-app .step-card {
+  min-height: 0;
+  grid-template-columns: 68px 1fr;
+  padding: 16px;
+  border-radius: 22px;
+}
+
+.telegram-mini-app .steps-grid {
+  gap: 12px;
+}
+
+.telegram-mini-app .steps-grid .step-card:not(:last-child)::after,
+.telegram-mini-app .filter-sidebar,
+.telegram-mini-app .site-footer,
+.telegram-mini-app .window-dots {
+  display: none;
+}
+
+.telegram-mini-app .trust-strip {
+  gap: 10px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.telegram-mini-app .trust-card {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: 22px;
+}
+
+.telegram-mini-app .trust-card:not(:last-child) {
+  border-right: 1px solid rgba(120, 80, 50, 0.12);
+  border-bottom: 1px solid rgba(120, 80, 50, 0.12);
+}
+
+.telegram-mini-app .request-card,
+.telegram-mini-app .request-card-compact,
+.telegram-mini-app .info-banner,
+.telegram-mini-app .collection-card,
+.telegram-mini-app .report-card,
+.telegram-mini-app .soft-card,
+.telegram-mini-app .sidebar-card,
+.telegram-mini-app .donation-panel,
+.telegram-mini-app .story-card,
+.telegram-mini-app .story-featured,
+.telegram-mini-app .stories-summary,
+.telegram-mini-app .stories-cta,
+.telegram-mini-app .admin-access-card,
+.telegram-mini-app .dashboard-card,
+.telegram-mini-app .dashboard-stat {
+  border-radius: 24px;
+}
+
+.telegram-mini-app .request-card-compact {
+  grid-template-columns: 1fr;
+}
+
+.telegram-mini-app .request-card-compact .request-head,
+.telegram-mini-app .request-card-compact p,
+.telegram-mini-app .request-card-compact .request-money,
+.telegram-mini-app .request-card-compact .progress,
+.telegram-mini-app .request-card-compact .request-bottom,
+.telegram-mini-app .request-card-compact .request-actions {
+  grid-column: auto;
+  grid-row: auto;
+}
+
+.telegram-mini-app .request-actions,
+.telegram-mini-app .catalog-toolbar,
+.telegram-mini-app .quick-amounts,
+.telegram-mini-app .tab-row,
+.telegram-mini-app .form-grid,
+.telegram-mini-app .application-form .form-section:not(.form-section-wide) .form-grid,
+.telegram-mini-app .application-form .form-section-2 .form-grid,
+.telegram-mini-app .application-form .form-section-4 .form-grid,
+.telegram-mini-app .application-form .form-section-7 .form-grid {
+  grid-template-columns: 1fr;
+}
+
+.telegram-mini-app .catalog-toolbar {
+  gap: 10px;
+}
+
+.telegram-mini-app .detail-photo {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 24px;
+}
+
+.telegram-mini-app .request-hero-card {
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  box-shadow: var(--shadow);
+}
+
+.telegram-mini-app .request-hero-card h1 {
+  font-size: 30px;
+}
+
+.telegram-mini-app .chip-row {
+  gap: 8px;
+}
+
+.telegram-mini-app .collection-card {
+  padding: 18px;
+}
+
+.telegram-mini-app .donation-panel {
+  position: static;
+  padding: 18px;
+}
+
+.telegram-mini-app .donation-panel h2,
+.telegram-mini-app .dashboard-card h2 {
+  font-size: 24px;
+}
+
+.telegram-mini-app .video-placeholder {
+  grid-template-columns: 1fr;
+  padding: 18px;
+  border-radius: 24px;
+}
+
+.telegram-mini-app .apply-hero {
+  margin-bottom: 12px;
+}
+
+.telegram-mini-app .apply-layout {
+  gap: 14px;
+}
+
+.telegram-mini-app .form-section {
+  padding: 16px;
+  border-radius: 24px;
+}
+
+.telegram-mini-app .form-section h2 {
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+
+.telegram-mini-app .form-field span,
+.telegram-mini-app .range-inputs span,
+.telegram-mini-app .amount-input span {
+  font-size: 13px;
+}
+
+.telegram-mini-app input,
+.telegram-mini-app select,
+.telegram-mini-app textarea,
+.telegram-mini-app .pretty-select-trigger {
+  min-height: 48px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-size: 15px;
+}
+
+.telegram-mini-app .date-picker-control input {
+  padding-right: 58px;
+}
+
+.telegram-mini-app .date-picker-control button {
+  inset: 1px 1px 1px auto;
+  width: 52px;
+  border-radius: 0 15px 15px 0;
+}
+
+.telegram-mini-app .date-picker-popover,
+.telegram-mini-app .pretty-select-menu {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  width: auto;
+  max-width: 512px;
+  margin-inline: auto;
+}
+
+.telegram-mini-app .date-picker-popover {
+  top: 18vh;
+}
+
+.telegram-mini-app .pretty-select-menu {
+  top: auto;
+  bottom: calc(86px + env(safe-area-inset-bottom));
+}
+
+.telegram-mini-app .apply-sidebar {
+  position: static;
+}
+
+.telegram-mini-app .contact-help a {
+  min-height: 50px;
+  padding: 12px 14px;
+  color: #fff;
+  background: #2aabee;
+  border-radius: 16px;
+  text-decoration: none;
+}
+
+.telegram-mini-app .stories-summary {
+  grid-template-columns: 1fr;
+  padding: 14px;
+}
+
+.telegram-mini-app .story-featured {
+  padding: 16px;
+}
+
+.telegram-mini-app .story-featured img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 22px;
+}
+
+.telegram-mini-app .story-stats,
+.telegram-mini-app .story-card-foot,
+.telegram-mini-app .admin-task,
+.telegram-mini-app .admin-session-bar {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.telegram-mini-app .admin-access-page {
+  min-height: calc(100vh - 140px);
+  place-items: start;
+}
+
+.telegram-mini-app .admin-access-card {
+  width: 100%;
+}
+
+.telegram-mini-app .toast {
+  bottom: calc(90px + env(safe-area-inset-bottom));
+  width: max-content;
+  max-width: calc(100% - 28px);
 }

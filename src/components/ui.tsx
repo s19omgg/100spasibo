@@ -7,6 +7,7 @@ import type { HelpRequest } from "../data/requests";
 import { formatRubles, getPercent, requests } from "../data/requests";
 
 export type NavigateFn = (path: string) => void;
+const TELEGRAM_CONTACT_URL = "https://t.me/100spasibo";
 
 type IconName =
   | "heart"
@@ -537,26 +538,15 @@ export function Footer({ onNavigate }: { onNavigate: NavigateFn }) {
         ))}
         <div className="footer-column">
           <h3>Поддержка</h3>
-          <a href="mailto:info@100spasibo.ru">
-            <Icon name="mail" />
-            info@100spasibo.ru
-          </a>
-          <a href="tel:+78005551809">
-            <Icon name="phone" />8 800 555-18-09
-          </a>
-          <span>Пн-Пт с 9:00 до 18:00</span>
-          <a href="https://t.me/" target="_blank" rel="noreferrer">
+          <a href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
             <Icon name="telegram" />
-            Мы в Telegram
+            Написать в Telegram
           </a>
         </div>
         <div className="footer-social">
-          <h3>Мы в социальных сетях</h3>
+          <h3>Связь с нами</h3>
           <div className="social-row" aria-label="Социальные сети">
-            <a href="https://vk.com" target="_blank" rel="noreferrer">VK</a>
-            <a href="https://ok.ru" target="_blank" rel="noreferrer">OK</a>
-            <a href="https://t.me" target="_blank" rel="noreferrer">TG</a>
-            <a href="https://youtube.com" target="_blank" rel="noreferrer">YT</a>
+            <a href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">TG</a>
           </div>
         </div>
       </div>

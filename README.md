@@ -1,6 +1,6 @@
 # 100spasibo
 
-React + TypeScript MVP для теплой платформы взаимопомощи.
+React + TypeScript MVP для теплого Telegram Mini App платформы взаимопомощи.
 
 ## Команды
 
@@ -17,6 +17,23 @@ React + TypeScript MVP для теплой платформы взаимопом
 - `/how-it-works` - как работает платформа.
 - `/safety` - безопасность и дисклеймеры.
 - `/faq` - вопросы и ответы.
+- `/admin` - закрытая демо-админка.
+
+## Telegram Mini App
+
+Публичный URL для BotFather:
+
+`https://s19omgg.github.io/100spasibo/`
+
+Что сделать в Telegram:
+
+1. Создать бота через `@BotFather`.
+2. Открыть `@BotFather` -> `/setmenubutton`.
+3. Выбрать бота.
+4. Указать текст кнопки, например `Открыть 100spasibo`.
+5. Указать Web App URL: `https://s19omgg.github.io/100spasibo/`.
+
+Контакт поддержки внутри мини-приложения: `https://t.me/100spasibo`.
 
 ## Структура
 
