@@ -664,11 +664,15 @@ p {
   gap: 6px;
   color: var(--muted);
   font-size: 13px;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 
 .muted-inline .icon {
   width: 15px;
   height: 15px;
+  flex: 0 0 15px;
   color: var(--coral);
 }
 
@@ -4975,6 +4979,13 @@ body {
 .telegram-mini-app .request-head span,
 .telegram-mini-app .muted-inline {
   min-width: 0;
+}
+
+.telegram-mini-app .muted-inline {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 
 .telegram-mini-app .request-card p {
