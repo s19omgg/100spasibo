@@ -269,7 +269,7 @@ function MiniAppTopBar({ onNavigate }: { onNavigate: NavigateFn }) {
         </span>
         <span>
           <strong><span>100</span>spasibo</strong>
-          <small>мини-апп взаимопомощи</small>
+          <small>платформа взаимопомощи</small>
         </span>
       </button>
       <a className="telegram-contact-link" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
