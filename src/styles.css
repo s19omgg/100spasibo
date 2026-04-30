@@ -1496,6 +1496,17 @@ textarea {
   color: #4d4d4d;
 }
 
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.detail-actions .button {
+  min-height: 46px;
+}
+
 .collection-card {
   padding: 26px;
 }
@@ -2366,6 +2377,144 @@ textarea {
   margin-top: 8px;
 }
 
+.story-card-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.story-card-open {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  color: var(--coral);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.story-detail-page {
+  display: grid;
+  gap: 20px;
+}
+
+.story-detail-hero,
+.story-video-report,
+.story-thanks-card {
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.story-detail-hero {
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: center;
+}
+
+.story-detail-hero > img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+.story-detail-hero h1 {
+  margin: 14px 0;
+  font-size: 44px;
+}
+
+.story-detail-hero blockquote,
+.story-thanks-card blockquote {
+  margin: 16px 0 0;
+  color: #4d4742;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.story-video-report {
+  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1fr);
+  align-items: stretch;
+  background: linear-gradient(135deg, rgba(234, 248, 241, 0.9), rgba(255, 255, 255, 0.92));
+  border-color: rgba(94, 155, 131, 0.22);
+}
+
+.story-video-frame {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 16px;
+  padding: 22px;
+  color: var(--mint-strong);
+  text-align: center;
+  background:
+    radial-gradient(circle at 38% 30%, rgba(255, 227, 216, 0.88), transparent 11rem),
+    linear-gradient(135deg, #ffffff, rgba(234, 248, 241, 0.72));
+  border: 1px solid rgba(94, 155, 131, 0.2);
+  border-radius: 20px;
+}
+
+.story-video-frame .play-button {
+  width: 94px;
+  height: 74px;
+}
+
+.story-video-frame strong,
+.story-video-frame span {
+  display: block;
+}
+
+.story-video-frame strong {
+  color: var(--text);
+  font-size: 20px;
+}
+
+.story-video-copy {
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+
+.story-video-copy h2,
+.story-thanks-card h2 {
+  font-size: 30px;
+}
+
+.story-video-copy p {
+  color: #4f655b;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.story-thanks-card {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  background: linear-gradient(135deg, rgba(255, 227, 216, 0.64), rgba(255, 255, 255, 0.88));
+}
+
+.story-thanks-icon {
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  color: var(--coral);
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.story-amount-card {
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.story-amount-card .progress span {
+  width: 100%;
+}
+
 .faq-list {
   display: grid;
   gap: 12px;
@@ -2487,6 +2636,109 @@ textarea {
 .footer-disclaimer a {
   color: var(--muted);
   text-decoration: none;
+}
+
+.onboarding-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 260;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(39, 39, 39, 0.18);
+  backdrop-filter: blur(14px);
+}
+
+.onboarding-card {
+  position: relative;
+  width: min(420px, 100%);
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255, 227, 216, 0.86), transparent 11rem),
+    linear-gradient(135deg, #ffffff, #fff8f2);
+  border: 1px solid rgba(120, 80, 50, 0.14);
+  border-radius: 28px;
+  box-shadow: 0 28px 70px rgba(62, 49, 38, 0.2);
+}
+
+.onboarding-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--border);
+  border-radius: 15px;
+}
+
+.onboarding-visual {
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  padding-top: 12px;
+}
+
+.onboarding-icon {
+  width: 94px;
+  height: 94px;
+  display: grid;
+  place-items: center;
+  color: var(--coral);
+  background: linear-gradient(135deg, var(--peach), var(--mint-soft));
+  border-radius: 30px;
+}
+
+.onboarding-icon .icon {
+  width: 42px;
+  height: 42px;
+}
+
+.onboarding-dots {
+  display: inline-flex;
+  gap: 7px;
+}
+
+.onboarding-dots span {
+  width: 8px;
+  height: 8px;
+  background: rgba(120, 80, 50, 0.18);
+  border-radius: 999px;
+  transition: width 180ms ease, background 180ms ease;
+}
+
+.onboarding-dots span.active {
+  width: 24px;
+  background: var(--coral);
+}
+
+.onboarding-copy {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.onboarding-copy h2 {
+  font-size: 30px;
+}
+
+.onboarding-copy p {
+  max-width: 340px;
+  color: #5b5550;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.onboarding-actions {
+  display: grid;
+  grid-template-columns: 0.85fr 1fr;
+  gap: 10px;
 }
 
 .toast {
@@ -3925,6 +4177,8 @@ textarea {
 @media (max-width: 920px) {
   .stories-hero,
   .story-featured,
+  .story-detail-hero,
+  .story-video-report,
   .stories-grid {
     grid-template-columns: 1fr;
   }
@@ -3956,6 +4210,20 @@ textarea {
     padding: 16px;
   }
 
+  .story-detail-hero,
+  .story-video-report,
+  .story-thanks-card {
+    padding: 16px;
+  }
+
+  .story-detail-hero h1 {
+    font-size: 34px;
+  }
+
+  .story-thanks-card {
+    grid-template-columns: 1fr;
+  }
+
   .story-featured h2 {
     font-size: 30px;
   }
@@ -3971,6 +4239,10 @@ textarea {
   .story-card-head img {
     width: 72px;
     height: 72px;
+  }
+
+  .onboarding-actions {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -4591,7 +4863,10 @@ body {
 .telegram-mini-app .apply-layout,
 .telegram-mini-app .admin-layout,
 .telegram-mini-app .stories-hero,
-.telegram-mini-app .story-featured {
+.telegram-mini-app .story-featured,
+.telegram-mini-app .story-detail-hero,
+.telegram-mini-app .story-video-report,
+.telegram-mini-app .story-thanks-card {
   grid-template-columns: 1fr;
   gap: 16px;
 }
@@ -4713,6 +4988,9 @@ body {
 .telegram-mini-app .donation-panel,
 .telegram-mini-app .story-card,
 .telegram-mini-app .story-featured,
+.telegram-mini-app .story-detail-hero,
+.telegram-mini-app .story-video-report,
+.telegram-mini-app .story-thanks-card,
 .telegram-mini-app .stories-summary,
 .telegram-mini-app .stories-cta,
 .telegram-mini-app .admin-access-card,
@@ -4880,11 +5158,24 @@ body {
   padding: 14px;
 }
 
-.telegram-mini-app .story-featured img {
+.telegram-mini-app .story-featured img,
+.telegram-mini-app .story-detail-hero > img {
   width: 100%;
   height: auto;
   aspect-ratio: 1;
   border-radius: 22px;
+}
+
+.telegram-mini-app .story-detail-hero h1 {
+  font-size: 28px;
+}
+
+.telegram-mini-app .story-video-frame {
+  min-height: 190px;
+}
+
+.telegram-mini-app .story-thanks-card {
+  grid-template-columns: 1fr;
 }
 
 .telegram-mini-app .story-stats,
@@ -5030,6 +5321,9 @@ body {
 .telegram-mini-app .donation-panel,
 .telegram-mini-app .story-card,
 .telegram-mini-app .story-featured,
+.telegram-mini-app .story-detail-hero,
+.telegram-mini-app .story-video-report,
+.telegram-mini-app .story-thanks-card,
 .telegram-mini-app .stories-summary,
 .telegram-mini-app .stories-cta,
 .telegram-mini-app .admin-access-card,

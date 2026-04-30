@@ -31,6 +31,7 @@ type IconName =
   | "home"
   | "book"
   | "play"
+  | "share"
   | "menu"
   | "x"
   | "chevron"
@@ -194,6 +195,15 @@ export function Icon({ name, className = "", filled = false }: { name: IconName;
       return (
         <svg {...common}>
           <path d="m9 7 8 5-8 5Z" />
+        </svg>
+      );
+    case "share":
+      return (
+        <svg {...common}>
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4" />
         </svg>
       );
     case "menu":
