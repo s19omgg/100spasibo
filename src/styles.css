@@ -5174,6 +5174,11 @@ body {
   line-height: 1.15;
 }
 
+.telegram-mini-app .hero-copy > .badge:first-child {
+  width: 100%;
+  justify-content: center;
+}
+
 .telegram-mini-app .collection-stats div,
 .telegram-mini-app .dashboard-stat {
   padding: 12px;
