@@ -108,6 +108,7 @@ const completedStories = [
 const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee754e402be74953f";
 const ADMIN_SESSION_KEY = "100spasibo:admin-unlocked";
 const TELEGRAM_CONTACT_URL = "https://t.me/100spasibo";
+const REQUESTS_PER_PAGE = 8;
 
 declare global {
   interface Window {
@@ -374,13 +375,49 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
 
 function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigate: NavigateFn }) {
   const [query, setQuery] = useState("");
-  const visible = useMemo(() => {
+  const [page, setPage] = useState(1);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  const filteredRequests = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return requests.slice(0, 8);
-    return requests
-      .filter((item) => `${item.name} ${item.city} ${item.reason} ${item.category}`.toLowerCase().includes(normalized))
-      .slice(0, 8);
+    if (!normalized) return requests;
+    return requests.filter((item) =>
+      `${item.name} ${item.city} ${item.reason} ${item.category}`.toLowerCase().includes(normalized),
+    );
+  }, [query, requests]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRequests.length / REQUESTS_PER_PAGE));
+  const visible = useMemo(() => {
+    const start = (page - 1) * REQUESTS_PER_PAGE;
+    return filteredRequests.slice(start, start + REQUESTS_PER_PAGE);
+  }, [filteredRequests, page]);
+  const paginationItems = useMemo<(number | "ellipsis")[]>(() => {
+    if (totalPages <= 5) return Array.from({ length: totalPages }, (_, index) => index + 1);
+
+    const pages = new Set([1, totalPages, page - 1, page, page + 1].filter((item) => item >= 1 && item <= totalPages));
+    const sorted = Array.from(pages).sort((a, b) => a - b);
+    return sorted.reduce<(number | "ellipsis")[]>((items, item, index) => {
+      if (index > 0 && item - sorted[index - 1] > 1) items.push("ellipsis");
+      items.push(item);
+      return items;
+    }, []);
+  }, [page, totalPages]);
+
+  useEffect(() => {
+    setPage(1);
   }, [query]);
+
+  useEffect(() => {
+    setPage((current) => Math.min(current, totalPages));
+  }, [totalPages]);
+
+  const changePage = (nextPage: number) => {
+    const safePage = Math.min(Math.max(nextPage, 1), totalPages);
+    setPage(safePage);
+    window.requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
 
   return (
     <section className="page shell catalog-page">
@@ -416,19 +453,35 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
               ]}
             />
           </div>
-          <div className="requests-grid">
+          <div className="requests-grid" ref={resultsRef}>
             {visible.map((request) => (
               <RequestCard key={request.id} request={request} onNavigate={onNavigate} />
             ))}
           </div>
           <nav className="pagination" aria-label="Страницы заявок">
-            <button type="button" aria-label="Предыдущая страница">←</button>
-            <button type="button" className="active">1</button>
-            <button type="button">2</button>
-            <button type="button">3</button>
-            <span>...</span>
-            <button type="button">8</button>
-            <button type="button" aria-label="Следующая страница">→</button>
+            <button type="button" aria-label="Предыдущая страница" disabled={page === 1} onClick={() => changePage(page - 1)}>
+              ←
+            </button>
+            {paginationItems.map((item, index) =>
+              item === "ellipsis" ? (
+                <span key={`ellipsis-${index}`} aria-hidden="true">
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={item}
+                  type="button"
+                  className={item === page ? "active" : ""}
+                  aria-current={item === page ? "page" : undefined}
+                  onClick={() => changePage(item)}
+                >
+                  {item}
+                </button>
+              ),
+            )}
+            <button type="button" aria-label="Следующая страница" disabled={page === totalPages} onClick={() => changePage(page + 1)}>
+              →
+            </button>
           </nav>
         </div>
       </div>
