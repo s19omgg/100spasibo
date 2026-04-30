@@ -565,7 +565,7 @@ export function Footer({ onNavigate }: { onNavigate: NavigateFn }) {
       title: "Информация",
       links: [
         ["О нас", "/how-it-works"],
-        ["Правила платформы", "/safety"],
+        ["Правила платформы", "/terms"],
         ["Безопасность", "/safety"],
         ["Отчеты", "/stories"],
         ["Контакты", "/faq"],
@@ -607,8 +607,8 @@ export function Footer({ onNavigate }: { onNavigate: NavigateFn }) {
       <div className="shell footer-disclaimer">
         <div>
           <span>© 100spasibo, 2024. Все права защищены.</span>
-          <AppLink to="/safety" onNavigate={onNavigate}>Политика конфиденциальности</AppLink>
-          <AppLink to="/safety" onNavigate={onNavigate}>Пользовательское соглашение</AppLink>
+          <AppLink to="/privacy" onNavigate={onNavigate}>Политика конфиденциальности</AppLink>
+          <AppLink to="/terms" onNavigate={onNavigate}>Пользовательское соглашение</AppLink>
         </div>
       </div>
     </footer>

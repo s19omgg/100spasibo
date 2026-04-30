@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
+  AppLink,
   Badge,
   BrandMark,
   Button,
@@ -218,7 +219,7 @@ export default function App() {
   const page = (() => {
     if (path === "/requests") return <RequestsPage requests={allRequests} onNavigate={navigate} />;
     if (path.startsWith("/requests/")) return <RequestDetailPage requests={allRequests} id={path.split("/").pop()} onNavigate={navigate} onToast={showToast} />;
-    if (path === "/apply") return <ApplyPage onToast={showToast} onApplicationCreated={refreshPublishedRequests} />;
+    if (path === "/apply") return <ApplyPage onNavigate={navigate} onToast={showToast} onApplicationCreated={refreshPublishedRequests} />;
     if (path === "/how-it-works") return <HowItWorksPage onNavigate={navigate} />;
     if (path === "/stories") return <StoriesPage onNavigate={navigate} />;
     if (path === "/admin") {
@@ -246,6 +247,8 @@ export default function App() {
       );
     }
     if (path === "/safety") return <SafetyPage />;
+    if (path === "/privacy") return <PrivacyPage onNavigate={navigate} />;
+    if (path === "/terms") return <TermsPage onNavigate={navigate} />;
     if (path === "/faq") return <FaqPage />;
     return <HomePage requests={allRequests} onNavigate={navigate} />;
   })();
@@ -557,7 +560,15 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
   );
 }
 
-function ApplyPage({ onToast, onApplicationCreated }: { onToast: (message: string) => void; onApplicationCreated: () => Promise<void> }) {
+function ApplyPage({
+  onNavigate,
+  onToast,
+  onApplicationCreated,
+}: {
+  onNavigate: NavigateFn;
+  onToast: (message: string) => void;
+  onApplicationCreated: () => Promise<void>;
+}) {
   const [formVersion, setFormVersion] = useState(0);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -667,8 +678,8 @@ function ApplyPage({ onToast, onApplicationCreated }: { onToast: (message: strin
               ))}
             </div>
             <p className="policy-links">
-              <a href="/safety">Политика конфиденциальности</a>
-              <a href="/safety">Пользовательское соглашение</a>
+              <AppLink to="/privacy" onNavigate={onNavigate}>Политика конфиденциальности</AppLink>
+              <AppLink to="/terms" onNavigate={onNavigate}>Пользовательское соглашение</AppLink>
             </p>
           </FormSection>
 
@@ -1274,6 +1285,153 @@ function SafetyPage() {
         Платформа не принимает и не распределяет денежные средства. Переводы осуществляются напрямую от помогающего
         пользователя к получателю помощи.
       </div>
+    </section>
+  );
+}
+
+function PrivacyPage({ onNavigate }: { onNavigate: NavigateFn }) {
+  const summary = [
+    ["file", "Что собираем", "Данные из заявки, документы, реквизиты, Telegram для связи и чеки о переводах."],
+    ["shield", "Зачем", "Чтобы проверить заявку, связаться с человеком и опубликовать только безопасную часть истории."],
+    ["lock", "Что скрываем", "Паспорта, договоры, выписки и другие оригиналы документов не показываются публично."],
+    ["telegram", "Как связаться", "По любым вопросам о данных можно написать команде 100spasibo в Telegram."],
+  ] as const;
+
+  const sections = [
+    {
+      title: "1. Какие данные может получать платформа",
+      text:
+        "100spasibo может получать фамилию, имя, отчество, город, дату рождения, описание ситуации, контакт в Telegram, сведения о долге, реквизиты для прямого перевода, загруженные документы, чеки и техническую информацию, необходимую для работы интерфейса.",
+    },
+    {
+      title: "2. Для чего используются данные",
+      text:
+        "Данные нужны для ручной модерации заявок, проверки подтверждающих документов, связи с заявителем, публикации карточки после одобрения, отображения реквизитов для прямой помощи и проверки отчетов после завершения сбора.",
+    },
+    {
+      title: "3. Что может быть опубликовано",
+      text:
+        "После модерации на платформе может быть опубликована безопасная часть истории: имя, возраст, город, цель сбора, сумма, краткое описание ситуации, статус проверки и реквизиты, которые заявитель разрешил показать для прямого перевода.",
+    },
+    {
+      title: "4. Что не публикуется в открытом доступе",
+      text:
+        "Оригиналы документов, паспортные данные, полные договоры, выписки, справки и внутренняя переписка с модерацией не размещаются публично. Эти материалы используются только для проверки заявки и отчетности.",
+    },
+    {
+      title: "5. Кто может видеть данные",
+      text:
+        "Публичные данные видят пользователи платформы. Полные материалы заявки доступны только команде модерации и администраторам, которым они нужны для проверки. Данные не продаются и не используются для рекламной рассылки третьих лиц.",
+    },
+    {
+      title: "6. Хранение, исправление и удаление",
+      text:
+        "Пользователь может попросить уточнить, исправить или удалить данные, если это не мешает обязательной отчетности и проверке уже опубликованной заявки. Для этого нужно написать команде 100spasibo в Telegram.",
+    },
+  ];
+
+  return (
+    <section className="page shell simple-page legal-page">
+      <Badge icon="lock">Конфиденциальность</Badge>
+      <h1>Политика конфиденциальности</h1>
+      <p>
+        Мы собираем только те данные, которые нужны для проверки заявки и прямой помощи человеку. Этот текст написан
+        простым языком и подходит для MVP; перед публичным запуском его стоит проверить с юристом.
+      </p>
+      <div className="legal-summary-grid">
+        {summary.map(([icon, title, text]) => (
+          <TrustCard key={title} icon={icon} title={title} text={text} />
+        ))}
+      </div>
+      <div className="legal-document">
+        {sections.map((section) => (
+          <article key={section.title} className="legal-section-card">
+            <h2>{section.title}</h2>
+            <p>{section.text}</p>
+          </article>
+        ))}
+      </div>
+      <div className="legal-note">
+        В рабочей версии сюда нужно добавить полное наименование оператора, реквизиты, адрес, порядок обработки
+        персональных данных и финальную редакцию согласия на обработку данных.
+      </div>
+      <Button variant="soft" onClick={() => onNavigate("/apply")}>Вернуться к заявке</Button>
+    </section>
+  );
+}
+
+function TermsPage({ onNavigate }: { onNavigate: NavigateFn }) {
+  const summary = [
+    ["hands", "Люди помогают напрямую", "100spasibo показывает проверенные заявки, а перевод идет от человека к человеку."],
+    ["shield", "Есть модерация", "Команда может запросить уточнения, скрыть лишние данные или отказать в публикации."],
+    ["card", "Платформа не принимает деньги", "Мы не храним и не распределяем средства, не являемся банком или платежным оператором."],
+    ["video", "Нужен отчет", "После сбора получатель показывает, как помощь была использована."],
+  ] as const;
+
+  const sections = [
+    {
+      title: "1. Роль платформы",
+      text:
+        "100spasibo является информационной платформой взаимопомощи. Платформа помогает проверить заявку, опубликовать безопасную часть истории и показать реквизиты получателя для прямого перевода.",
+    },
+    {
+      title: "2. Прямые переводы",
+      text:
+        "Помогающий пользователь сам выбирает человека, сумму и способ перевода. Деньги отправляются напрямую получателю помощи. 100spasibo не принимает, не хранит, не распределяет и не возвращает денежные средства.",
+    },
+    {
+      title: "3. Обязанности заявителя",
+      text:
+        "Заявитель обязуется указывать достоверную информацию, прикладывать документы, использовать помощь по заявленной цели, сообщать о важных изменениях и предоставить отчет после завершения сбора.",
+    },
+    {
+      title: "4. Обязанности помогающего пользователя",
+      text:
+        "Помогающий пользователь самостоятельно принимает решение о переводе. После перевода он может прикрепить чек, чтобы команда отметила помощь и могла сверить ход сбора.",
+    },
+    {
+      title: "5. Модерация и публикация",
+      text:
+        "Команда 100spasibo может отклонить заявку, запросить дополнительные документы, отредактировать публичное описание без искажения смысла, временно скрыть карточку или снять ее с публикации.",
+    },
+    {
+      title: "6. Запрещенные действия",
+      text:
+        "Нельзя размещать чужие документы без согласия, указывать ложные данные, выдавать себя за другого человека, давить на пользователей, публиковать оскорбления, спам или реквизиты, не относящиеся к заявке.",
+    },
+    {
+      title: "7. Ограничение ответственности",
+      text:
+        "Платформа проводит проверку документов и историй, но не может гарантировать абсолютную полноту информации. Пользователь принимает решение о помощи добровольно и осознанно.",
+    },
+  ];
+
+  return (
+    <section className="page shell simple-page legal-page">
+      <Badge icon="file">Правила платформы</Badge>
+      <h1>Пользовательское соглашение</h1>
+      <p>
+        Здесь описаны понятные правила для заявителей, помогающих пользователей и команды модерации. Это черновая
+        редакция для MVP, которую перед запуском нужно юридически доработать.
+      </p>
+      <div className="legal-summary-grid">
+        {summary.map(([icon, title, text]) => (
+          <TrustCard key={title} icon={icon} title={title} text={text} />
+        ))}
+      </div>
+      <div className="legal-document">
+        {sections.map((section) => (
+          <article key={section.title} className="legal-section-card">
+            <h2>{section.title}</h2>
+            <p>{section.text}</p>
+          </article>
+        ))}
+      </div>
+      <div className="legal-note">
+        100spasibo не является банком, микрофинансовой организацией, платежным оператором или благотворительным фондом.
+        Все переводы совершаются напрямую от помогающего пользователя к получателю помощи.
+      </div>
+      <Button onClick={() => onNavigate("/requests")}>Перейти к заявкам</Button>
     </section>
   );
 }

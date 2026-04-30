@@ -2077,6 +2077,38 @@ textarea {
   border-radius: var(--radius-lg);
 }
 
+.legal-page {
+  max-width: 1040px;
+}
+
+.legal-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.legal-document {
+  display: grid;
+  gap: 12px;
+}
+
+.legal-section-card {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 28px rgba(80, 49, 31, 0.05);
+}
+
+.legal-section-card h2 {
+  font-family: Manrope, Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 1.25;
+}
+
 .stories-page {
   display: grid;
   gap: 24px;
@@ -4604,6 +4636,7 @@ body {
 .telegram-mini-app .featured-grid,
 .telegram-mini-app .requests-grid,
 .telegram-mini-app .banner-grid,
+.telegram-mini-app .legal-summary-grid,
 .telegram-mini-app .trust-strip,
 .telegram-mini-app .two-column-blocks,
 .telegram-mini-app .collection-stats,
@@ -4654,6 +4687,7 @@ body {
 .telegram-mini-app .request-card,
 .telegram-mini-app .request-card-compact,
 .telegram-mini-app .info-banner,
+.telegram-mini-app .legal-section-card,
 .telegram-mini-app .collection-card,
 .telegram-mini-app .report-card,
 .telegram-mini-app .soft-card,
@@ -5022,6 +5056,15 @@ body {
 .telegram-mini-app .stories-grid,
 .telegram-mini-app .dashboard-stats {
   gap: 10px;
+}
+
+.telegram-mini-app .legal-section-card {
+  padding: 14px;
+  border-radius: 19px;
+}
+
+.telegram-mini-app .legal-section-card h2 {
+  font-size: 16px;
 }
 
 .telegram-mini-app .step-card,
