@@ -715,6 +715,8 @@ function Field({ name, label, type = "text", placeholder = "", required = false 
 
 const calendarMonths = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
 const calendarWeekdays = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+const currentCalendarYear = new Date().getFullYear();
+const calendarYears = Array.from({ length: 111 }, (_, index) => currentCalendarYear + 10 - index);
 
 function formatDateValue(date: Date) {
   const year = date.getFullYear();
@@ -737,6 +739,7 @@ function formatDateLabel(value: string) {
 function DateField({ name, label, required = false }: { name: string; label: string; required?: boolean }) {
   const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
+  const [yearPickerOpen, setYearPickerOpen] = useState(false);
   const [viewDate, setViewDate] = useState(() => new Date());
   const rootRef = useRef<HTMLDivElement>(null);
   const inputId = `date-${label.replace(/[^a-zA-Zа-яА-Я0-9]+/g, "-").toLowerCase()}`;
@@ -780,14 +783,25 @@ function DateField({ name, label, required = false }: { name: string; label: str
     };
   }, []);
 
+  useEffect(() => {
+    if (!open) setYearPickerOpen(false);
+  }, [open]);
+
   const changeMonth = (direction: number) => {
+    setYearPickerOpen(false);
     setViewDate((current) => new Date(current.getFullYear(), current.getMonth() + direction, 1));
+  };
+
+  const changeYear = (year: number) => {
+    setViewDate((current) => new Date(year, current.getMonth(), 1));
+    setYearPickerOpen(false);
   };
 
   const selectDate = (date: Date) => {
     setValue(formatDateValue(date));
     setViewDate(date);
     setOpen(false);
+    setYearPickerOpen(false);
   };
 
   return (
@@ -823,7 +837,35 @@ function DateField({ name, label, required = false }: { name: string; label: str
             <button type="button" className="date-nav date-nav-prev" aria-label="Предыдущий месяц" onClick={() => changeMonth(-1)}>
               <Icon name="chevron" />
             </button>
-            <strong>{calendarMonths[viewDate.getMonth()]} {viewDate.getFullYear()}</strong>
+            <div className="date-picker-title">
+              <strong>{calendarMonths[viewDate.getMonth()]}</strong>
+              <button
+                type="button"
+                className={`date-year-trigger ${yearPickerOpen ? "is-open" : ""}`}
+                aria-haspopup="listbox"
+                aria-expanded={yearPickerOpen}
+                onClick={() => setYearPickerOpen((current) => !current)}
+              >
+                {viewDate.getFullYear()}
+                <Icon name="chevron" />
+              </button>
+              {yearPickerOpen ? (
+                <div className="date-year-panel" role="listbox" aria-label="Выберите год">
+                  {calendarYears.map((year) => (
+                    <button
+                      key={year}
+                      type="button"
+                      className={`date-year-option ${year === viewDate.getFullYear() ? "selected" : ""}`}
+                      role="option"
+                      aria-selected={year === viewDate.getFullYear()}
+                      onClick={() => changeYear(year)}
+                    >
+                      {year}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
             <button type="button" className="date-nav date-nav-next" aria-label="Следующий месяц" onClick={() => changeMonth(1)}>
               <Icon name="chevron" />
             </button>
