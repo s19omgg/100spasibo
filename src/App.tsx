@@ -140,6 +140,7 @@ const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee75
 const ADMIN_SESSION_KEY = "100spasibo:admin-unlocked";
 const ONBOARDING_KEY = "100spasibo:onboarding-seen";
 const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
+const AUTHOR_DONATE_URL = TELEGRAM_CONTACT_URL;
 const REQUESTS_PER_PAGE = 8;
 
 declare global {
@@ -336,6 +337,7 @@ export default function App() {
       );
     }
     if (path === "/safety") return <SafetyPage />;
+    if (path === "/support-author") return <SupportAuthorPage onNavigate={navigate} />;
     if (path === "/privacy") return <PrivacyPage onNavigate={navigate} />;
     if (path === "/terms") return <TermsPage onNavigate={navigate} />;
     if (path === "/faq") return <FaqPage />;
@@ -516,6 +518,18 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
         <TrustCard icon="shield" title="Документы проверены" text="Каждая заявка проходит ручную проверку модераторами платформы." />
         <TrustCard icon="card" title="Деньги идут напрямую получателю" text="Мы не удерживаем средства — вы помогаете человеку напрямую." />
         <TrustCard icon="video" title="Есть отчетность" text="Получатель показывает результат, а вы видите, как ваша помощь работает." />
+      </section>
+
+      <section className="section shell author-support-strip">
+        <div>
+          <Badge tone="mint" icon="heart">Поддержать автора</Badge>
+          <h2>Помочь развивать 100spasibo</h2>
+          <p>Небольшая поддержка помогает уделять проекту больше времени, улучшать мини-апп и делать платформу понятнее.</p>
+        </div>
+        <Button variant="soft" onClick={() => onNavigate("/support-author")}>
+          <Icon name="spark" />
+          Узнать историю
+        </Button>
       </section>
     </>
   );
@@ -1530,6 +1544,65 @@ function SafetyPage() {
         Платформа не принимает и не распределяет денежные средства. Переводы осуществляются напрямую от помогающего
         пользователя к получателю помощи.
       </div>
+    </section>
+  );
+}
+
+function SupportAuthorPage({ onNavigate }: { onNavigate: NavigateFn }) {
+  return (
+    <section className="page shell support-author-page">
+      <button className="back-link" type="button" onClick={() => onNavigate("/")}>
+        <Icon name="arrowLeft" />
+        На главную
+      </button>
+
+      <article className="support-author-hero">
+        <div>
+          <Badge tone="mint" icon="heart">Поддержать автора</Badge>
+          <h1>История 100spasibo началась с простой мысли</h1>
+          <p>
+            Даже 100 рублей могут стать частью большой помощи, если вокруг одной истории собирается много неравнодушных
+            людей.
+          </p>
+        </div>
+        <span className="support-author-mark">
+          <BrandMark />
+        </span>
+      </article>
+
+      <div className="support-story-grid">
+        <section className="support-story-card">
+          <span><Icon name="spark" /></span>
+          <h2>Почему я сделал это приложение</h2>
+          <p>
+            Я хотел собрать понятный и теплый интерфейс, где человеку не страшно попросить помощи, а тому, кто помогает,
+            видно, кому именно он переводит деньги и какой результат получился после сбора.
+          </p>
+        </section>
+        <section className="support-story-card">
+          <span><Icon name="shield" /></span>
+          <h2>Что важно в проекте</h2>
+          <p>
+            100spasibo не принимает деньги на себя. Идея в прямой поддержке: заявка проходит проверку, человек получает
+            помощь напрямую, а после закрытия сбора появляется отчет.
+          </p>
+        </section>
+      </div>
+
+      <section className="support-donate-card">
+        <div>
+          <Badge icon="telegram">Донат автору</Badge>
+          <h2>Если хочется поддержать развитие</h2>
+          <p>
+            Поддержка автора помогает продолжать работу над интерфейсом, админкой, отчетами и следующими версиями
+            мини-приложения.
+          </p>
+        </div>
+        <a className="button button-primary big wide" href={AUTHOR_DONATE_URL} target="_blank" rel="noreferrer">
+          <Icon name="heart" filled />
+          Поддержать автора
+        </a>
+      </section>
     </section>
   );
 }
