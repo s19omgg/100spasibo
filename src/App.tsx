@@ -108,7 +108,7 @@ const completedStories = [
 
 const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee754e402be74953f";
 const ADMIN_SESSION_KEY = "100spasibo:admin-unlocked";
-const TELEGRAM_CONTACT_URL = "https://t.me/100spasibo";
+const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
 const REQUESTS_PER_PAGE = 8;
 
 declare global {

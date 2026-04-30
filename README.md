@@ -33,7 +33,7 @@ React + TypeScript MVP для теплого Telegram Mini App платформ�
 4. Указать текст кнопки, например `Открыть 100spasibo`.
 5. Указать Web App URL: `https://s19omgg.github.io/100spasibo/`.
 
-Контакт поддержки внутри мини-приложения: `https://t.me/100spasibo`.
+Контакт поддержки внутри мини-приложения: `https://t.me/stospasibo?direct`.
 
 ## Админка и заявки
 

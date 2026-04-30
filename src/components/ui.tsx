@@ -7,7 +7,7 @@ import type { HelpRequest } from "../data/requests";
 import { formatRubles, getPercent, requests } from "../data/requests";
 
 export type NavigateFn = (path: string) => void;
-const TELEGRAM_CONTACT_URL = "https://t.me/100spasibo";
+const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
 
 type IconName =
   | "heart"
