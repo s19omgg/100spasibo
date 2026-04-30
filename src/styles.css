@@ -4920,6 +4920,10 @@ body {
   padding-inline: 10px;
 }
 
+.telegram-mini-app .hero.shell {
+  padding-inline: 0;
+}
+
 .telegram-topbar {
   width: min(100%, 390px);
   gap: 8px;
