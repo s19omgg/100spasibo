@@ -52,6 +52,7 @@ const completedStories = [
       "Мария записала короткий отчет: показала квитанцию об оплате задолженности и спокойно объяснила, как переводы помогли закрыть вопрос со светом и теплом дома.",
     gratitude:
       "Спасибо всем, кто откликнулся. Для меня это было не просто про деньги, а про чувство, что рядом есть люди, которым не все равно.",
+    telegramPostUrl: "https://t.me/stospasibo/12",
   },
   {
     id: "igor",
@@ -71,6 +72,7 @@ const completedStories = [
       "В видео Игорь показывает чек об оплате аренды и рассказывает, что смог сохранить жилье на время выхода на новую работу.",
     gratitude:
       "Спасибо каждому за доверие. Когда сумма собралась, я впервые за долгое время смог нормально выдохнуть и спокойно выйти на работу.",
+    telegramPostUrl: "https://t.me/stospasibo/13",
   },
   {
     id: "dmitry",
@@ -90,6 +92,7 @@ const completedStories = [
       "Дмитрий показывает счет за обучение и подтверждение платежа, а также благодарит людей, которые помогли не прерывать семестр.",
     gratitude:
       "Я очень благодарен всем, кто помог. Отдельное спасибо за маленькие переводы: именно они в итоге собрали всю сумму.",
+    telegramPostUrl: "https://t.me/stospasibo/14",
   },
   {
     id: "sergey",
@@ -109,6 +112,7 @@ const completedStories = [
       "Сергей показывает чеки за лекарства и рассказывает, что курс восстановления удалось начать вовремя, без переноса процедур.",
     gratitude:
       "Спасибо за помощь без давления и лишних вопросов. Мне очень важно было почувствовать, что просьба о поддержке не делает человека слабым.",
+    telegramPostUrl: "https://t.me/stospasibo/15",
   },
   {
     id: "olga",
@@ -128,6 +132,7 @@ const completedStories = [
       "Ольга записала отчет с подтверждением оплаты просрочки и объяснила, что новые начисления удалось остановить.",
     gratitude:
       "Спасибо всем за спокойную поддержку. Я боялась, что меня будут осуждать, но получила очень теплые сообщения и реальную помощь.",
+    telegramPostUrl: "https://t.me/stospasibo/16",
   },
 ];
 
@@ -1425,15 +1430,30 @@ function StoryDetailPage({ id, onNavigate }: { id: string | undefined; onNavigat
       </article>
 
       <section className="story-video-report">
-        <div className="story-video-frame">
-          <span className="play-button"><Icon name="play" /></span>
+        <a
+          className="story-video-frame"
+          href={story.telegramPostUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={(event) => {
+            const webApp = window.Telegram?.WebApp;
+            if (!webApp?.openTelegramLink) return;
+            event.preventDefault();
+            webApp.openTelegramLink(story.telegramPostUrl);
+          }}
+        >
+          <span className="story-video-icon"><Icon name="telegram" /></span>
           <div>
-            <strong>Видеоотчет</strong>
-            <span>{story.closedAt}</span>
+            <strong>Пост с видеоотчетом</strong>
+            <small>{story.closedAt} · Telegram-канал 100spasibo</small>
           </div>
-        </div>
+          <span className="story-video-open">
+            Открыть пост
+            <Icon name="telegram" />
+          </span>
+        </a>
         <div className="story-video-copy">
-          <Badge tone="mint" icon="video">Отчет опубликован</Badge>
+          <Badge tone="mint" icon="telegram">Отчет опубликован в Telegram</Badge>
           <h2>Как была использована помощь</h2>
           <p>{story.videoReport}</p>
         </div>
