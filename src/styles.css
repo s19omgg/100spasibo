@@ -440,6 +440,22 @@ p {
   font-size: 15px;
 }
 
+.social-proof-empty > span {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  color: var(--mint-strong);
+  background: var(--mint-soft);
+  border-radius: 50%;
+}
+
+.social-proof-empty .icon {
+  width: 22px;
+  height: 22px;
+}
+
 .avatar-stack {
   display: flex;
   flex: 0 0 auto;
@@ -634,6 +650,42 @@ p {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
+}
+
+.empty-state-card {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+
+.empty-state-card > span {
+  width: 62px;
+  height: 62px;
+  display: grid;
+  place-items: center;
+  color: var(--coral);
+  background: var(--peach);
+  border-radius: 50%;
+}
+
+.empty-state-card h3 {
+  font-size: 22px;
+}
+
+.empty-state-card p {
+  max-width: 760px;
+  margin-top: 5px;
+  color: #625c56;
+}
+
+.empty-state-card .button {
+  width: max-content;
 }
 
 .request-card {
@@ -2384,6 +2436,40 @@ textarea {
   color: var(--muted);
   font-size: 13px;
   font-weight: 800;
+}
+
+.stories-empty-card {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+  padding: 30px;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(255, 227, 216, 0.72), transparent 17rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(234, 248, 241, 0.68));
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+
+.stories-empty-card > span {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  color: var(--coral);
+  background: var(--peach);
+  border-radius: 24px;
+}
+
+.stories-empty-card h2 {
+  max-width: 680px;
+  font-size: 42px;
+}
+
+.stories-empty-card p {
+  max-width: 760px;
+  color: #5b5550;
+  font-size: 17px;
 }
 
 .story-featured {
@@ -4566,6 +4652,10 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .empty-state-card {
+    grid-template-columns: 1fr;
+  }
+
   .send-video-card .button {
     width: 100%;
   }
@@ -4630,6 +4720,32 @@ textarea {
   .video-instruction-list li > span {
     width: 34px;
     height: 34px;
+  }
+
+  .empty-state-card,
+  .stories-empty-card {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .empty-state-card > span,
+  .stories-empty-card > span {
+    width: 56px;
+    height: 56px;
+    border-radius: 20px;
+  }
+
+  .empty-state-card h3 {
+    font-size: 19px;
+  }
+
+  .stories-empty-card h2 {
+    font-size: 30px;
+  }
+
+  .empty-state-card .button,
+  .stories-empty-card .button {
+    width: 100%;
   }
 
   .author-support-strip {
@@ -5478,6 +5594,8 @@ body {
   .telegram-mini-app .story-video-report,
   .telegram-mini-app .story-thanks-card,
   .telegram-mini-app .video-application-card,
+  .telegram-mini-app .empty-state-card,
+  .telegram-mini-app .stories-empty-card,
   .telegram-mini-app .stories-summary,
   .telegram-mini-app .stories-cta,
   .telegram-mini-app .admin-access-card,
@@ -5897,7 +6015,9 @@ body {
   .telegram-mini-app .video-application-head p,
   .telegram-mini-app .video-instruction-list p,
   .telegram-mini-app .video-safety-note p,
-  .telegram-mini-app .send-video-card p {
+  .telegram-mini-app .send-video-card p,
+  .telegram-mini-app .empty-state-card p,
+  .telegram-mini-app .stories-empty-card p {
   font-size: 14px;
   line-height: 1.45;
 }
@@ -6212,6 +6332,32 @@ body {
   width: 100%;
   min-height: 50px;
   font-size: 16px;
+}
+
+.telegram-mini-app .empty-state-card,
+.telegram-mini-app .stories-empty-card {
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 20px;
+}
+
+.telegram-mini-app .empty-state-card > span,
+.telegram-mini-app .stories-empty-card > span {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+}
+
+.telegram-mini-app .empty-state-card h3,
+.telegram-mini-app .stories-empty-card h2 {
+  font-size: 21px;
+  line-height: 1.14;
+}
+
+.telegram-mini-app .empty-state-card .button,
+.telegram-mini-app .stories-empty-card .button {
+  width: 100%;
 }
 
 .telegram-mini-app .section.author-support-strip {

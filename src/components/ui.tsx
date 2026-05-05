@@ -4,7 +4,7 @@ import applyIllustration from "../assets/apply-illustration.png";
 import handsIllustration from "../assets/hands-illustration.png";
 import homeIllustration from "../assets/home-illustration.png";
 import type { HelpRequest } from "../data/requests";
-import { formatRubles, getPercent, requests } from "../data/requests";
+import { formatRubles, getPercent } from "../data/requests";
 
 export type NavigateFn = (path: string) => void;
 const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
@@ -995,5 +995,3 @@ function ApplyIllustration() {
     </div>
   );
 }
-
-export const catalogCount = requests.length;

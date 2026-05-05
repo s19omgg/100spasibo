@@ -19,8 +19,7 @@ import {
   WatercolorHero,
   type NavigateFn,
 } from "./components/ui";
-import annaPhoto from "./assets/anna-photo.png";
-import { formatRubles, getPercent, requests as mockRequests, type HelpRequest } from "./data/requests";
+import { formatRubles, type HelpRequest } from "./data/requests";
 import {
   isBackendConfigured,
   listApplications,
@@ -30,109 +29,6 @@ import {
 } from "./lib/applications";
 import { getBrowserPath, getRoutePath } from "./lib/routing";
 import "./styles.css";
-
-const completedStories = [
-  {
-    id: "maria",
-    name: "Мария",
-    age: 31,
-    city: "Ростов-на-Дону",
-    image: mockRequests[2].image,
-    category: "Коммунальные платежи",
-    amount: 15000,
-    helpers: 87,
-    closedAt: "Июнь 2024",
-    title: "Дома снова спокойно: свет и тепло оплачены",
-    quote:
-      "Мне помогли закрыть долг по коммунальным платежам. Я показала оплату на видео и до сих пор пересматриваю сообщения поддержки.",
-    result: "Задолженность погашена напрямую по реквизитам Марии. Видеоотчет и подтверждение оплаты опубликованы после закрытия сбора.",
-    videoReport:
-      "Мария записала короткий отчет: показала квитанцию об оплате задолженности и спокойно объяснила, как переводы помогли закрыть вопрос со светом и теплом дома.",
-    gratitude:
-      "Спасибо всем, кто откликнулся. Для меня это было не просто про деньги, а про чувство, что рядом есть люди, которым не все равно.",
-    telegramPostUrl: "https://t.me/stospasibo/12",
-  },
-  {
-    id: "igor",
-    name: "Игорь",
-    age: 29,
-    city: "Новосибирск",
-    image: mockRequests[1].image,
-    category: "Аренда жилья",
-    amount: 30000,
-    helpers: 126,
-    closedAt: "Июль 2024",
-    title: "Игорь сохранил жилье и спокойно вышел на новую работу",
-    quote:
-      "Самое важное было не остаться одному в моменте, когда нужно было просто продержаться один месяц.",
-    result: "Аренда оплачена прямыми переводами получателю. Игорь записал короткий отчет с квитанцией и благодарностью.",
-    videoReport:
-      "В видео Игорь показывает чек об оплате аренды и рассказывает, что смог сохранить жилье на время выхода на новую работу.",
-    gratitude:
-      "Спасибо каждому за доверие. Когда сумма собралась, я впервые за долгое время смог нормально выдохнуть и спокойно выйти на работу.",
-    telegramPostUrl: "https://t.me/stospasibo/13",
-  },
-  {
-    id: "dmitry",
-    name: "Дмитрий",
-    age: 22,
-    city: "Краснодар",
-    image: mockRequests[5].image,
-    category: "Образование",
-    amount: 40000,
-    helpers: 214,
-    closedAt: "Август 2024",
-    title: "Семестр оплачен, учебу не пришлось прерывать",
-    quote:
-      "Я боялся брать академический отпуск, но много маленьких переводов сложились в нужную сумму.",
-    result: "Оплата учебы закрыта. Дмитрий показал счет и подтверждение перевода в видеоотчете.",
-    videoReport:
-      "Дмитрий показывает счет за обучение и подтверждение платежа, а также благодарит людей, которые помогли не прерывать семестр.",
-    gratitude:
-      "Я очень благодарен всем, кто помог. Отдельное спасибо за маленькие переводы: именно они в итоге собрали всю сумму.",
-    telegramPostUrl: "https://t.me/stospasibo/14",
-  },
-  {
-    id: "sergey",
-    name: "Сергей",
-    age: 42,
-    city: "Екатеринбург",
-    image: mockRequests[3].image,
-    category: "Лечение и здоровье",
-    amount: 45000,
-    helpers: 173,
-    closedAt: "Сентябрь 2024",
-    title: "Курс восстановления после операции начался вовремя",
-    quote:
-      "Поддержка пришла очень бережно. Не как жалость, а как спокойное человеческое плечо.",
-    result: "Лекарства и реабилитация оплачены. После сбора Сергей прислал видеоотчет и безопасные подтверждения расходов.",
-    videoReport:
-      "Сергей показывает чеки за лекарства и рассказывает, что курс восстановления удалось начать вовремя, без переноса процедур.",
-    gratitude:
-      "Спасибо за помощь без давления и лишних вопросов. Мне очень важно было почувствовать, что просьба о поддержке не делает человека слабым.",
-    telegramPostUrl: "https://t.me/stospasibo/15",
-  },
-  {
-    id: "olga",
-    name: "Ольга",
-    age: 38,
-    city: "Самара",
-    image: mockRequests[4].image,
-    category: "Долги и кредиты",
-    amount: 60000,
-    helpers: 302,
-    closedAt: "Октябрь 2024",
-    title: "Просрочка закрыта, новые начисления остановлены",
-    quote:
-      "Мне было стыдно просить о помощи, но на платформе я почувствовала, что ситуацию можно решить без осуждения.",
-    result: "Переводы поступали напрямую Ольге. После закрытия она показала оплату и выписку о погашении просрочки.",
-    videoReport:
-      "Ольга записала отчет с подтверждением оплаты просрочки и объяснила, что новые начисления удалось остановить.",
-    gratitude:
-      "Спасибо всем за спокойную поддержку. Я боялась, что меня будут осуждать, но получила очень теплые сообщения и реальную помощь.",
-    telegramPostUrl: "https://t.me/stospasibo/16",
-  },
-];
 
 const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee754e402be74953f";
 const ADMIN_SESSION_KEY = "100spasibo:admin-unlocked";
@@ -166,15 +62,6 @@ async function getSha256(value: string) {
   return Array.from(new Uint8Array(hashBuffer))
     .map((byte) => byte.toString(16).padStart(2, "0"))
     .join("");
-}
-
-function getAgeLabel(age: number) {
-  const lastTwo = age % 100;
-  const last = age % 10;
-  if (lastTwo >= 11 && lastTwo <= 14) return "лет";
-  if (last === 1) return "год";
-  if (last >= 2 && last <= 4) return "года";
-  return "лет";
 }
 
 function getAbsoluteRouteUrl(routePath: string) {
@@ -277,7 +164,7 @@ export default function App() {
   const [publishedRequests, setPublishedRequests] = useState<HelpRequest[]>([]);
   useTelegramMiniApp(path, navigate);
 
-  const allRequests = useMemo(() => [...publishedRequests, ...mockRequests], [publishedRequests]);
+  const allRequests = useMemo(() => [...publishedRequests], [publishedRequests]);
 
   const refreshPublishedRequests = async () => {
     try {
@@ -308,7 +195,7 @@ export default function App() {
     if (path.startsWith("/requests/")) return <RequestDetailPage requests={allRequests} id={path.split("/").pop()} onNavigate={navigate} onToast={showToast} />;
     if (path === "/apply") return <ApplyPage />;
     if (path === "/how-it-works") return <HowItWorksPage onNavigate={navigate} />;
-    if (path.startsWith("/stories/")) return <StoryDetailPage id={path.split("/").pop()} onNavigate={navigate} />;
+    if (path.startsWith("/stories/")) return <StoriesPage onNavigate={navigate} />;
     if (path === "/stories") return <StoriesPage onNavigate={navigate} />;
     if (path === "/admin") {
       return adminUnlocked ? (
@@ -473,13 +360,9 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
               Хочу помочь
             </Button>
           </div>
-          <div className="social-proof">
-            <div className="avatar-stack">
-              {requests.slice(0, 5).map((item) => (
-                <img key={item.id} src={item.image} alt="" width="44" height="44" />
-              ))}
-            </div>
-            <p>Люди по всей стране поддерживают друг друга здесь каждый день.</p>
+          <div className="social-proof social-proof-empty">
+            <span><Icon name="spark" /></span>
+            <p>Первые видео-заявки скоро появятся на платформе.</p>
           </div>
         </div>
         <WatercolorHero />
@@ -501,15 +384,25 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
         <div className="section-row">
           <div>
             <h2>Кому нужна помощь прямо сейчас</h2>
-            <p>Выберите конкретного человека и помогите той суммой, которая сейчас комфортна.</p>
+            <p>Пока опубликованных заявок нет. Как только мы проверим первые видео-заявки, они появятся здесь.</p>
           </div>
           <Button variant="soft" onClick={() => onNavigate("/requests")}>Смотреть все заявки</Button>
         </div>
-        <div className="featured-grid">
-          {requests.slice(0, 3).map((request) => (
-            <RequestCard key={request.id} request={request} onNavigate={onNavigate} compact />
-          ))}
-        </div>
+        {requests.length ? (
+          <div className="featured-grid">
+            {requests.slice(0, 3).map((request) => (
+              <RequestCard key={request.id} request={request} onNavigate={onNavigate} compact />
+            ))}
+          </div>
+        ) : (
+          <EmptyStateCard
+            icon="heart"
+            title="Заявок пока нет"
+            text="Мы только готовим первые истории к публикации. Скоро здесь появятся люди, которым можно будет помочь напрямую."
+            actionLabel="Перейти во вкладку «Помочь»"
+            onAction={() => onNavigate("/requests")}
+          />
+        )}
       </section>
 
       <section className="section shell trust-strip">
@@ -618,31 +511,42 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
               <RequestCard key={request.id} request={request} onNavigate={onNavigate} />
             ))}
           </div>
-          <nav className="pagination" aria-label="Страницы заявок">
-            <button type="button" aria-label="Предыдущая страница" disabled={page === 1} onClick={() => changePage(page - 1)}>
-              ←
-            </button>
-            {paginationItems.map((item, index) =>
-              item === "ellipsis" ? (
-                <span key={`ellipsis-${index}`} aria-hidden="true">
-                  ...
-                </span>
-              ) : (
-                <button
-                  key={item}
-                  type="button"
-                  className={item === page ? "active" : ""}
-                  aria-current={item === page ? "page" : undefined}
-                  onClick={() => changePage(item)}
-                >
-                  {item}
-                </button>
-              ),
-            )}
-            <button type="button" aria-label="Следующая страница" disabled={page === totalPages} onClick={() => changePage(page + 1)}>
-              →
-            </button>
-          </nav>
+          {!visible.length ? (
+            <EmptyStateCard
+              icon="heart"
+              title={query ? "По этому поиску заявок нет" : "Заявок пока нет"}
+              text={query ? "Попробуйте изменить запрос. Сейчас на платформе еще нет опубликованных видео-заявок." : "Мы еще не опубликовали первые проверенные видео-заявки. Как только они появятся, здесь можно будет выбрать человека и помочь напрямую."}
+              actionLabel="Подать видео-заявку"
+              onAction={() => onNavigate("/apply")}
+            />
+          ) : null}
+          {filteredRequests.length ? (
+            <nav className="pagination" aria-label="Страницы заявок">
+              <button type="button" aria-label="Предыдущая страница" disabled={page === 1} onClick={() => changePage(page - 1)}>
+                ←
+              </button>
+              {paginationItems.map((item, index) =>
+                item === "ellipsis" ? (
+                  <span key={`ellipsis-${index}`} aria-hidden="true">
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    key={item}
+                    type="button"
+                    className={item === page ? "active" : ""}
+                    aria-current={item === page ? "page" : undefined}
+                    onClick={() => changePage(item)}
+                  >
+                    {item}
+                  </button>
+                ),
+              )}
+              <button type="button" aria-label="Следующая страница" disabled={page === totalPages} onClick={() => changePage(page + 1)}>
+                →
+              </button>
+            </nav>
+          ) : null}
         </div>
       </div>
     </section>
@@ -650,12 +554,30 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
 }
 
 function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: HelpRequest[]; id: string | undefined; onNavigate: NavigateFn; onToast: (message: string) => void }) {
-  const request = requests.find((item) => item.id === id) ?? requests[0] ?? mockRequests[0];
-  const targetAmount = request.id === "anna" ? 20000 : request.targetAmount;
-  const collectedAmount = request.id === "anna" ? 13000 : request.collectedAmount;
+  const request = requests.find((item) => item.id === id);
+  if (!request) {
+    return (
+      <section className="page shell detail-page">
+        <button className="back-link" type="button" onClick={() => onNavigate("/requests")}>
+          <Icon name="arrowLeft" />
+          Назад к заявкам
+        </button>
+        <EmptyStateCard
+          icon="heart"
+          title="Эта заявка больше не опубликована"
+          text="Сейчас на платформе нет открытых заявок. Когда появятся первые проверенные видео-заявки, они будут доступны во вкладке «Помочь»."
+          actionLabel="Перейти во вкладку «Помочь»"
+          onAction={() => onNavigate("/requests")}
+        />
+      </section>
+    );
+  }
+
+  const targetAmount = request.targetAmount;
+  const collectedAmount = request.collectedAmount;
   const percent = Math.min(100, Math.round((collectedAmount / targetAmount) * 100));
   const remaining = targetAmount - collectedAmount;
-  const detailImage = request.id === "anna" ? annaPhoto : request.image;
+  const detailImage = request.image;
 
   return (
     <section className="page shell detail-page">
@@ -1284,188 +1206,46 @@ function Notice({ icon, title, text }: { icon: "video" | "shield" | "heart" | "l
   );
 }
 
-function StoriesPage({ onNavigate }: { onNavigate: NavigateFn }) {
-  const [mainStory, ...otherStories] = completedStories;
-  const totalHelp = completedStories.reduce((sum, item) => sum + item.amount, 0);
-  const totalHelpers = completedStories.reduce((sum, item) => sum + item.helpers, 0);
+function EmptyStateCard({ icon, title, text, actionLabel, onAction }: { icon: "heart" | "video" | "shield"; title: string; text: string; actionLabel: string; onAction: () => void }) {
+  return (
+    <section className="empty-state-card">
+      <span><Icon name={icon} /></span>
+      <div>
+        <h3>{title}</h3>
+        <p>{text}</p>
+      </div>
+      <Button variant="soft" onClick={onAction}>{actionLabel}</Button>
+    </section>
+  );
+}
 
+function StoriesPage({ onNavigate }: { onNavigate: NavigateFn }) {
   return (
     <section className="page shell stories-page">
       <div className="stories-hero">
         <div>
           <Badge icon="heart">Истории помощи</Badge>
-          <h1>Люди, которым уже помогли</h1>
+          <h1>Первые истории еще впереди</h1>
           <p>
-            Здесь собраны завершенные истории: помощь дошла напрямую до человека, документы проверены, а после закрытия
-            сбора получатель показал результат.
+            Мы пока никому не помогли через платформу, поэтому не будем показывать выдуманные отчеты. Как только первая
+            помощь будет оказана и получатель пришлет отчет, история появится здесь.
           </p>
         </div>
-        <div className="stories-summary">
-          <div>
-            <strong>{completedStories.length}</strong>
-            <span>завершенных историй</span>
-          </div>
-          <div>
-            <strong>{formatRubles(totalHelp)}</strong>
-            <span>помощи напрямую</span>
-          </div>
-          <div>
-            <strong>{totalHelpers}</strong>
-            <span>человек помогли</span>
-          </div>
-        </div>
       </div>
 
-      <article className="story-featured">
-        <img src={mainStory.image} alt={`${mainStory.name}, ${mainStory.city}`} width="420" height="420" />
-        <div className="story-featured-copy">
-          <div className="story-meta">
-            <Badge tone="mint" icon="shield">Сбор закрыт</Badge>
-            <span>{mainStory.closedAt}</span>
-          </div>
-          <h2>{mainStory.title}</h2>
-          <blockquote>{mainStory.quote}</blockquote>
-          <div className="story-result">
-            <Icon name="video" />
-            <p>{mainStory.result}</p>
-          </div>
-          <div className="story-stats">
-            <span>{mainStory.name}, {mainStory.age} {getAgeLabel(mainStory.age)}, {mainStory.city}</span>
-            <span>{formatRubles(mainStory.amount)}</span>
-            <span>{mainStory.helpers} помощников</span>
-          </div>
-          <Button variant="soft" onClick={() => onNavigate(`/stories/${mainStory.id}`)}>
-            <Icon name="play" />
-            Смотреть видеоотчет
-          </Button>
-        </div>
-      </article>
-
-      <div className="stories-grid">
-        {otherStories.map((story) => (
-          <AppLink className="story-card story-card-link" key={story.id} to={`/stories/${story.id}`} onNavigate={onNavigate}>
-            <div className="story-card-head">
-              <img src={story.image} alt={`${story.name}, ${story.city}`} width="112" height="112" loading="lazy" />
-              <div>
-                <Badge tone="mint" icon="check">Помощь получена</Badge>
-                <h2>{story.name}, {story.age}</h2>
-                <p>{story.city} · {story.category}</p>
-              </div>
-            </div>
-            <h3>{story.title}</h3>
-            <blockquote>{story.quote}</blockquote>
-            <div className="story-card-result">
-              <Icon name="video" />
-              <span>Видеоотчет опубликован</span>
-            </div>
-            <div className="story-card-foot">
-              <strong>{formatRubles(story.amount)}</strong>
-              <span>{story.helpers} помощников</span>
-            </div>
-            <span className="story-card-open">
-              Открыть историю
-              <Icon name="play" />
-            </span>
-          </AppLink>
-        ))}
-      </div>
-
-      <div className="stories-cta">
-        <div>
-          <h2>Новая история может начаться со 100 рублей</h2>
-          <p>Выберите человека из проверенного каталога и помогите напрямую той суммой, которая вам комфортна.</p>
-        </div>
+      <section className="stories-empty-card">
+        <span><Icon name="spark" /></span>
+        <Badge tone="mint" icon="shield">Честный старт</Badge>
+        <h2>Пока здесь нет историй помощи</h2>
+        <p>
+          Это нормально: проект только начинает путь. Скоро появятся первые проверенные видео-заявки, люди смогут помочь
+          напрямую, а после закрытия сбора мы опубликуем настоящий отчет.
+        </p>
         <Button onClick={() => onNavigate("/requests")}>
           <Icon name="heart" filled />
-          Хочу помочь
+          Перейти во вкладку «Помочь»
         </Button>
-      </div>
-    </section>
-  );
-}
-
-function StoryDetailPage({ id, onNavigate }: { id: string | undefined; onNavigate: NavigateFn }) {
-  const story = completedStories.find((item) => item.id === id) ?? completedStories[0];
-
-  return (
-    <section className="page shell story-detail-page">
-      <button className="back-link" type="button" onClick={() => onNavigate("/stories")}>
-        <Icon name="arrowLeft" />
-        Назад к историям
-      </button>
-
-      <article className="story-detail-hero">
-        <img src={story.image} alt={`${story.name}, ${story.city}`} width="420" height="420" />
-        <div>
-          <Badge tone="mint" icon="check">Помощь получена</Badge>
-          <h1>{story.title}</h1>
-          <p>{story.name}, {story.age} {getAgeLabel(story.age)}, {story.city} · {story.category}</p>
-          <blockquote>{story.quote}</blockquote>
-        </div>
-      </article>
-
-      <section className="story-video-report">
-        <a
-          className="story-video-frame"
-          href={story.telegramPostUrl}
-          target="_blank"
-          rel="noreferrer"
-          onClick={(event) => {
-            const webApp = window.Telegram?.WebApp;
-            if (!webApp?.openTelegramLink) return;
-            event.preventDefault();
-            webApp.openTelegramLink(story.telegramPostUrl);
-          }}
-        >
-          <span className="story-video-icon"><Icon name="telegram" /></span>
-          <div>
-            <strong>Пост с видеоотчетом</strong>
-            <small>{story.closedAt} · Telegram-канал 100spasibo</small>
-          </div>
-          <span className="story-video-open">
-            Открыть пост
-            <Icon name="telegram" />
-          </span>
-        </a>
-        <div className="story-video-copy">
-          <Badge tone="mint" icon="telegram">Отчет опубликован в Telegram</Badge>
-          <h2>Как была использована помощь</h2>
-          <p>{story.videoReport}</p>
-        </div>
       </section>
-
-      <section className="story-thanks-card">
-        <span className="story-thanks-icon"><Icon name="heart" /></span>
-        <div>
-          <h2>Спасибо всем, кто помог</h2>
-          <blockquote>{story.gratitude}</blockquote>
-        </div>
-      </section>
-
-      <section className="collection-card story-amount-card">
-        <h2>Информация о сумме</h2>
-        <div className="collection-stats">
-          <div><span>Собрано</span><strong>{formatRubles(story.amount)}</strong></div>
-          <div><span>Помогли</span><strong>{story.helpers}</strong></div>
-          <div><span>Сбор закрыт</span><strong>{story.closedAt}</strong></div>
-        </div>
-        <ProgressBar percent={100} />
-        <div className="collection-bottom">
-          <strong>100%</strong>
-          <span><Icon name="check" /> Средства переведены напрямую получателю</span>
-        </div>
-      </section>
-
-      <div className="stories-cta">
-        <div>
-          <h2>Можно помочь следующему человеку</h2>
-          <p>Даже небольшая сумма становится частью большой помощи, когда людей много.</p>
-        </div>
-        <Button onClick={() => onNavigate("/requests")}>
-          <Icon name="heart" filled />
-          Хочу помочь
-        </Button>
-      </div>
     </section>
   );
 }
