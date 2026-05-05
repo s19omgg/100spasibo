@@ -140,7 +140,7 @@ const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee75
 const ADMIN_SESSION_KEY = "100spasibo:admin-unlocked";
 const ONBOARDING_KEY = "100spasibo:onboarding-seen";
 const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
-const AUTHOR_DONATE_URL = TELEGRAM_CONTACT_URL;
+const AUTHOR_DONATE_URL = "https://pay.cloudtips.ru/p/dab39b3d";
 const REQUESTS_PER_PAGE = 8;
 
 declare global {
@@ -481,7 +481,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
                 <img key={item.id} src={item.image} alt="" width="44" height="44" />
               ))}
             </div>
-            <p>Уже более 28 000 человек получили поддержку.</p>
+            <p>Люди по всей стране поддерживают друг друга здесь каждый день.</p>
           </div>
         </div>
         <WatercolorHero />

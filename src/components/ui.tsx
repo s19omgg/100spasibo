@@ -665,8 +665,8 @@ export function RequestCard({ request, onNavigate, compact = false }: { request:
 export function StepCard({ index, icon, title, text }: { index: number; icon: IconName; title: string; text: string }) {
   return (
     <article className="step-card">
-      <span className="step-index">{index}</span>
       <span className="step-icon">
+        <span className="step-index">{index}</span>
         <Icon name={icon} />
       </span>
       <div>

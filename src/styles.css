@@ -582,8 +582,9 @@ p {
 
 .step-index {
   position: absolute;
-  left: 18px;
-  top: 16px;
+  left: -10px;
+  top: -10px;
+  z-index: 2;
   width: 28px;
   height: 28px;
   display: grid;
@@ -596,6 +597,7 @@ p {
 
 .step-icon,
 .trust-icon {
+  position: relative;
   width: 70px;
   height: 70px;
   display: grid;
@@ -761,10 +763,10 @@ p {
 }
 
 .author-support-strip {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 22px;
   margin-bottom: 26px;
   padding: 22px 24px;
   background: linear-gradient(135deg, rgba(255, 227, 216, 0.72), rgba(234, 248, 241, 0.76));
@@ -773,19 +775,40 @@ p {
   box-shadow: var(--shadow);
 }
 
+.author-support-strip > div {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.author-support-strip .badge {
+  width: fit-content;
+  white-space: nowrap;
+}
+
 .author-support-strip h2 {
-  margin-top: 10px;
-  font-size: 28px;
+  margin: 0;
+  font-family: Manrope, Inter, Nunito Sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.02;
 }
 
 .author-support-strip p {
-  max-width: 660px;
-  margin-top: 6px;
+  max-width: 62ch;
+  margin: 0;
   color: #5b5550;
+  font-size: 17px;
+  line-height: 1.54;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: pretty;
 }
 
 .author-support-strip .button {
   flex: 0 0 auto;
+  align-self: end;
 }
 
 .catalog-hero,
@@ -4298,8 +4321,8 @@ textarea {
 }
 
 .steps-grid .step-index {
-  top: 16px;
-  left: 18px;
+  top: -10px;
+  left: -10px;
   z-index: 2;
   width: 28px;
   height: 28px;
@@ -4346,8 +4369,8 @@ textarea {
   }
 
   .steps-grid .step-index {
-    top: 20px;
-    left: 18px;
+    top: -9px;
+    left: -9px;
   }
 }
 
@@ -4878,11 +4901,13 @@ body {
 .telegram-mini-app {
   width: 100%;
   min-height: 100vh;
+  position: relative;
   overflow-x: hidden;
   padding: max(10px, env(safe-area-inset-top)) 0 calc(84px + env(safe-area-inset-bottom));
   background:
-    radial-gradient(circle at 8% 0%, rgba(255, 227, 216, 0.72), transparent 18rem),
-    radial-gradient(circle at 94% 12%, rgba(234, 248, 241, 0.78), transparent 18rem),
+    linear-gradient(180deg, #fff8f2 0, #fff8f2 102px, rgba(255, 248, 242, 0) 230px),
+    radial-gradient(circle at 12% 260px, rgba(255, 227, 216, 0.42), transparent 15rem),
+    radial-gradient(circle at 94% 280px, rgba(234, 248, 241, 0.54), transparent 16rem),
     var(--bg);
   color: var(--text);
 }
@@ -4918,8 +4943,21 @@ body {
   gap: 12px;
   margin: 0 auto;
   padding: 9px 12px 7px;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(18px);
+  background: transparent;
+  isolation: isolate;
+}
+
+.telegram-topbar::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -34px;
+  z-index: -1;
+  width: 100vw;
+  height: calc(100% + 54px);
+  background: linear-gradient(180deg, #fff8f2 0%, rgba(255, 248, 242, 0.98) 68%, rgba(255, 248, 242, 0) 100%);
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
 .telegram-brand {
@@ -5416,10 +5454,25 @@ body {
   margin-bottom: 14px;
 }
 
+.telegram-mini-app .author-support-strip > div {
+  gap: 12px;
+}
+
 .telegram-mini-app .author-support-strip h2,
 .telegram-mini-app .support-story-card h2,
 .telegram-mini-app .support-donate-card h2 {
   font-size: 21px;
+}
+
+.telegram-mini-app .author-support-strip h2 {
+  font-weight: 900;
+  line-height: 1.12;
+}
+
+.telegram-mini-app .author-support-strip p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .telegram-mini-app .support-author-mark {
@@ -5667,11 +5720,12 @@ body {
 }
 
 .telegram-mini-app .step-index {
-  left: 8px;
-  top: 8px;
-  width: 23px;
-  height: 23px;
-  font-size: 12px;
+  left: -8px;
+  top: -8px;
+  width: 24px;
+  height: 24px;
+  font-size: 13px;
+  line-height: 1;
 }
 
 .telegram-mini-app .request-head {
