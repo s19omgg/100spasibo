@@ -5942,6 +5942,50 @@ body {
   flex-wrap: wrap;
 }
 
+.telegram-mini-app .section.author-support-strip {
+  width: calc(100% - 20px);
+  margin-inline: auto;
+  margin-bottom: 14px;
+  padding: 18px;
+  gap: 14px;
+  border-radius: 24px;
+}
+
+.telegram-mini-app .section.author-support-strip > div {
+  gap: 12px;
+}
+
+.telegram-mini-app .section.author-support-strip .badge {
+  max-width: 100%;
+  padding: 8px 13px;
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.telegram-mini-app .section.author-support-strip h2 {
+  max-width: 100%;
+  font-size: 25px;
+  line-height: 1.16;
+  letter-spacing: 0;
+}
+
+.telegram-mini-app .section.author-support-strip p {
+  max-width: 100%;
+  font-size: 14px;
+  line-height: 1.46;
+}
+
+.telegram-mini-app .section.author-support-strip .button {
+  width: auto;
+  justify-self: start;
+  min-height: 48px;
+  padding: 10px 18px;
+  border-radius: 18px;
+  font-size: 16px;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
 @media (max-width: 360px) {
   .telegram-mini-app .shell {
     padding-inline: 8px;
