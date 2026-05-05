@@ -769,7 +769,6 @@ function FilterGroup({ title, items }: { title: string; items: string[] }) {
 export function DonationPanel({ request, onToast }: { request: HelpRequest; onToast: (message: string) => void }) {
   const [tab, setTab] = useState<"bank" | "sbp">(() => (request.recipient.card ? "bank" : "sbp"));
   const [amount, setAmount] = useState("100");
-  const [receiptName, setReceiptName] = useState("");
   const rows: Array<[string, string]> =
     tab === "bank"
       ? [
@@ -843,33 +842,19 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
         <Icon name="shield" />
         Мы проверяем заявки и публикуем отчеты. Каждый перевод — это реальная помощь.
       </p>
-      <label className={`receipt-upload ${receiptName ? "has-file" : ""}`}>
-        <input
-          type="file"
-          accept=".pdf,.jpg,.jpeg,.png"
-          onChange={(event) => setReceiptName(event.target.files?.[0]?.name ?? "")}
-        />
-        <span className="receipt-upload-icon">
-          <Icon name={receiptName ? "check" : "upload"} />
+      <div className="receipt-telegram-card">
+        <span className="receipt-telegram-icon">
+          <Icon name="telegram" />
         </span>
-        <span>
-          <strong>{receiptName || "Прикрепить чек перевода"}</strong>
-          <small>{receiptName ? "Файл добавлен к подтверждению помощи" : "PDF, JPG или PNG. До 10 МБ"}</small>
-        </span>
-      </label>
-      <Button
-        className="wide big"
-        onClick={() => {
-          if (!receiptName) {
-            onToast("Пожалуйста, прикрепите чек перевода.");
-            return;
-          }
-          onToast("Спасибо. Чек прикреплен, мы отметим помощь после подтверждения.");
-        }}
-      >
-        <Icon name="heart" filled />
-        Я помог
-      </Button>
+        <div>
+          <strong>Отправьте чек нам в Telegram</strong>
+          <small>После проверки чека мы обновим собранную сумму в этой заявке.</small>
+        </div>
+      </div>
+      <a className="telegram-receipt-link" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
+        <Icon name="telegram" />
+        Отправить чек в Telegram
+      </a>
       <p className="security-note">
         <Icon name="lock" />
         Данные защищены и не передаются третьим лицам.

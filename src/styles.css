@@ -1907,74 +1907,68 @@ textarea {
   color: var(--mint-strong);
 }
 
-.receipt-upload {
+.receipt-telegram-card {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 12px;
   align-items: center;
-  min-height: 72px;
-  padding: 13px 14px;
+  padding: 16px;
   color: var(--text);
-  background: rgba(255, 255, 255, 0.86);
-  border: 1px dashed rgba(255, 107, 87, 0.34);
-  border-radius: 14px;
-  cursor: pointer;
-  transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  background: linear-gradient(135deg, rgba(234, 248, 241, 0.92), rgba(255, 241, 232, 0.82));
+  border: 1px solid rgba(94, 155, 131, 0.2);
+  border-radius: 18px;
 }
 
-.receipt-upload:hover,
-.receipt-upload:focus-within {
-  background: var(--warning-soft);
-  border-color: rgba(255, 107, 87, 0.62);
-  box-shadow: 0 0 0 4px rgba(255, 107, 87, 0.1);
-}
-
-.receipt-upload input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-}
-
-.receipt-upload-icon {
+.receipt-telegram-icon {
   width: 44px;
   height: 44px;
   display: grid;
   place-items: center;
-  color: var(--coral);
-  background: var(--peach);
+  color: #fff;
+  background: #2faee8;
   border-radius: 50%;
 }
 
-.receipt-upload span:last-child {
+.receipt-telegram-card div {
   min-width: 0;
   display: grid;
-  gap: 2px;
+  gap: 4px;
 }
 
-.receipt-upload strong {
-  overflow: hidden;
+.receipt-telegram-card strong {
   font-size: 14px;
   line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
-.receipt-upload small {
+.receipt-telegram-card small {
   color: var(--muted);
   font-size: 12px;
   line-height: 1.35;
 }
 
-.receipt-upload.has-file {
-  background: var(--mint-soft);
-  border-color: rgba(94, 155, 131, 0.34);
+.telegram-receipt-link {
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 18px;
+  color: #fff;
+  background: #2faee8;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  box-shadow: 0 14px 28px rgba(47, 174, 232, 0.22);
 }
 
-.receipt-upload.has-file .receipt-upload-icon {
-  color: var(--mint-strong);
-  background: #fff;
+.telegram-receipt-link:hover {
+  background: #229ed9;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 34px rgba(47, 174, 232, 0.28);
 }
 
 .apply-hero {
@@ -6247,7 +6241,8 @@ body {
 }
 
 .telegram-mini-app .upload-box,
-.telegram-mini-app .receipt-upload,
+.telegram-mini-app .receipt-telegram-card,
+.telegram-mini-app .telegram-receipt-link,
 .telegram-mini-app .purpose-note,
 .telegram-mini-app .safe-note,
 .telegram-mini-app .security-note,
@@ -6256,13 +6251,13 @@ body {
 }
 
 .telegram-mini-app .purpose-note,
-.telegram-mini-app .receipt-upload {
+.telegram-mini-app .receipt-telegram-card {
   grid-template-columns: 40px minmax(0, 1fr);
   gap: 10px;
 }
 
 .telegram-mini-app .purpose-note strong,
-.telegram-mini-app .receipt-upload strong {
+.telegram-mini-app .receipt-telegram-card strong {
   font-size: 16px;
 }
 
