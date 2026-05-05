@@ -19,7 +19,7 @@ import {
   WatercolorHero,
   type NavigateFn,
 } from "./components/ui";
-import { formatRubles, type HelpRequest } from "./data/requests";
+import { formatRubles, requests as seedRequests, type HelpRequest } from "./data/requests";
 import {
   isBackendConfigured,
   listApplications,
@@ -164,7 +164,7 @@ export default function App() {
   const [publishedRequests, setPublishedRequests] = useState<HelpRequest[]>([]);
   useTelegramMiniApp(path, navigate);
 
-  const allRequests = useMemo(() => [...publishedRequests], [publishedRequests]);
+  const allRequests = useMemo(() => [...publishedRequests, ...seedRequests], [publishedRequests]);
 
   const refreshPublishedRequests = async () => {
     try {
@@ -338,6 +338,8 @@ function OnboardingOverlay({ onComplete }: { onComplete: (nextPath?: string) => 
 }
 
 function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigate: NavigateFn }) {
+  const hasRequests = requests.length > 0;
+
   return (
     <>
       <section className="hero shell">
@@ -362,7 +364,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           </div>
           <div className="social-proof social-proof-empty">
             <span><Icon name="spark" /></span>
-            <p>Первые видео-заявки скоро появятся на платформе.</p>
+            <p>{hasRequests ? "Открыта первая проверенная видео-заявка. Помощь идет напрямую человеку." : "Первые видео-заявки скоро появятся на платформе."}</p>
           </div>
         </div>
         <WatercolorHero />
@@ -384,7 +386,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
         <div className="section-row">
           <div>
             <h2>Кому нужна помощь прямо сейчас</h2>
-            <p>Пока опубликованных заявок нет. Как только мы проверим первые видео-заявки, они появятся здесь.</p>
+            <p>{hasRequests ? "Выберите человека, которому хотите помочь напрямую." : "Пока опубликованных заявок нет. Как только мы проверим первые видео-заявки, они появятся здесь."}</p>
           </div>
           <Button variant="soft" onClick={() => onNavigate("/requests")}>Смотреть все заявки</Button>
         </div>
@@ -575,9 +577,10 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
 
   const targetAmount = request.targetAmount;
   const collectedAmount = request.collectedAmount;
-  const percent = Math.min(100, Math.round((collectedAmount / targetAmount) * 100));
+  const percent = targetAmount > 0 ? Math.min(100, Math.round((collectedAmount / targetAmount) * 100)) : 0;
   const remaining = targetAmount - collectedAmount;
   const detailImage = request.image;
+  const collectionNote = collectedAmount > 0 ? "Есть первые переводы" : "Сбор только начинается";
 
   return (
     <section className="page shell detail-page">
@@ -594,7 +597,11 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
                 {request.name}, {request.age} года, {request.city}
               </h1>
               <Badge icon="heart">Нужна помощь</Badge>
-              <p>{request.story}</p>
+              <div className="request-story">
+                {request.story.split("\n\n").map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
               <div className="detail-actions">
                 <Button variant="soft" onClick={() => void shareHelpRequest(request, onToast)}>
                   <Icon name="share" />
@@ -619,7 +626,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
             <ProgressBar percent={percent} />
             <div className="collection-bottom">
               <strong>{percent}%</strong>
-              <span><Icon name="users" /> Уже помогли 25 человек</span>
+              <span><Icon name="users" /> {collectionNote}</span>
             </div>
           </section>
 

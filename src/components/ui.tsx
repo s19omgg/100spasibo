@@ -9,6 +9,15 @@ import { formatRubles, getPercent } from "../data/requests";
 export type NavigateFn = (path: string) => void;
 const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
 
+function getRequestCountLabel(count: number) {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (lastTwo >= 11 && lastTwo <= 14) return "заявок";
+  if (last === 1) return "заявку";
+  if (last >= 2 && last <= 4) return "заявки";
+  return "заявок";
+}
+
 type IconName =
   | "heart"
   | "hands"
@@ -736,7 +745,7 @@ export function FilterSidebar({ count }: { count: number }) {
       </div>
       <FilterGroup title="Срочность" items={urgency} />
       <FilterGroup title="Статус проверки" items={["Документы проверены", "На проверке"]} />
-      <Button variant="mint" className="wide">Показать {count} заявки</Button>
+      <Button variant="mint" className="wide">Показать {count} {getRequestCountLabel(count)}</Button>
     </aside>
   );
 }
@@ -758,15 +767,17 @@ function FilterGroup({ title, items }: { title: string; items: string[] }) {
 }
 
 export function DonationPanel({ request, onToast }: { request: HelpRequest; onToast: (message: string) => void }) {
-  const [tab, setTab] = useState<"bank" | "sbp">("bank");
+  const [tab, setTab] = useState<"bank" | "sbp">(() => (request.recipient.card ? "bank" : "sbp"));
   const [amount, setAmount] = useState("100");
   const [receiptName, setReceiptName] = useState("");
-  const rows =
+  const rows: Array<[string, string]> =
     tab === "bank"
       ? [
           ["Получатель", request.recipient.name],
           ["Банк получателя", request.recipient.bank],
-          ["Номер карты", request.recipient.card],
+          request.recipient.card
+            ? ["Номер карты", request.recipient.card]
+            : ["Телефон для перевода", request.recipient.sbpPhone],
         ]
       : [
           ["Получатель", request.recipient.name],

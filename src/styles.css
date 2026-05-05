@@ -1604,6 +1604,17 @@ textarea {
   color: #4d4d4d;
 }
 
+.request-story {
+  display: grid;
+  max-width: 720px;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.request-hero-card .request-story p {
+  margin: 0;
+}
+
 .detail-actions {
   display: flex;
   flex-wrap: wrap;
