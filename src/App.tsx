@@ -490,8 +490,8 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           <h2>Как это работает</h2>
         </div>
         <div className="steps-grid">
-          <StepCard index={1} icon="file" title="Подача заявки" text="Человек заполняет анкету и прикрепляет документы, подтверждающие долг." />
-          <StepCard index={2} icon="shield" title="Проверка документов" text="Мы проверяем документы и ситуацию, чтобы помощь была честной и адресной." />
+          <StepCard index={1} icon="video" title="Видео-заявка" text="Человек записывает видео: рассказывает свою историю и показывает кредиты в личных кабинетах банков." />
+          <StepCard index={2} icon="shield" title="Проверка ситуации" text="Мы смотрим видео и уточняем детали, чтобы помощь была честной, адресной и безопасной." />
           <StepCard index={3} icon="hands" title="Прямая помощь" text="После одобрения заявка публикуется. Люди переводят деньги напрямую получателю." />
           <StepCard index={4} icon="video" title="Видеоотчет" text="После сбора получатель показывает, как помощь была использована." />
         </div>
@@ -760,7 +760,7 @@ function ApplyPage() {
             Подать заявку <span>на помощь</span>
           </h1>
           <p>
-            Вместо длинной анкеты запишите короткое видео. Так команда сможет лучше понять вашу ситуацию, а заявка будет
+            Запишите короткое видео-заявку. Так команда сможет лучше понять вашу ситуацию, а история будет
             выглядеть живой, честной и понятной для тех, кто захочет помочь.
           </p>
         </div>
@@ -1166,7 +1166,7 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
       <DashboardHero
         badge="Админ-панель"
         title="Заявки из мини-аппа"
-        text="Новые анкеты попадают сюда. После проверки нажмите «Опубликовать», и карточка появится в каталоге помощи."
+        text="Новые видео-заявки попадают сюда после проверки. Нажмите «Опубликовать», и карточка появится в каталоге помощи."
       />
       {!isBackendConfigured ? (
         <div className="backend-mode-note">
@@ -1184,7 +1184,7 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
       <div className="dashboard-stats admin-stats">
         <DashboardStat icon="file" label="Новых заявок" value={String(newApplications.length)} />
         <DashboardStat icon="shield" label="Опубликовано" value={String(publishedApplications.length)} />
-        <DashboardStat icon="copy" label="Всего анкет" value={String(applications.length)} />
+        <DashboardStat icon="copy" label="Всего заявок" value={String(applications.length)} />
         <DashboardStat icon="video" label="Отклонено" value={String(rejectedApplications.length)} />
       </div>
       <div className="admin-layout">
@@ -1201,7 +1201,7 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
               <div className="empty-admin-state">
                 <Icon name="file" />
                 <h3>Новых заявок пока нет</h3>
-                <p>Когда человек отправит анкету из мини-аппа, она появится здесь.</p>
+                <p>Когда человек отправит видео-заявку из мини-аппа, она появится здесь.</p>
               </div>
             ) : null}
             {newApplications.map((application) => (
@@ -1480,8 +1480,8 @@ function HowItWorksPage({ onNavigate }: { onNavigate: NavigateFn }) {
         людей, которым откликнулась его история.
       </p>
       <div className="steps-grid standalone">
-        <StepCard index={1} icon="file" title="Заявка" text="Человек заполняет форму, рассказывает ситуацию и прикладывает подтверждения." />
-        <StepCard index={2} icon="shield" title="Модерация" text="Команда проверяет документы и публикует только безопасную часть информации." />
+        <StepCard index={1} icon="video" title="Видео-заявка" text="Человек записывает историю, рассказывает о кредитах и показывает личные кабинеты банков." />
+        <StepCard index={2} icon="shield" title="Модерация" text="Команда проверяет ситуацию и публикует только безопасную часть информации." />
         <StepCard index={3} icon="card" title="Перевод напрямую" text="Помогающий видит реквизиты и переводит любую сумму получателю." />
         <StepCard index={4} icon="video" title="Отчет" text="После завершения получатель показывает, как помощь была использована." />
       </div>
