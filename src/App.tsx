@@ -15,7 +15,6 @@ import {
   Timeline,
   Toast,
   TrustCard,
-  UploadBox,
   VerifiedDocuments,
   WatercolorHero,
   type NavigateFn,
@@ -23,7 +22,6 @@ import {
 import annaPhoto from "./assets/anna-photo.png";
 import { formatRubles, getPercent, requests as mockRequests, type HelpRequest } from "./data/requests";
 import {
-  createApplication,
   isBackendConfigured,
   listApplications,
   listPublishedRequests,
@@ -308,7 +306,7 @@ export default function App() {
   const page = (() => {
     if (path === "/requests") return <RequestsPage requests={allRequests} onNavigate={navigate} />;
     if (path.startsWith("/requests/")) return <RequestDetailPage requests={allRequests} id={path.split("/").pop()} onNavigate={navigate} onToast={showToast} />;
-    if (path === "/apply") return <ApplyPage onNavigate={navigate} onToast={showToast} onApplicationCreated={refreshPublishedRequests} />;
+    if (path === "/apply") return <ApplyPage />;
     if (path === "/how-it-works") return <HowItWorksPage onNavigate={navigate} />;
     if (path.startsWith("/stories/")) return <StoryDetailPage id={path.split("/").pop()} onNavigate={navigate} />;
     if (path === "/stories") return <StoriesPage onNavigate={navigate} />;
@@ -725,35 +723,33 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
   );
 }
 
-function ApplyPage({
-  onNavigate,
-  onToast,
-  onApplicationCreated,
-}: {
-  onNavigate: NavigateFn;
-  onToast: (message: string) => void;
-  onApplicationCreated: () => Promise<void>;
-}) {
-  const [formVersion, setFormVersion] = useState(0);
-
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    if (!form.checkValidity()) {
-      onToast("Пожалуйста, заполните обязательные поля.");
-      form.reportValidity();
-      return;
-    }
-    try {
-      await createApplication(form);
-      await onApplicationCreated();
-      onToast(isBackendConfigured ? "Заявка отправлена в админ-панель." : "Заявка сохранена в демо-очередь админки.");
-      form.reset();
-      setFormVersion((version) => version + 1);
-    } catch {
-      onToast("Не получилось отправить заявку. Проверьте подключение базы.");
-    }
-  };
+function ApplyPage() {
+  const videoSteps = [
+    {
+      title: "Представьтесь и спокойно расскажите о себе",
+      text: "Назовите имя, город и коротко объясните, почему сейчас вам нужна поддержка.",
+    },
+    {
+      title: "Расскажите свою историю",
+      text: "Что произошло, из-за чего появилась сложная ситуация и почему самостоятельно закрыть обязательства сейчас трудно.",
+    },
+    {
+      title: "Объясните, на что брались кредиты",
+      text: "Расскажите, для каких расходов оформлялись кредиты или займы: лечение, аренда, учеба, бытовые расходы, работа или другая причина.",
+    },
+    {
+      title: "Покажите личный кабинет банка",
+      text: "Возьмите телефон в руки, откройте личный кабинет банка или МФО и покажите раздел с кредитами так, чтобы были видны активные обязательства.",
+    },
+    {
+      title: "Покажите сумму и статус",
+      text: "В кадре должны быть понятны банк, тип обязательства, остаток долга или платеж. Если кредитов несколько, покажите каждый кабинет по очереди.",
+    },
+    {
+      title: "Скажите, какую помощь просите",
+      text: "Назовите примерную сумму, которую нужно собрать, и подтвердите, что после помощи готовы записать отчет о закрытии долга.",
+    },
+  ];
 
   return (
     <section className="page shell apply-page">
@@ -764,106 +760,71 @@ function ApplyPage({
             Подать заявку <span>на помощь</span>
           </h1>
           <p>
-            Заполните анкету максимально подробно. Вся информация конфиденциальна и помогает нашей команде внимательно
-            рассмотреть вашу ситуацию.
+            Вместо длинной анкеты запишите короткое видео. Так команда сможет лучше понять вашу ситуацию, а заявка будет
+            выглядеть живой, честной и понятной для тех, кто захочет помочь.
           </p>
         </div>
         <WatercolorHero type="apply" />
       </div>
 
       <div className="apply-layout">
-        <form key={formVersion} className="application-form" onSubmit={handleSubmit}>
-          <FormSection number={1} title="Личная информация">
-            <Field name="full_name" label="Фамилия, имя, отчество" required placeholder="Иванов Иван Иванович" />
-            <DateField name="birth_date" label="Дата рождения" required />
-            <Field name="city" label="Город проживания" required placeholder="Например, Казань" />
-            <SelectField name="family_status" label="Семейное положение" options={["Не выбрано", "Не женат / не замужем", "В браке", "Разведен(а)", "Другое"]} />
-            <Field name="dependents" label="Количество иждивенцев" type="number" placeholder="0" />
-          </FormSection>
-
-          <FormSection number={2} title="Контактные данные">
-            <Field name="telegram" label="Telegram для связи" required placeholder="@username" />
-            <SelectField name="contact_time" label="Когда удобно написать" options={["В любое время", "Утром", "Днем", "Вечером"]} />
-          </FormSection>
-
-          <FormSection number={3} title="Информация о долге">
-            <SelectField name="category" label="Тип долга" options={["Долги и кредиты", "Лечение и здоровье", "Коммунальные платежи", "Аренда жилья", "Образование", "Другое"]} />
-            <Field name="creditor" label="Организация / МФО / банк / кредитор" required placeholder="Название организации" />
-            <Field name="contract_number" label="Номер договора" placeholder="1234567890" />
-            <DateField name="contract_date" label="Дата договора" />
-            <SelectField name="debt_reason" label="Причина возникновения долга" options={["Потеря работы", "Снижение дохода", "Болезнь", "Непредвиденные расходы", "Семейные обстоятельства", "Другое"]} />
-          </FormSection>
-
-          <FormSection number={4} title="Сумма и сроки">
-            <Field name="target_amount" label="Запрашиваемая сумма" required type="number" placeholder="Например, 20 000" />
-            <SelectField label="Валюта" options={["Рубли (₽)", "Другая"]} />
-            <SelectField name="urgency" label="На какой срок требуется помощь" options={["Срочно", "В течение недели", "В течение месяца", "Не срочно"]} />
-            <DateField name="deadline" label="Крайний срок оплаты" />
-          </FormSection>
-
-          <FormSection number={5} title="Опишите вашу ситуацию" wide>
-            <label className="form-field form-field-wide">
-              <span>Расскажите, что произошло</span>
-              <textarea name="story" required placeholder="Расскажите, что произошло, почему возник долг и почему сейчас вам нужна помощь." />
-              <small>Не нужно писать слишком формально. Главное — честно объяснить ситуацию.</small>
-            </label>
-          </FormSection>
-
-          <FormSection number={6} title="Загрузите документы" wide>
-            <UploadBox />
-            <ul className="example-docs">
-              <li>Копия договора займа или кредита</li>
-              <li>Справка о задолженности</li>
-              <li>График платежей</li>
-              <li>Документы, подтверждающие трудную ситуацию</li>
-            </ul>
-          </FormSection>
-
-          <FormSection number={7} title="Реквизиты для получения помощи">
-            <Field name="recipient_name" label="ФИО получателя" required placeholder="Полностью, как в паспорте" />
-            <Field name="bank" label="Банк" required placeholder="Название банка" />
-            <Field name="card" label="Номер карты / счета" required placeholder="Номер карты или счета" />
-            <Field name="sbp_phone" label="Телефон для СБП" type="tel" placeholder="+7 (___) ___-__-__" />
-            <p className="form-hint">Эти данные используются только для перевода помощи и проверки заявки.</p>
-          </FormSection>
-
-          <FormSection number={8} title="Согласие и обязательства" wide>
-            <div className="consent-stack">
-              {[
-                "Я соглашаюсь на обработку персональных данных.",
-                "Я подтверждаю, что вся информация в заявке является достоверной.",
-                "Я понимаю, что заявка пройдет ручную проверку.",
-                "Я обязуюсь предоставить отчет после получения помощи.",
-                "Я согласен, что часть информации может быть опубликована в мини-приложении после модерации.",
-              ].map((item) => (
-                <label key={item}>
-                  <input type="checkbox" required />
-                  <span>{item}</span>
-                </label>
-              ))}
+        <article className="video-application-card">
+          <div className="video-application-head">
+            <span><Icon name="video" /></span>
+            <div>
+              <Badge tone="mint" icon="shield">Видео-заявка</Badge>
+              <h2>Что нужно снять</h2>
+              <p>
+                Запишите видео на телефон в спокойной обстановке. Не нужно говорить официально: важно честно объяснить
+                ситуацию и показать подтверждение кредитов в личных кабинетах банков.
+              </p>
             </div>
-            <p className="policy-links">
-              <AppLink to="/privacy" onNavigate={onNavigate}>Политика конфиденциальности</AppLink>
-              <AppLink to="/terms" onNavigate={onNavigate}>Пользовательское соглашение</AppLink>
-            </p>
-          </FormSection>
+          </div>
 
-          <Button type="submit" className="submit-application">
-            <Icon name="heart" filled />
-            Отправить заявку
-          </Button>
-          <p className="secure-submit"><Icon name="lock" /> Заявка будет отправлена по защищенному соединению.</p>
-        </form>
+          <ol className="video-instruction-list">
+            {videoSteps.map((step, index) => (
+              <li key={step.title}>
+                <span>{index + 1}</span>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <div className="video-safety-note">
+            <Icon name="lock" />
+            <div>
+              <h3>Важно про безопасность</h3>
+              <p>
+                Не показывайте пароли, SMS-коды, CVV, полные номера карт и паспорт. Если на экране есть лишние данные,
+                закройте их рукой или переключитесь на раздел, где видна только информация по кредиту.
+              </p>
+            </div>
+          </div>
+
+          <div className="send-video-card">
+            <div>
+              <h3>Готово? Отправьте видео в Telegram</h3>
+              <p>После отправки команда посмотрит видео и напишет вам, если нужно будет уточнить детали.</p>
+            </div>
+            <a className="button button-primary big wide" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
+              <Icon name="telegram" />
+              Отправить видео
+            </a>
+          </div>
+        </article>
 
         <aside className="apply-sidebar">
-          <SidebarCard icon="file" title="Какие документы подготовить" items={["Копия договора займа или кредита", "Справка о задолженности", "Документы, подтверждающие трудную ситуацию", "Выписка по долгу / задолженности"]} />
-          <SidebarCard icon="calendar" title="Что будет после отправки" items={["Проверим информацию и документы", "Свяжемся с вами в течение 1-3 дней", "Если заявка пройдет проверку, она будет опубликована.", "После получения помощи попросим предоставить отчет"]} ordered />
+          <SidebarCard icon="video" title="Как записать видео" items={["Держите телефон вертикально", "Говорите в тихом месте", "Снимите одним видео без монтажа", "Оптимальная длина — 2-5 минут"]} />
+          <SidebarCard icon="card" title="Что показать на телефоне" items={["Личный кабинет банка или МФО", "Раздел с кредитом или займом", "Остаток долга или сумму платежа", "Если банков несколько — каждый по очереди"]} />
+          <SidebarCard icon="shield" title="Что будет после отправки" items={["Команда посмотрит видео", "При необходимости задаст уточняющие вопросы", "После проверки заявка может быть опубликована", "После получения помощи нужно будет записать отчет"]} ordered />
           <div className="sidebar-card contact-help">
             <Icon name="heart" />
-            <h3>Нужна помощь?</h3>
-            <p>Если у вас возникли вопросы — напишите нам в Telegram.</p>
+            <h3>Есть вопрос?</h3>
+            <p>Если не уверены, как лучше снять видео, напишите нам в Telegram.</p>
             <a href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer"><Icon name="telegram" />Написать в Telegram</a>
-            <div className="safe-note"><Icon name="lock" />Ваша информация в безопасности. Мы не передаем данные третьим лицам.</div>
           </div>
         </aside>
       </div>
@@ -1086,7 +1047,7 @@ function SelectField({ name, label, options }: { name?: string; label: string; o
   return <PrettySelect name={name} label={label} options={options} className="form-field pretty-select-form" />;
 }
 
-function SidebarCard({ icon, title, items, ordered = false }: { icon: "file" | "calendar"; title: string; items: string[]; ordered?: boolean }) {
+function SidebarCard({ icon, title, items, ordered = false }: { icon: "file" | "calendar" | "video" | "card" | "shield"; title: string; items: string[]; ordered?: boolean }) {
   const List = ordered ? "ol" : "ul";
   return (
     <div className="sidebar-card">

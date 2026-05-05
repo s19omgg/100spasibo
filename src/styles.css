@@ -1930,6 +1930,141 @@ textarea {
   gap: 12px;
 }
 
+.video-application-card {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(255, 227, 216, 0.58), transparent 16rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(234, 248, 241, 0.62));
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+
+.video-application-head {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.video-application-head > span {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  color: var(--coral);
+  background: var(--peach);
+  border-radius: 24px;
+}
+
+.video-application-head > span .icon {
+  width: 34px;
+  height: 34px;
+}
+
+.video-application-head h2 {
+  margin-top: 12px;
+  font-size: 38px;
+}
+
+.video-application-head p {
+  max-width: 760px;
+  margin-top: 10px;
+  color: #5b5550;
+  font-size: 17px;
+}
+
+.video-instruction-list {
+  counter-reset: video-step;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.video-instruction-list li {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(120, 80, 50, 0.1);
+  border-radius: var(--radius-lg);
+}
+
+.video-instruction-list li > span {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  color: var(--coral);
+  background: var(--peach);
+  border-radius: 50%;
+  font-weight: 900;
+}
+
+.video-instruction-list h3 {
+  font-size: 18px;
+}
+
+.video-instruction-list p {
+  margin-top: 5px;
+  color: #625c56;
+  line-height: 1.48;
+}
+
+.video-safety-note {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px;
+  color: #386f5b;
+  background: rgba(234, 248, 241, 0.8);
+  border: 1px solid rgba(94, 155, 131, 0.24);
+  border-radius: var(--radius-lg);
+}
+
+.video-safety-note > .icon {
+  width: 48px;
+  height: 48px;
+  padding: 11px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.video-safety-note p {
+  margin-top: 5px;
+  color: #48695d;
+}
+
+.send-video-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(230px, 0.34fr);
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 107, 87, 0.2);
+  border-radius: var(--radius-lg);
+}
+
+.send-video-card h3 {
+  font-size: 20px;
+}
+
+.send-video-card p {
+  margin-top: 4px;
+  color: #625c56;
+}
+
+.send-video-card .button {
+  box-shadow: 0 12px 26px rgba(255, 107, 87, 0.24);
+}
+
 .form-section {
   padding: 20px;
   background: rgba(255, 255, 255, 0.82);
@@ -4425,6 +4560,15 @@ textarea {
   .author-support-strip .button {
     width: 100%;
   }
+
+  .video-application-head,
+  .send-video-card {
+    grid-template-columns: 1fr;
+  }
+
+  .send-video-card .button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 640px) {
@@ -4438,6 +4582,54 @@ textarea {
 
   .story-featured {
     padding: 16px;
+  }
+
+  .video-application-card {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .video-application-head {
+    gap: 12px;
+  }
+
+  .video-application-head > span {
+    width: 58px;
+    height: 58px;
+    border-radius: 20px;
+  }
+
+  .video-application-head > span .icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .video-application-head h2 {
+    font-size: 30px;
+  }
+
+  .video-application-head p,
+  .video-instruction-list p,
+  .video-safety-note p,
+  .send-video-card p {
+    font-size: 14px;
+  }
+
+  .video-instruction-list li,
+  .video-safety-note,
+  .send-video-card {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .video-instruction-list li {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .video-instruction-list li > span {
+    width: 34px;
+    height: 34px;
   }
 
   .author-support-strip {
@@ -5280,14 +5472,15 @@ body {
 .telegram-mini-app .soft-card,
 .telegram-mini-app .sidebar-card,
 .telegram-mini-app .donation-panel,
-.telegram-mini-app .story-card,
-.telegram-mini-app .story-featured,
-.telegram-mini-app .story-detail-hero,
-.telegram-mini-app .story-video-report,
-.telegram-mini-app .story-thanks-card,
-.telegram-mini-app .stories-summary,
-.telegram-mini-app .stories-cta,
-.telegram-mini-app .admin-access-card,
+  .telegram-mini-app .story-card,
+  .telegram-mini-app .story-featured,
+  .telegram-mini-app .story-detail-hero,
+  .telegram-mini-app .story-video-report,
+  .telegram-mini-app .story-thanks-card,
+  .telegram-mini-app .video-application-card,
+  .telegram-mini-app .stories-summary,
+  .telegram-mini-app .stories-cta,
+  .telegram-mini-app .admin-access-card,
 .telegram-mini-app .dashboard-card,
   .telegram-mini-app .dashboard-stat {
   border-radius: 20px;
@@ -5698,9 +5891,13 @@ body {
 .telegram-mini-app .request-card p,
 .telegram-mini-app .request-hero-card p,
 .telegram-mini-app .story-card blockquote,
-.telegram-mini-app .application-admin-card p,
-.telegram-mini-app .soft-card p,
-.telegram-mini-app .sidebar-card p {
+  .telegram-mini-app .application-admin-card p,
+  .telegram-mini-app .soft-card p,
+  .telegram-mini-app .sidebar-card p,
+  .telegram-mini-app .video-application-head p,
+  .telegram-mini-app .video-instruction-list p,
+  .telegram-mini-app .video-safety-note p,
+  .telegram-mini-app .send-video-card p {
   font-size: 14px;
   line-height: 1.45;
 }
@@ -5940,6 +6137,81 @@ body {
 
 .telegram-mini-app .pagination {
   flex-wrap: wrap;
+}
+
+.telegram-mini-app .video-application-card {
+  gap: 14px;
+  padding: 14px;
+  border-radius: 20px;
+}
+
+.telegram-mini-app .video-application-head,
+.telegram-mini-app .send-video-card,
+.telegram-mini-app .video-safety-note {
+  grid-template-columns: 1fr;
+}
+
+.telegram-mini-app .video-application-head {
+  gap: 12px;
+}
+
+.telegram-mini-app .video-application-head > span {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+}
+
+.telegram-mini-app .video-application-head > span .icon {
+  width: 26px;
+  height: 26px;
+}
+
+.telegram-mini-app .video-application-head h2 {
+  margin-top: 10px;
+  font-size: 25px;
+  line-height: 1.12;
+}
+
+.telegram-mini-app .video-instruction-list {
+  gap: 10px;
+}
+
+.telegram-mini-app .video-instruction-list li {
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px;
+  border-radius: 18px;
+}
+
+.telegram-mini-app .video-instruction-list li > span {
+  width: 32px;
+  height: 32px;
+  font-size: 14px;
+}
+
+.telegram-mini-app .video-instruction-list h3,
+.telegram-mini-app .video-safety-note h3,
+.telegram-mini-app .send-video-card h3 {
+  font-size: 16px;
+}
+
+.telegram-mini-app .video-safety-note,
+.telegram-mini-app .send-video-card {
+  gap: 10px;
+  padding: 12px;
+  border-radius: 18px;
+}
+
+.telegram-mini-app .video-safety-note > .icon {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+}
+
+.telegram-mini-app .send-video-card .button {
+  width: 100%;
+  min-height: 50px;
+  font-size: 16px;
 }
 
 .telegram-mini-app .section.author-support-strip {
