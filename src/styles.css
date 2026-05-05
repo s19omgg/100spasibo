@@ -6215,7 +6215,7 @@ body {
 }
 
 .telegram-mini-app .section.author-support-strip {
-  width: calc(100% - 20px);
+  width: 100%;
   margin-inline: auto;
   margin-bottom: 14px;
   padding: 18px;
