@@ -1637,6 +1637,10 @@ textarea {
   min-height: 46px;
 }
 
+.request-hero-card .chip-row {
+  margin-top: 16px;
+}
+
 .collection-card {
   padding: 26px;
 }
