@@ -364,7 +364,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           </div>
           <div className="social-proof social-proof-empty">
             <span><Icon name="spark" /></span>
-            <p>{hasRequests ? "Открыта первая проверенная видео-заявка. Помощь идет напрямую человеку." : "Первые видео-заявки скоро появятся на платформе."}</p>
+            <p>{hasRequests ? "Открыта первая проверенная заявка. Помощь идет напрямую человеку." : "Первые заявки скоро появятся на платформе."}</p>
           </div>
         </div>
         <WatercolorHero />
@@ -375,7 +375,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           <h2>Как это работает</h2>
         </div>
         <div className="steps-grid">
-          <StepCard index={1} icon="video" title="Видео-заявка" text="Человек записывает видео: рассказывает свою историю и показывает кредиты в личных кабинетах банков." />
+          <StepCard index={1} icon="video" title="Заявка" text="Человек записывает видео: рассказывает свою историю и показывает кредиты в личных кабинетах банков." />
           <StepCard index={2} icon="shield" title="Проверка ситуации" text="Мы смотрим видео и уточняем детали, чтобы помощь была честной, адресной и безопасной." />
           <StepCard index={3} icon="hands" title="Прямая помощь" text="После одобрения заявка публикуется. Люди переводят деньги напрямую получателю." />
           <StepCard index={4} icon="video" title="Видеоотчет" text="После сбора получатель показывает, как помощь была использована." />
@@ -386,7 +386,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
         <div className="section-row">
           <div>
             <h2>Кому нужна помощь прямо сейчас</h2>
-            <p>{hasRequests ? "Выберите человека, которому хотите помочь напрямую." : "Пока опубликованных заявок нет. Как только мы проверим первые видео-заявки, они появятся здесь."}</p>
+            <p>{hasRequests ? "Выберите человека, которому хотите помочь напрямую." : "Пока опубликованных заявок нет. Как только мы проверим первые заявки, они появятся здесь."}</p>
           </div>
           <Button variant="soft" onClick={() => onNavigate("/requests")}>Смотреть все заявки</Button>
         </div>
@@ -517,8 +517,8 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
             <EmptyStateCard
               icon="heart"
               title={query ? "По этому поиску заявок нет" : "Заявок пока нет"}
-              text={query ? "Попробуйте изменить запрос. Сейчас на платформе еще нет опубликованных видео-заявок." : "Мы еще не опубликовали первые проверенные видео-заявки. Как только они появятся, здесь можно будет выбрать человека и помочь напрямую."}
-              actionLabel="Подать видео-заявку"
+              text={query ? "Попробуйте изменить запрос. Сейчас на платформе еще нет опубликованных заявок." : "Мы еще не опубликовали первые проверенные заявки. Как только они появятся, здесь можно будет выбрать человека и помочь напрямую."}
+              actionLabel="Подать заявку"
               onAction={() => onNavigate("/apply")}
             />
           ) : null}
@@ -567,7 +567,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
         <EmptyStateCard
           icon="heart"
           title="Эта заявка больше не опубликована"
-          text="Сейчас на платформе нет открытых заявок. Когда появятся первые проверенные видео-заявки, они будут доступны во вкладке «Помочь»."
+          text="Сейчас на платформе нет открытых заявок. Когда появятся первые проверенные заявки, они будут доступны во вкладке «Помочь»."
           actionLabel="Перейти во вкладку «Помочь»"
           onAction={() => onNavigate("/requests")}
         />
@@ -689,7 +689,7 @@ function ApplyPage() {
             Подать заявку <span>на помощь</span>
           </h1>
           <p>
-            Запишите короткое видео-заявку. Так команда сможет лучше понять вашу ситуацию, а история будет
+            Запишите короткое видео для заявки. Так команда сможет лучше понять вашу ситуацию, а история будет
             выглядеть живой, честной и понятной для тех, кто захочет помочь.
           </p>
         </div>
@@ -700,7 +700,7 @@ function ApplyPage() {
         <article className="video-application-card">
           <div className="video-application-head">
             <div>
-              <Badge tone="mint" icon="shield">Видео-заявка</Badge>
+              <Badge tone="mint" icon="shield">Заявка</Badge>
               <h2>Что нужно снять</h2>
               <p>
                 Запишите видео на телефон в спокойной обстановке. Не нужно говорить официально: важно честно объяснить
@@ -1094,7 +1094,7 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
       <DashboardHero
         badge="Админ-панель"
         title="Заявки из мини-аппа"
-        text="Новые видео-заявки попадают сюда после проверки. Нажмите «Опубликовать», и карточка появится в каталоге помощи."
+        text="Новые заявки попадают сюда после проверки. Нажмите «Опубликовать», и карточка появится в каталоге помощи."
       />
       {!isBackendConfigured ? (
         <div className="backend-mode-note">
@@ -1129,7 +1129,7 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
               <div className="empty-admin-state">
                 <Icon name="file" />
                 <h3>Новых заявок пока нет</h3>
-                <p>Когда человек отправит видео-заявку из мини-аппа, она появится здесь.</p>
+                <p>Когда человек отправит заявку из мини-аппа, она появится здесь.</p>
               </div>
             ) : null}
             {newApplications.map((application) => (
@@ -1243,7 +1243,7 @@ function StoriesPage({ onNavigate }: { onNavigate: NavigateFn }) {
         <Badge tone="mint" icon="shield">Честный старт</Badge>
         <h2>Пока здесь нет историй помощи</h2>
         <p>
-          Это нормально: проект только начинает путь. Скоро появятся первые проверенные видео-заявки, люди смогут помочь
+          Это нормально: проект только начинает путь. Скоро появятся первые проверенные заявки, люди смогут помочь
           напрямую, а после закрытия сбора мы опубликуем настоящий отчет.
         </p>
         <Button onClick={() => onNavigate("/requests")}>
@@ -1265,7 +1265,7 @@ function HowItWorksPage({ onNavigate }: { onNavigate: NavigateFn }) {
         людей, которым откликнулась его история.
       </p>
       <div className="steps-grid standalone">
-        <StepCard index={1} icon="video" title="Видео-заявка" text="Человек записывает историю, рассказывает о кредитах и показывает личные кабинеты банков." />
+        <StepCard index={1} icon="video" title="Заявка" text="Человек записывает историю, рассказывает о кредитах и показывает личные кабинеты банков." />
         <StepCard index={2} icon="shield" title="Модерация" text="Команда проверяет ситуацию и публикует только безопасную часть информации." />
         <StepCard index={3} icon="card" title="Перевод напрямую" text="Помогающий видит реквизиты и переводит любую сумму получателю." />
         <StepCard index={4} icon="video" title="Отчет" text="После завершения получатель показывает, как помощь была использована." />
