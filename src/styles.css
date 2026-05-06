@@ -2440,16 +2440,6 @@ textarea {
   box-shadow: var(--shadow);
 }
 
-.stories-empty-icon {
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  color: var(--coral);
-  background: var(--peach);
-  border-radius: 24px;
-}
-
 .stories-empty-card h2 {
   max-width: 680px;
   font-size: 42px;
@@ -4706,8 +4696,7 @@ textarea {
     border-radius: 22px;
   }
 
-.empty-state-card > span,
-.stories-empty-icon {
+.empty-state-card > span {
   width: 56px;
   height: 56px;
   border-radius: 20px;
@@ -6310,8 +6299,7 @@ body {
   border-radius: 20px;
 }
 
-.telegram-mini-app .empty-state-card > span,
-.telegram-mini-app .stories-empty-icon {
+.telegram-mini-app .empty-state-card > span {
   width: 52px;
   height: 52px;
   border-radius: 18px;
