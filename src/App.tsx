@@ -601,6 +601,10 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
                 {request.story.split("\n\n").map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
+                <p className="story-edit-note">
+                  Текст истории бережно отредактирован командой 100spasibo: мы сохранили смысл рассказа и сделали его
+                  более читабельным для публикации.
+                </p>
               </div>
               <div className="detail-actions">
                 <Button variant="soft" onClick={() => void shareHelpRequest(request, onToast)}>
