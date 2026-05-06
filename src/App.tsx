@@ -699,7 +699,6 @@ function ApplyPage() {
       <div className="apply-layout">
         <article className="video-application-card">
           <div className="video-application-head">
-            <span><Icon name="video" /></span>
             <div>
               <Badge tone="mint" icon="shield">Видео-заявка</Badge>
               <h2>Что нужно снять</h2>

@@ -2001,24 +2001,8 @@ textarea {
 
 .video-application-head {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  gap: 18px;
-  align-items: start;
-}
-
-.video-application-head > span {
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  color: var(--coral);
-  background: var(--peach);
-  border-radius: 24px;
-}
-
-.video-application-head > span .icon {
-  width: 34px;
-  height: 34px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
 }
 
 .video-application-head h2 {
@@ -4685,18 +4669,7 @@ textarea {
   }
 
   .video-application-head {
-    gap: 12px;
-  }
-
-  .video-application-head > span {
-    width: 58px;
-    height: 58px;
-    border-radius: 20px;
-  }
-
-  .video-application-head > span .icon {
-    width: 28px;
-    height: 28px;
+    gap: 10px;
   }
 
   .video-application-head h2 {
@@ -6279,17 +6252,6 @@ body {
 
 .telegram-mini-app .video-application-head {
   gap: 12px;
-}
-
-.telegram-mini-app .video-application-head > span {
-  width: 54px;
-  height: 54px;
-  border-radius: 18px;
-}
-
-.telegram-mini-app .video-application-head > span .icon {
-  width: 26px;
-  height: 26px;
 }
 
 .telegram-mini-app .video-application-head h2 {
