@@ -417,7 +417,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
         <div>
           <Badge tone="mint" icon="heart">Поддержать автора</Badge>
           <h2>Помочь развивать 100spasibo</h2>
-          <p>Небольшая поддержка помогает уделять проекту больше времени, улучшать мини-апп и делать платформу понятнее.</p>
+          <p>Небольшая поддержка помогает уделять проекту больше времени, улучшать и делать платформу понятнее.</p>
         </div>
         <Button variant="soft" onClick={() => onNavigate("/support-author")}>
           <Icon name="spark" />
