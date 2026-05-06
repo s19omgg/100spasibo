@@ -2440,7 +2440,7 @@ textarea {
   box-shadow: var(--shadow);
 }
 
-.stories-empty-card > span {
+.stories-empty-icon {
   width: 72px;
   height: 72px;
   display: grid;
@@ -4706,11 +4706,11 @@ textarea {
     border-radius: 22px;
   }
 
-  .empty-state-card > span,
-  .stories-empty-card > span {
-    width: 56px;
-    height: 56px;
-    border-radius: 20px;
+.empty-state-card > span,
+.stories-empty-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 20px;
   }
 
   .empty-state-card h3 {
@@ -6311,10 +6311,17 @@ body {
 }
 
 .telegram-mini-app .empty-state-card > span,
-.telegram-mini-app .stories-empty-card > span {
+.telegram-mini-app .stories-empty-icon {
   width: 52px;
   height: 52px;
   border-radius: 18px;
+}
+
+.telegram-mini-app .stories-empty-card .badge {
+  width: fit-content;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow-wrap: normal;
 }
 
 .telegram-mini-app .empty-state-card h3,

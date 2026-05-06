@@ -1240,7 +1240,7 @@ function StoriesPage({ onNavigate }: { onNavigate: NavigateFn }) {
       </div>
 
       <section className="stories-empty-card">
-        <span><Icon name="spark" /></span>
+        <span className="stories-empty-icon"><Icon name="spark" /></span>
         <Badge tone="mint" icon="shield">Честный старт</Badge>
         <h2>Пока здесь нет историй помощи</h2>
         <p>
