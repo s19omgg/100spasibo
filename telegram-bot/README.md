@@ -1,55 +1,55 @@
 # Telegram bot webhook
 
-Cloudflare Worker для автоответа бота 100spasibo на команду `/start`.
+Здесь лежат два варианта webhook для автоответа бота 100spasibo на команду `/start`.
 
-## Что делает
+## Рекомендованный вариант: Google Apps Script
 
-- принимает webhook от Telegram на `/webhook`;
-- проверяет секретный заголовок Telegram, если задан `TELEGRAM_SECRET_TOKEN`;
+Для текущей задачи Apps Script проще:
+
+- бесплатно в рамках лимитов Google;
+- не нужен отдельный сервер;
+- код можно вставить прямо в редактор Google;
+- удобно быстро менять текст приветствия.
+
+Файлы:
+
+- `apps-script/Code.gs`;
+- `apps-script/README.md`.
+
+Что делает бот:
+
+- принимает Telegram webhook;
 - на `/start` отправляет приветственное сообщение;
-- добавляет кнопки:
+- показывает кнопки:
   - `Открыть 100spasibo`;
   - `Написать в поддержку`.
 
-## Настройка
+Инструкция: `apps-script/README.md`.
 
-1. Скопировать конфиг:
+## Альтернатива: Cloudflare Worker
+
+Worker можно оставить как запасной вариант, если позже понадобится больше контроля над webhook, заголовками и логами.
+
+Файлы:
+
+- `worker.js`;
+- `wrangler.toml.example`.
+
+Короткий порядок запуска Worker:
 
 ```bash
 cd telegram-bot
 cp wrangler.toml.example wrangler.toml
-```
-
-2. Залогиниться в Cloudflare:
-
-```bash
 npx wrangler login
-```
-
-3. Добавить токен бота из BotFather:
-
-```bash
 npx wrangler secret put BOT_TOKEN
-```
-
-4. Добавить секрет для webhook. Можно указать любую длинную случайную строку:
-
-```bash
 npx wrangler secret put TELEGRAM_SECRET_TOKEN
-```
-
-5. Задеплоить Worker:
-
-```bash
 npx wrangler deploy
 ```
 
-6. Подключить webhook к Telegram:
+Затем подключить webhook:
 
 ```bash
 curl "https://api.telegram.org/bot<ТОКЕН_БОТА>/setWebhook" \
   -d "url=https://<АДРЕС_WORKER>.workers.dev/webhook" \
   -d "secret_token=<ТАКАЯ_ЖЕ_СТРОКА_КАК_TELEGRAM_SECRET_TOKEN>"
 ```
-
-После этого команда `/start` в боте будет отправлять приветственное сообщение.

@@ -37,20 +37,20 @@ React + TypeScript MVP для теплого Telegram Mini App платформ�
 
 ## Автоответ бота на `/start`
 
-В папке `telegram-bot/` лежит Cloudflare Worker для Telegram webhook. Он отправляет приветственное сообщение после команды `/start` и показывает кнопки:
+В папке `telegram-bot/` лежит webhook для Telegram. Рекомендуемый простой вариант — Google Apps Script: `telegram-bot/apps-script/`.
+
+Он отправляет приветственное сообщение после команды `/start` и показывает кнопки:
 
 - `Открыть 100spasibo`;
 - `Написать в поддержку`.
 
-Короткий порядок запуска:
+Короткий порядок запуска через Apps Script:
 
-1. `cd telegram-bot`
-2. `cp wrangler.toml.example wrangler.toml`
-3. `npx wrangler login`
-4. `npx wrangler secret put BOT_TOKEN`
-5. `npx wrangler secret put TELEGRAM_SECRET_TOKEN`
-6. `npx wrangler deploy`
-7. Подключить webhook через `setWebhook`.
+1. Создать проект на <https://script.google.com/>.
+2. Вставить код из `telegram-bot/apps-script/Code.gs`.
+3. Добавить script properties: `BOT_TOKEN`, `WEBHOOK_SECRET`, `WEB_APP_URL`, `WEBHOOK_URL`.
+4. Задеплоить как Web app.
+5. Запустить функцию `setWebhook`.
 
 Подробная инструкция: `telegram-bot/README.md`.
 
