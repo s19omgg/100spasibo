@@ -18,6 +18,10 @@ function doPost(e) {
   }
 
   var update = parseUpdate_(e);
+  if (isDuplicateUpdate_(update)) {
+    return json_({ ok: true, duplicate: true });
+  }
+
   var chatId = update && update.message && update.message.chat ? update.message.chat.id : null;
 
   if (chatId && isStartCommand_(update)) {
@@ -84,6 +88,27 @@ function sendStartMessage_(chatId) {
 function isStartCommand_(update) {
   var text = update && update.message && update.message.text ? String(update.message.text).trim() : "";
   return text === "/start" || text.indexOf("/start ") === 0;
+}
+
+function isDuplicateUpdate_(update) {
+  var updateId = update && update.update_id;
+  if (updateId === null || updateId === undefined) return false;
+
+  var key = "telegram_update_" + updateId;
+  var cache = CacheService.getScriptCache();
+  if (cache.get(key)) return true;
+
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(1000);
+    if (cache.get(key)) return true;
+    cache.put(key, "1", 21600);
+    return false;
+  } finally {
+    try {
+      lock.releaseLock();
+    } catch (error) {}
+  }
 }
 
 function parseUpdate_(e) {
