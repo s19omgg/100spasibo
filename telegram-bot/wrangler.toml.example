@@ -1,0 +1,6 @@
+name = "100spasibo-telegram-bot"
+main = "worker.js"
+compatibility_date = "2026-05-13"
+
+[vars]
+WEB_APP_URL = "https://s19omgg.github.io/100spasibo/"

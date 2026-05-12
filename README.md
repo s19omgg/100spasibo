@@ -35,6 +35,25 @@ React + TypeScript MVP для теплого Telegram Mini App платформ�
 
 Контакт поддержки внутри мини-приложения: `https://t.me/stospasibo?direct`.
 
+## Автоответ бота на `/start`
+
+В папке `telegram-bot/` лежит Cloudflare Worker для Telegram webhook. Он отправляет приветственное сообщение после команды `/start` и показывает кнопки:
+
+- `Открыть 100spasibo`;
+- `Написать в поддержку`.
+
+Короткий порядок запуска:
+
+1. `cd telegram-bot`
+2. `cp wrangler.toml.example wrangler.toml`
+3. `npx wrangler login`
+4. `npx wrangler secret put BOT_TOKEN`
+5. `npx wrangler secret put TELEGRAM_SECRET_TOKEN`
+6. `npx wrangler deploy`
+7. Подключить webhook через `setWebhook`.
+
+Подробная инструкция: `telegram-bot/README.md`.
+
 ## Админка и заявки
 
 Поток заявок устроен так:
