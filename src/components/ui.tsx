@@ -47,6 +47,17 @@ type IconName =
   | "bank"
   | "spark";
 
+type CategoryTone = "coral" | "mint" | "peach" | "sage";
+
+const categoryVisuals: Record<HelpRequest["category"], { icon: IconName; tone: CategoryTone }> = {
+  "Лечение и здоровье": { icon: "heart", tone: "mint" },
+  "Долги и кредиты": { icon: "card", tone: "coral" },
+  "Коммунальные платежи": { icon: "home", tone: "sage" },
+  "Аренда жилья": { icon: "home", tone: "peach" },
+  "Образование": { icon: "book", tone: "mint" },
+  "Другое": { icon: "spark", tone: "peach" },
+};
+
 export function Icon({ name, className = "", filled = false }: { name: IconName; className?: string; filled?: boolean }) {
   const common = {
     className: `icon ${className}`,
@@ -639,7 +650,7 @@ export function RequestCard({ request, onNavigate, compact = false }: { request:
   return (
     <article className={`request-card ${compact ? "request-card-compact" : ""}`}>
       <div className="request-head">
-        <img src={request.image} alt={`${request.name}, ${request.city}`} width="88" height="88" loading="lazy" />
+        <CategoryIcon category={request.category} />
         <div>
           <h3>{request.name}</h3>
           <span className="muted-inline">
@@ -668,6 +679,29 @@ export function RequestCard({ request, onNavigate, compact = false }: { request:
         </Button>
       </div>
     </article>
+  );
+}
+
+export function CategoryIcon({
+  category,
+  variant = "card",
+  className = "",
+}: {
+  category: HelpRequest["category"];
+  variant?: "card" | "detail";
+  className?: string;
+}) {
+  const visual = categoryVisuals[category] ?? categoryVisuals["Другое"];
+
+  return (
+    <span
+      className={`category-visual category-visual-${variant} category-visual-${visual.tone} ${className}`}
+      data-label={category}
+      aria-label={`Категория: ${category}`}
+      title={category}
+    >
+      <Icon name={visual.icon} />
+    </span>
   );
 }
 

@@ -1,5 +1,3 @@
-import olgaPhoto from "../assets/olga-photo.png";
-
 export type RequestCategory =
   | "Лечение и здоровье"
   | "Долги и кредиты"
@@ -21,7 +19,6 @@ export type HelpRequest = {
   verified: boolean;
   urgency: "Срочно" | "В течение недели" | "В течение месяца" | "Не срочно";
   daysLeft: number;
-  image: string;
   documents: string[];
   recipient: {
     name: string;
@@ -50,7 +47,6 @@ export const requests: HelpRequest[] = [
     verified: true,
     urgency: "В течение месяца",
     daysLeft: 30,
-    image: olgaPhoto,
     documents: ["Видео-подтверждение долга", "Кредитные договора", "Справка о доходах"],
     recipient: {
       name: "Ольга Владимировна Е.",

@@ -183,7 +183,6 @@ export function applicationToRequest(application: ApplicationRecord): HelpReques
     verified: true,
     urgency: application.urgency,
     daysLeft: 30,
-    image: "https://images.unsplash.com/photo-1499557354967-2b2d8910bcca?auto=format&fit=crop&w=600&q=80",
     documents: application.documents.length ? application.documents : ["Документы предоставлены на проверку"],
     recipient: {
       name: application.recipient_name,

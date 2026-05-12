@@ -4,6 +4,7 @@ import {
   Badge,
   BrandMark,
   Button,
+  CategoryIcon,
   DonationPanel,
   FilterSidebar,
   Icon,
@@ -579,7 +580,6 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
   const collectedAmount = request.collectedAmount;
   const percent = targetAmount > 0 ? Math.min(100, Math.round((collectedAmount / targetAmount) * 100)) : 0;
   const remaining = targetAmount - collectedAmount;
-  const detailImage = request.image;
   const collectionNote = collectedAmount > 0 ? "Есть первые переводы" : "Сбор только начинается";
 
   return (
@@ -591,7 +591,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
       <div className="detail-layout">
         <div className="detail-main">
           <div className="request-hero-card">
-            <img className="detail-photo" src={detailImage} alt={`${request.name}, ${request.city}`} width="420" height="420" />
+            <CategoryIcon category={request.category} variant="detail" />
             <div>
               <h1>
                 {request.name}, {request.age} года, {request.city}
