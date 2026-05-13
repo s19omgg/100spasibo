@@ -18,7 +18,6 @@ export type HelpRequest = {
   collectedAmount: number;
   verified: boolean;
   urgency: "Срочно" | "В течение недели" | "В течение месяца" | "Не срочно";
-  daysLeft: number;
   documents: string[];
   recipient?: {
     name?: string;
@@ -46,7 +45,6 @@ export const requests: HelpRequest[] = [
     collectedAmount: 0,
     verified: true,
     urgency: "В течение месяца",
-    daysLeft: 30,
     documents: ["Видео-подтверждение долга", "Кредитные договора", "Справка о доходах"],
     recipient: {
       name: "Ольга Владимировна Е.",
@@ -73,7 +71,6 @@ export const requests: HelpRequest[] = [
     collectedAmount: 0,
     verified: false,
     urgency: "Срочно",
-    daysLeft: 30,
     documents: ["Видео-подтверждение истории", "Кредитные договоры", "Сведения об исполнительных производствах"],
     updates: [
       {

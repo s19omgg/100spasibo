@@ -862,11 +862,6 @@ p {
   font-weight: 800;
 }
 
-.days-left {
-  color: var(--muted);
-  font-weight: 600;
-}
-
 .progress {
   height: 10px;
   overflow: hidden;

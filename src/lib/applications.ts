@@ -182,7 +182,6 @@ export function applicationToRequest(application: ApplicationRecord): HelpReques
     collectedAmount: 0,
     verified: true,
     urgency: application.urgency,
-    daysLeft: 30,
     documents: application.documents.length ? application.documents : ["Документы предоставлены на проверку"],
     recipient: {
       name: application.recipient_name,

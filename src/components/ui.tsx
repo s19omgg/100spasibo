@@ -681,7 +681,6 @@ export function RequestCard({ request, onNavigate, compact = false }: { request:
       <ProgressBar percent={percent} />
       <div className="request-bottom">
         <span className="progress-percent">{percent}%</span>
-        <span className="days-left">Осталось {request.daysLeft} дней</span>
       </div>
       <div className="request-actions">
         <Badge tone={request.verified ? "mint" : "peach"} icon={request.verified ? "shield" : "file"}>
