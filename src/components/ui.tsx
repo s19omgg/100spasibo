@@ -18,6 +18,14 @@ function getRequestCountLabel(count: number) {
   return "заявок";
 }
 
+function getHelpName(name: string) {
+  const names: Record<string, string> = {
+    Ольга: "Ольге",
+    Яна: "Яне",
+  };
+  return names[name] ?? name;
+}
+
 type IconName =
   | "heart"
   | "hands"
@@ -801,21 +809,24 @@ function FilterGroup({ title, items }: { title: string; items: string[] }) {
 }
 
 export function DonationPanel({ request, onToast }: { request: HelpRequest; onToast: (message: string) => void }) {
-  const [tab, setTab] = useState<"bank" | "sbp">(() => (request.recipient.card ? "bank" : "sbp"));
+  const recipient = request.recipient;
+  const hasRequisites = Boolean(recipient?.name && recipient?.bank && (recipient.card || recipient.sbpPhone));
+  const helpName = getHelpName(request.name);
+  const [tab, setTab] = useState<"bank" | "sbp">(() => (recipient?.card ? "bank" : "sbp"));
   const [amount, setAmount] = useState("100");
   const rows: Array<[string, string]> =
     tab === "bank"
       ? [
-          ["Получатель", request.recipient.name],
-          ["Банк получателя", request.recipient.bank],
-          request.recipient.card
-            ? ["Номер карты", request.recipient.card]
-            : ["Телефон для перевода", request.recipient.sbpPhone],
+          ["Получатель", recipient?.name ?? ""],
+          ["Банк получателя", recipient?.bank ?? ""],
+          recipient?.card
+            ? ["Номер карты", recipient.card]
+            : ["Телефон для перевода", recipient?.sbpPhone ?? ""],
         ]
       : [
-          ["Получатель", request.recipient.name],
-          ["Телефон для СБП", request.recipient.sbpPhone],
-          ["Банк", request.recipient.bank],
+          ["Получатель", recipient?.name ?? ""],
+          ["Телефон для СБП", recipient?.sbpPhone ?? ""],
+          ["Банк", recipient?.bank ?? ""],
         ];
 
   const copy = async (value: string) => {
@@ -827,9 +838,37 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
     }
   };
 
+  if (!hasRequisites) {
+    return (
+      <aside className="donation-panel donation-panel-pending">
+        <h2>Помочь {helpName}</h2>
+        <div className="pending-requisites-card">
+          <span>
+            <Icon name="card" />
+          </span>
+          <div>
+            <strong>Реквизиты скоро появятся</strong>
+            <p>
+              Сейчас мы уточняем данные для прямого перевода. Как только реквизиты будут готовы, здесь появится
+              способ помочь {helpName}.
+            </p>
+          </div>
+        </div>
+        <a className="telegram-receipt-link" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
+          <Icon name="telegram" />
+          Уточнить в Telegram
+        </a>
+        <p className="security-note">
+          <Icon name="lock" />
+          Платформа не принимает деньги. Помощь переводится напрямую человеку после публикации реквизитов.
+        </p>
+      </aside>
+    );
+  }
+
   return (
     <aside className="donation-panel">
-      <h2>Помочь {request.name}</h2>
+      <h2>Помочь {helpName}</h2>
       <div className="tab-row" role="tablist" aria-label="Способ перевода">
         <button className={tab === "bank" ? "active" : ""} type="button" onClick={() => setTab("bank")}>
           <Icon name="bank" />
@@ -897,10 +936,10 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
   );
 }
 
-export function VerifiedDocuments({ documents }: { documents: string[] }) {
+export function VerifiedDocuments({ documents, verified = true }: { documents: string[]; verified?: boolean }) {
   return (
     <section className="soft-card">
-      <h2>Какие документы проверены</h2>
+      <h2>{verified ? "Какие документы проверены" : "Какие материалы на проверке"}</h2>
       <ul className="doc-list">
         {documents.map((item) => (
           <li key={item}>
@@ -909,7 +948,11 @@ export function VerifiedDocuments({ documents }: { documents: string[] }) {
           </li>
         ))}
       </ul>
-      <p className="tiny">Все документы проверены модераторами платформы. Публично отображается только безопасная информация.</p>
+      <p className="tiny">
+        {verified
+          ? "Все документы проверены модераторами платформы. Публично отображается только безопасная информация."
+          : "Команда проверяет материалы и публикует только безопасную часть информации."}
+      </p>
     </section>
   );
 }

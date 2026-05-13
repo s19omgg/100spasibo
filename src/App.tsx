@@ -581,6 +581,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
   const percent = targetAmount > 0 ? Math.min(100, Math.round((collectedAmount / targetAmount) * 100)) : 0;
   const remaining = targetAmount - collectedAmount;
   const collectionNote = collectedAmount > 0 ? "Есть первые переводы" : "Сбор только начинается";
+  const hasRequisites = Boolean(request.recipient?.name && request.recipient?.bank && (request.recipient.card || request.recipient.sbpPhone));
 
   return (
     <section className="page shell detail-page">
@@ -613,8 +614,10 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
                 </Button>
               </div>
               <div className="chip-row">
-                <Badge tone="mint" icon="shield">Документы проверены</Badge>
-                <Badge tone="white" icon="card">Прямой перевод</Badge>
+                <Badge tone={request.verified ? "mint" : "peach"} icon={request.verified ? "shield" : "file"}>
+                  {request.verified ? "Документы проверены" : "Документы на проверке"}
+                </Badge>
+                <Badge tone="white" icon="card">{hasRequisites ? "Прямой перевод" : "Реквизиты скоро"}</Badge>
                 <Badge tone="white" icon="video">Отчет обязателен</Badge>
               </div>
             </div>
@@ -635,7 +638,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
           </section>
 
           <div className="two-column-blocks">
-            <VerifiedDocuments documents={request.documents} />
+            <VerifiedDocuments documents={request.documents} verified={request.verified} />
             <Timeline items={request.updates} />
           </div>
 
