@@ -811,9 +811,14 @@ p {
   transform-origin: center 43%;
 }
 
+.request-avatar-detail img {
+  object-fit: contain;
+}
+
 .request-avatar-detail {
   width: 250px;
-  height: 250px;
+  height: auto;
+  aspect-ratio: 4 / 5;
   border-radius: 28px;
 }
 
@@ -4194,10 +4199,16 @@ h3 {
   box-shadow: none;
 }
 
-.category-visual-detail,
-.request-avatar-detail {
+.category-visual-detail {
   width: 250px;
   height: 250px;
+  border-radius: 13px;
+}
+
+.request-avatar-detail {
+  width: 250px;
+  height: auto;
+  aspect-ratio: 4 / 5;
   border-radius: 13px;
 }
 
@@ -4494,10 +4505,15 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .category-visual-detail,
-  .request-avatar-detail {
+  .category-visual-detail {
     width: 100%;
     height: min(420px, 60vw);
+  }
+
+  .request-avatar-detail {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
   }
 
   .form-grid {
@@ -5796,11 +5812,17 @@ body {
   gap: 10px;
 }
 
-.telegram-mini-app .category-visual-detail,
-.telegram-mini-app .request-avatar-detail {
+.telegram-mini-app .category-visual-detail {
   width: 100%;
   height: auto;
   aspect-ratio: 1;
+  border-radius: 24px;
+}
+
+.telegram-mini-app .request-avatar-detail {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
   border-radius: 24px;
 }
 
