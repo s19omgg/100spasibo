@@ -1,4 +1,5 @@
 import olgaAvatar from "../assets/olga-avatar.jpg";
+import yanaAvatar from "../assets/yana-avatar.jpg";
 
 export type RequestCategory =
   | "Лечение и здоровье"
@@ -53,6 +54,7 @@ export const requests: HelpRequest[] = [
     recipient: {
       name: "Ольга Владимировна Е.",
       bank: "Т-Банк",
+      card: "2200 7001 5154 2346",
       sbpPhone: "+7 905 152-30-32",
     },
     updates: [
@@ -67,6 +69,7 @@ export const requests: HelpRequest[] = [
     name: "Яна",
     age: 21,
     city: "Санкт-Петербург",
+    avatar: yanaAvatar,
     category: "Долги и кредиты",
     reason: "Помощь с закрытием исполнительных производств и снятием ареста со счетов.",
     story:
