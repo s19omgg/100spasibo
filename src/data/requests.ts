@@ -37,7 +37,7 @@ export const requests: HelpRequest[] = [
     id: "olga",
     name: "Ольга",
     age: 44,
-    city: "Город уточняется",
+    city: "Ярославль",
     category: "Долги и кредиты",
     reason: "Помощь с кредитными обязательствами после резкого изменения семейной ситуации.",
     story:
