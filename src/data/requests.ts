@@ -98,3 +98,12 @@ export function getPercent(request: Pick<HelpRequest, "targetAmount" | "collecte
 export function formatRubles(value: number) {
   return new Intl.NumberFormat("ru-RU").format(value).replace(/\s/g, "\u00A0") + "\u00A0₽";
 }
+
+export function formatAge(value: number) {
+  const lastTwo = value % 100;
+  const last = value % 10;
+  if (lastTwo >= 11 && lastTwo <= 14) return `${value} лет`;
+  if (last === 1) return `${value} год`;
+  if (last >= 2 && last <= 4) return `${value} года`;
+  return `${value} лет`;
+}

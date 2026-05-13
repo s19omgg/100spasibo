@@ -20,7 +20,7 @@ import {
   WatercolorHero,
   type NavigateFn,
 } from "./components/ui";
-import { formatRubles, requests as seedRequests, type HelpRequest } from "./data/requests";
+import { formatAge, formatRubles, requests as seedRequests, type HelpRequest } from "./data/requests";
 import {
   isBackendConfigured,
   listApplications,
@@ -595,7 +595,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
             <CategoryIcon category={request.category} variant="detail" />
             <div>
               <h1>
-                {request.name}, {request.age} года, {request.city}
+                {request.name}, {formatAge(request.age)}, {request.city}
               </h1>
               <Badge icon="heart">Нужна помощь</Badge>
               <div className="request-story">
