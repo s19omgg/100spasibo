@@ -365,7 +365,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           </div>
           <div className="social-proof social-proof-empty">
             <span><Icon name="spark" /></span>
-            <p>{hasRequests ? "Открыта первая проверенная заявка. Помощь идет напрямую человеку." : "Первые заявки скоро появятся на платформе."}</p>
+            <p>{hasRequests ? "Проверенные заявки доступны на платформе. Помощь идет напрямую человеку." : "Первые заявки скоро появятся на платформе."}</p>
           </div>
         </div>
         <WatercolorHero />

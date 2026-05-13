@@ -669,8 +669,14 @@ export function RequestCard({ request, onNavigate, compact = false }: { request:
       </div>
       <p>{request.reason}</p>
       <div className="request-money">
-        <span>Цель: {formatRubles(request.targetAmount)}</span>
-        <span>Собрано: {formatRubles(request.collectedAmount)}</span>
+        <span>
+          <small>Цель</small>
+          <strong>{formatRubles(request.targetAmount)}</strong>
+        </span>
+        <span>
+          <small>Собрано</small>
+          <strong>{formatRubles(request.collectedAmount)}</strong>
+        </span>
       </div>
       <ProgressBar percent={percent} />
       <div className="request-bottom">
