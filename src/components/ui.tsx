@@ -658,7 +658,7 @@ export function RequestCard({ request, onNavigate, compact = false }: { request:
   return (
     <article className={`request-card ${compact ? "request-card-compact" : ""}`}>
       <div className="request-head">
-        <CategoryIcon category={request.category} />
+        <RequestVisual request={request} />
         <div>
           <h3>{request.name}</h3>
           <span className="muted-inline">
@@ -714,6 +714,22 @@ export function CategoryIcon({
       title={category}
     >
       <Icon name={visual.icon} />
+    </span>
+  );
+}
+
+export function RequestVisual({
+  request,
+  variant = "card",
+}: {
+  request: HelpRequest;
+  variant?: "card" | "detail";
+}) {
+  if (!request.avatar) return <CategoryIcon category={request.category} variant={variant} />;
+
+  return (
+    <span className={`request-avatar request-avatar-${variant}`}>
+      <img src={request.avatar} alt="" />
     </span>
   );
 }

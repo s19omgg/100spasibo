@@ -1,3 +1,5 @@
+import olgaAvatar from "../assets/olga-avatar.jpg";
+
 export type RequestCategory =
   | "Лечение и здоровье"
   | "Долги и кредиты"
@@ -11,6 +13,7 @@ export type HelpRequest = {
   name: string;
   age: number;
   city: string;
+  avatar?: string;
   category: RequestCategory;
   reason: string;
   story: string;
@@ -37,6 +40,7 @@ export const requests: HelpRequest[] = [
     name: "Ольга",
     age: 44,
     city: "Ярославль",
+    avatar: olgaAvatar,
     category: "Долги и кредиты",
     reason: "Помощь с кредитными обязательствами после резкого изменения семейной ситуации.",
     story:

@@ -4,7 +4,6 @@ import {
   Badge,
   BrandMark,
   Button,
-  CategoryIcon,
   DonationPanel,
   FilterSidebar,
   Icon,
@@ -12,6 +11,7 @@ import {
   PrettySelect,
   ProgressBar,
   RequestCard,
+  RequestVisual,
   StepCard,
   Timeline,
   Toast,
@@ -592,7 +592,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
       <div className="detail-layout">
         <div className="detail-main">
           <div className="request-hero-card">
-            <CategoryIcon category={request.category} variant="detail" />
+            <RequestVisual request={request} variant="detail" />
             <div>
               <h1>
                 {request.name}, {formatAge(request.age)}, {request.city}
