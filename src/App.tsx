@@ -643,7 +643,6 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
           </div>
 
           <section className="video-placeholder">
-            <span className="play-button"><Icon name="play" /></span>
             <div>
               <h2>Видеоотчет о погашении долга</h2>
               <p>

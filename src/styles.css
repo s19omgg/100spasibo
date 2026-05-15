@@ -1902,24 +1902,11 @@ textarea {
 
 .video-placeholder {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 20px;
-  align-items: center;
+  gap: 10px;
   padding: 24px;
   background: linear-gradient(135deg, rgba(234, 248, 241, 0.9), rgba(255, 255, 255, 0.9));
   border: 1px solid rgba(94, 155, 131, 0.28);
   border-radius: var(--radius-lg);
-}
-
-.play-button {
-  width: 86px;
-  height: 70px;
-  display: grid;
-  place-items: center;
-  color: var(--mint-strong);
-  background: #fff;
-  border-radius: 22px;
-  box-shadow: var(--shadow);
 }
 
 .donation-panel {
@@ -5858,7 +5845,6 @@ body {
 }
 
 .telegram-mini-app .video-placeholder {
-  grid-template-columns: 1fr;
   padding: 16px;
   border-radius: 24px;
 }
