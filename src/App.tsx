@@ -65,49 +65,17 @@ async function getSha256(value: string) {
     .join("");
 }
 
-function getAbsoluteRouteUrl(routePath: string) {
-  return new URL(getBrowserPath(routePath), window.location.origin).toString();
-}
-
 async function shareHelpRequest(request: HelpRequest, onToast: (message: string) => void) {
-  if (request.storyShareUrl) {
-    try {
-      await navigator.clipboard.writeText(request.storyShareUrl);
-      onToast("Ссылка на историю скопирована.");
-    } catch {
-      onToast("Не удалось скопировать ссылку автоматически.");
-    }
+  if (!request.storyShareUrl) {
+    onToast("Ссылка на историю скоро появится.");
     return;
   }
 
-  const routePath = `/requests/${request.id}`;
-  const shareUrl = getAbsoluteRouteUrl(routePath);
-  const title = `Помочь ${request.name} на 100spasibo`;
-  const text = `${request.name}, ${request.city}: ${request.reason} Помощь идет напрямую человеку.`;
-
   try {
-    if (navigator.share) {
-      await navigator.share({ title, text, url: shareUrl });
-      onToast("Заявка готова к отправке.");
-      return;
-    }
-  } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") return;
-  }
-
-  const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
-  try {
-    const webApp = window.Telegram?.WebApp;
-    if (webApp?.openTelegramLink) {
-      webApp.openTelegramLink(telegramShareUrl);
-    } else {
-      window.open(telegramShareUrl, "_blank", "noopener,noreferrer");
-    }
-    await navigator.clipboard.writeText(`${text} ${shareUrl}`);
-    onToast("Открыли Telegram и скопировали ссылку.");
+    await navigator.clipboard.writeText(request.storyShareUrl);
+    onToast("Ссылка на историю скопирована.");
   } catch {
-    window.open(telegramShareUrl, "_blank", "noopener,noreferrer");
-    onToast("Открыли Telegram для отправки заявки.");
+    onToast("Не удалось скопировать ссылку автоматически.");
   }
 }
 
@@ -592,6 +560,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
   const remaining = targetAmount - collectedAmount;
   const collectionNote = collectedAmount > 0 ? "Есть первые переводы" : "Сбор только начинается";
   const hasRequisites = Boolean(request.recipient?.name && request.recipient?.bank && (request.recipient.card || request.recipient.sbpPhone));
+  const canShareStory = Boolean(request.storyShareUrl);
 
   return (
     <section className="page shell detail-page">
@@ -618,7 +587,14 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
                 </p>
               </div>
               <div className="detail-actions">
-                <Button variant="soft" onClick={() => void shareHelpRequest(request, onToast)}>
+                <Button
+                  variant="soft"
+                  disabled={!canShareStory}
+                  onClick={() => {
+                    if (!canShareStory) return;
+                    void shareHelpRequest(request, onToast);
+                  }}
+                >
                   <Icon name="share" />
                   Поделиться историей
                 </Button>

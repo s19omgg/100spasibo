@@ -297,6 +297,21 @@ p {
   border: 1px solid rgba(255, 107, 87, 0.22);
 }
 
+.button:disabled,
+.button:disabled:hover {
+  cursor: not-allowed;
+  opacity: 0.56;
+  transform: none;
+  box-shadow: none;
+}
+
+.button-soft:disabled,
+.button-ghost:disabled {
+  color: rgba(111, 111, 111, 0.72);
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(120, 80, 50, 0.12);
+}
+
 .wide {
   width: 100%;
 }
