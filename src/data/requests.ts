@@ -16,6 +16,7 @@ export type HelpRequest = {
   age: number;
   city: string;
   avatar?: string;
+  storyShareUrl?: string;
   category: RequestCategory;
   reason: string;
   story: string;
@@ -99,6 +100,7 @@ export const requests: HelpRequest[] = [
     age: 21,
     city: "Санкт-Петербург",
     avatar: yanaAvatar,
+    storyShareUrl: "https://t.me/stospasibo/16",
     category: "Долги и кредиты",
     reason: "Помощь с закрытием исполнительных производств и снятием ареста со счетов.",
     story:

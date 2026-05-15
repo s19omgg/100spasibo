@@ -70,6 +70,16 @@ function getAbsoluteRouteUrl(routePath: string) {
 }
 
 async function shareHelpRequest(request: HelpRequest, onToast: (message: string) => void) {
+  if (request.storyShareUrl) {
+    try {
+      await navigator.clipboard.writeText(request.storyShareUrl);
+      onToast("Ссылка на историю скопирована.");
+    } catch {
+      onToast("Не удалось скопировать ссылку автоматически.");
+    }
+    return;
+  }
+
   const routePath = `/requests/${request.id}`;
   const shareUrl = getAbsoluteRouteUrl(routePath);
   const title = `Помочь ${request.name} на 100spasibo`;
@@ -610,7 +620,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
               <div className="detail-actions">
                 <Button variant="soft" onClick={() => void shareHelpRequest(request, onToast)}>
                   <Icon name="share" />
-                  Поделиться заявкой
+                  Поделиться историей
                 </Button>
               </div>
               <div className="chip-row">
