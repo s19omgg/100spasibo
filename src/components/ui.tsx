@@ -849,7 +849,7 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
       : [
           ["Получатель", recipient?.name ?? ""],
           ["Телефон для СБП", recipient?.sbpPhone ?? ""],
-          ["Банк", recipient?.bank ?? ""],
+          ["Банк", recipient?.sbpBank ?? recipient?.bank ?? ""],
         ];
 
   const copy = async (value: string) => {

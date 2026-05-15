@@ -29,6 +29,7 @@ export type HelpRequest = {
   recipient?: {
     name?: string;
     bank?: string;
+    sbpBank?: string;
     card?: string;
     sbpPhone?: string;
   };
@@ -112,7 +113,8 @@ export const requests: HelpRequest[] = [
     documents: ["Видео-подтверждение истории", "Сведения о микрозаймах", "Реквизиты получателя"],
     recipient: {
       name: "Алиса Александровна К.",
-      bank: "Райффайзен Банк",
+      bank: "Озон Банк",
+      sbpBank: "Райффайзен Банк",
       card: "2204 2402 2432 8106",
       sbpPhone: "+7 926 307-56-40",
     },
