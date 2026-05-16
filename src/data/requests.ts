@@ -46,6 +46,7 @@ export const requests: HelpRequest[] = [
     age: 44,
     city: "Ярославль",
     avatar: olgaAvatar,
+    storyShareUrl: "https://t.me/stospasibo/21",
     category: "Долги и кредиты",
     reason: "Помощь с кредитными обязательствами после резкого изменения семейной ситуации.",
     story:
