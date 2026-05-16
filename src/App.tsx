@@ -732,10 +732,16 @@ function ApplyPage() {
               <h3>Готово? Отправьте видео в Telegram</h3>
               <p>После отправки команда посмотрит видео и напишет вам, если нужно будет уточнить детали.</p>
             </div>
-            <a className="button button-primary big wide" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
-              <Icon name="telegram" />
-              Отправить видео
-            </a>
+            <div className="send-video-action">
+              <a className="button button-primary big wide" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
+                <Icon name="telegram" />
+                Отправить видео
+              </a>
+              <p>
+                Отправляя видео-заявку, вы соглашаетесь на обработку персональных данных и размещение после модерации
+                безопасной части вашей истории, имени, города, суммы сбора и реквизитов на платформе 100spasibo.
+              </p>
+            </div>
           </div>
         </article>
 
