@@ -143,7 +143,10 @@ export default function App() {
   const [publishedRequests, setPublishedRequests] = useState<HelpRequest[]>([]);
   useTelegramMiniApp(path, navigate);
 
-  const allRequests = useMemo(() => [...publishedRequests, ...seedRequests], [publishedRequests]);
+  const allRequests = useMemo(
+    () => [...publishedRequests, ...seedRequests].sort((first, second) => first.targetAmount - second.targetAmount),
+    [publishedRequests],
+  );
 
   const refreshPublishedRequests = async () => {
     try {
