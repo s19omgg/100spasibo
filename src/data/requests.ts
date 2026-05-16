@@ -75,6 +75,7 @@ export const requests: HelpRequest[] = [
     age: 24,
     city: "Екатеринбург",
     avatar: alexandraAvatar,
+    storyShareUrl: "https://t.me/stospasibo/23",
     category: "Долги и кредиты",
     reason: "Помощь сохранить квартиру, которую банк может выставить на торги из-за кредита под залог.",
     story:
