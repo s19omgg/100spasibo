@@ -423,10 +423,10 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
   }, [query, requests]);
 
   const totalPages = Math.max(1, Math.ceil(filteredRequests.length / REQUESTS_PER_PAGE));
+  const pageOffset = (page - 1) * REQUESTS_PER_PAGE;
   const visible = useMemo(() => {
-    const start = (page - 1) * REQUESTS_PER_PAGE;
-    return filteredRequests.slice(start, start + REQUESTS_PER_PAGE);
-  }, [filteredRequests, page]);
+    return filteredRequests.slice(pageOffset, pageOffset + REQUESTS_PER_PAGE);
+  }, [filteredRequests, pageOffset]);
   const paginationItems = useMemo<(number | "ellipsis")[]>(() => {
     if (totalPages <= 5) return Array.from({ length: totalPages }, (_, index) => index + 1);
 
@@ -490,9 +490,18 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
             />
           </div>
           <div className="requests-grid" ref={resultsRef}>
-            {visible.map((request) => (
-              <RequestCard key={request.id} request={request} onNavigate={onNavigate} />
-            ))}
+            {visible.flatMap((request, index) => {
+              const absoluteIndex = pageOffset + index + 1;
+              const items: ReactNode[] = [
+                <RequestCard key={request.id} request={request} onNavigate={onNavigate} />,
+              ];
+
+              if (absoluteIndex % 5 === 0) {
+                items.push(<PlatformSupportCard key={`platform-support-${absoluteIndex}`} />);
+              }
+
+              return items;
+            })}
           </div>
           {!visible.length ? (
             <EmptyStateCard
@@ -533,6 +542,22 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
         </div>
       </div>
     </section>
+  );
+}
+
+function PlatformSupportCard() {
+  return (
+    <article className="platform-support-card">
+      <div>
+        <Badge tone="mint" icon="heart">Поддержать платформу</Badge>
+        <h2>Помочь 100spasibo развиваться</h2>
+        <p>Поддержка помогает уделять проекту больше времени, улучшать заявки, отчеты и делать платформу понятнее</p>
+      </div>
+      <a className="button button-primary" href={AUTHOR_DONATE_URL} target="_blank" rel="noreferrer">
+        <Icon name="heart" filled />
+        Поддержать платформу
+      </a>
+    </article>
   );
 }
 

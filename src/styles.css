@@ -722,6 +722,43 @@ p {
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
+.platform-support-card {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 227, 216, 0.92), transparent 18rem),
+    radial-gradient(circle at 94% 80%, rgba(234, 248, 241, 0.94), transparent 19rem),
+    rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.platform-support-card > div {
+  display: grid;
+  gap: 10px;
+}
+
+.platform-support-card h2 {
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.08;
+}
+
+.platform-support-card p {
+  max-width: 720px;
+  color: #5b5550;
+  font-size: 16px;
+}
+
+.platform-support-card .button {
+  min-height: 52px;
+  white-space: nowrap;
+}
+
 .request-head {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -4862,6 +4899,16 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .platform-support-card {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .platform-support-card .button {
+    width: 100%;
+  }
+
   .catalog-toolbar {
     grid-template-columns: 1fr;
   }
@@ -6503,6 +6550,7 @@ body {
 .telegram-mini-app .hero-copy,
 .telegram-mini-app .request-card,
 .telegram-mini-app .request-card-compact,
+.telegram-mini-app .platform-support-card,
 .telegram-mini-app .info-banner,
 .telegram-mini-app .collection-card,
 .telegram-mini-app .report-card,
@@ -6637,6 +6685,25 @@ body {
 
 .telegram-mini-app .request-card p {
   min-height: 0;
+}
+
+.telegram-mini-app .platform-support-card {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.telegram-mini-app .platform-support-card h2 {
+  font-size: 23px;
+}
+
+.telegram-mini-app .platform-support-card p {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.telegram-mini-app .platform-support-card .button {
+  width: 100%;
+  min-height: 50px;
 }
 
 .telegram-mini-app .request-money,
