@@ -20,7 +20,7 @@ import {
   WatercolorHero,
   type NavigateFn,
 } from "./components/ui";
-import { formatAge, formatRubles, requests as seedRequests, type HelpRequest } from "./data/requests";
+import { formatAge, formatRubles, getPercent, requests as seedRequests, type HelpRequest } from "./data/requests";
 import {
   isBackendConfigured,
   listApplications,
@@ -67,15 +67,15 @@ async function getSha256(value: string) {
 
 async function shareHelpRequest(request: HelpRequest, onToast: (message: string) => void) {
   if (!request.storyShareUrl) {
-    onToast("Ссылка на историю скоро появится.");
+    onToast("Ссылка на историю скоро появится");
     return;
   }
 
   try {
     await navigator.clipboard.writeText(request.storyShareUrl);
-    onToast("Ссылка на историю скопирована.");
+    onToast("Ссылка на историю скопирована");
   } catch {
-    onToast("Не удалось скопировать ссылку автоматически.");
+    onToast("Не удалось скопировать ссылку автоматически");
   }
 }
 
@@ -117,8 +117,8 @@ function useTelegramMiniApp(path: string, navigate: NavigateFn) {
         navigate("/requests");
         return;
       }
-      if (path.startsWith("/stories/")) {
-        navigate("/stories");
+      if (path.startsWith("/earn/") || path.startsWith("/stories/")) {
+        navigate("/earn");
         return;
       }
       navigate("/");
@@ -175,10 +175,9 @@ export default function App() {
   const page = (() => {
     if (path === "/requests") return <RequestsPage requests={allRequests} onNavigate={navigate} />;
     if (path.startsWith("/requests/")) return <RequestDetailPage requests={allRequests} id={path.split("/").pop()} onNavigate={navigate} onToast={showToast} />;
-    if (path === "/apply") return <ApplyPage />;
+    if (path === "/apply") return <ApplyPage requests={allRequests} onToast={showToast} />;
     if (path === "/how-it-works") return <HowItWorksPage onNavigate={navigate} />;
-    if (path.startsWith("/stories/")) return <StoriesPage onNavigate={navigate} />;
-    if (path === "/stories") return <StoriesPage onNavigate={navigate} />;
+    if (path.startsWith("/earn") || path.startsWith("/stories")) return <EarnPage />;
     if (path === "/admin") {
       return adminUnlocked ? (
         <AdminDashboardPage
@@ -188,7 +187,7 @@ export default function App() {
           onLogout={() => {
             window.localStorage.removeItem(ADMIN_SESSION_KEY);
             setAdminUnlocked(false);
-            showToast("Админ-панель закрыта.");
+            showToast("Админ-панель закрыта");
           }}
         />
       ) : (
@@ -198,7 +197,7 @@ export default function App() {
           onUnlock={() => {
             window.localStorage.setItem(ADMIN_SESSION_KEY, "true");
             setAdminUnlocked(true);
-            showToast("Админ-панель открыта.");
+            showToast("Админ-панель открыта");
           }}
         />
       );
@@ -246,7 +245,7 @@ function MiniAppBottomNav({ path, onNavigate }: { path: string; onNavigate: Navi
     { label: "Главная", to: "/", icon: "home" },
     { label: "Помочь", to: "/requests", icon: "heart" },
     { label: "Заявка", to: "/apply", icon: "file" },
-    { label: "Истории", to: "/stories", icon: "video" },
+    { label: "Заработать", to: "/earn", icon: "card" },
   ] as const;
 
   return (
@@ -268,17 +267,17 @@ const onboardingSlides = [
   {
     icon: "heart",
     title: "Люди помогают людям",
-    text: "Вы выбираете конкретную заявку и помогаете напрямую человеку, без перевода денег платформе.",
+    text: "Вы выбираете конкретную заявку и помогаете напрямую человеку, без перевода денег платформе",
   },
   {
     icon: "shield",
     title: "Заявки проходят проверку",
-    text: "Мы смотрим документы и публикуем только безопасную часть истории, чтобы помощь была честной и адресной.",
+    text: "Мы смотрим документы и публикуем только безопасную часть истории, чтобы помощь была честной и адресной",
   },
   {
     icon: "video",
     title: "После сбора есть отчет",
-    text: "Получатель показывает результат: чек, видеоотчет и благодарность всем, кто помог.",
+    text: "Получатель показывает результат: чек, видеоотчет и благодарность всем, кто помог",
   },
 ] as const;
 
@@ -332,7 +331,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           </h1>
           <p>
             Мы проверяем заявки и документы, а вы помогаете напрямую. Даже 100 рублей могут стать важным шагом к
-            решению чьей-то проблемы.
+            решению чьей-то проблемы
           </p>
           <div className="hero-actions">
             <Button onClick={() => onNavigate("/apply")}>
@@ -346,7 +345,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           </div>
           <div className="social-proof social-proof-empty">
             <span><Icon name="spark" /></span>
-            <p>{hasRequests ? "Проверенные заявки доступны на платформе. Помощь идет напрямую человеку." : "Первые заявки скоро появятся на платформе."}</p>
+            <p>{hasRequests ? "Проверенные заявки доступны на платформе. Помощь идет напрямую человеку" : "Первые заявки скоро появятся на платформе"}</p>
           </div>
         </div>
         <WatercolorHero />
@@ -357,10 +356,10 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           <h2>Как это работает</h2>
         </div>
         <div className="steps-grid">
-          <StepCard index={1} icon="video" title="Заявка" text="Человек записывает видео: рассказывает свою историю и показывает кредиты в личных кабинетах банков." />
-          <StepCard index={2} icon="shield" title="Проверка ситуации" text="Мы смотрим видео и уточняем детали, чтобы помощь была честной, адресной и безопасной." />
-          <StepCard index={3} icon="hands" title="Прямая помощь" text="После одобрения заявка публикуется. Люди переводят деньги напрямую получателю." />
-          <StepCard index={4} icon="video" title="Видеоотчет" text="После сбора получатель показывает, как помощь была использована." />
+          <StepCard index={1} icon="video" title="Заявка" text="Человек записывает видео: рассказывает свою историю и показывает кредиты в личных кабинетах банков" />
+          <StepCard index={2} icon="shield" title="Проверка ситуации" text="Мы смотрим видео и уточняем детали, чтобы помощь была честной, адресной и безопасной" />
+          <StepCard index={3} icon="hands" title="Прямая помощь" text="После одобрения заявка публикуется. Люди переводят деньги напрямую получателю" />
+          <StepCard index={4} icon="video" title="Видеоотчет" text="После сбора получатель показывает, как помощь была использована" />
         </div>
       </section>
 
@@ -368,7 +367,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
         <div className="section-row">
           <div>
             <h2>Кому нужна помощь прямо сейчас</h2>
-            <p>{hasRequests ? "Выберите человека, которому хотите помочь напрямую." : "Пока опубликованных заявок нет. Как только мы проверим первые заявки, они появятся здесь."}</p>
+            <p>{hasRequests ? "Выберите человека, которому хотите помочь напрямую" : "Пока опубликованных заявок нет. Как только мы проверим первые заявки, они появятся здесь"}</p>
           </div>
           <Button variant="soft" onClick={() => onNavigate("/requests")}>Смотреть все заявки</Button>
         </div>
@@ -382,7 +381,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
           <EmptyStateCard
             icon="heart"
             title="Заявок пока нет"
-            text="Мы только готовим первые истории к публикации. Скоро здесь появятся люди, которым можно будет помочь напрямую."
+            text="Мы только готовим первые истории к публикации. Скоро здесь появятся люди, которым можно будет помочь напрямую"
             actionLabel="Перейти во вкладку «Помочь»"
             onAction={() => onNavigate("/requests")}
           />
@@ -390,16 +389,16 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
       </section>
 
       <section className="section shell trust-strip">
-        <TrustCard icon="shield" title="Документы проверены" text="Каждая заявка проходит ручную проверку модераторами платформы." />
-        <TrustCard icon="card" title="Деньги идут напрямую получателю" text="Мы не удерживаем средства — вы помогаете человеку напрямую." />
-        <TrustCard icon="video" title="Есть отчетность" text="Получатель показывает результат, а вы видите, как ваша помощь работает." />
+        <TrustCard icon="shield" title="Документы проверены" text="Каждая заявка проходит ручную проверку модераторами платформы" />
+        <TrustCard icon="card" title="Деньги идут напрямую получателю" text="Мы не удерживаем средства — вы помогаете человеку напрямую" />
+        <TrustCard icon="video" title="Есть отчетность" text="Получатель показывает результат, а вы видите, как ваша помощь работает" />
       </section>
 
       <section className="section shell author-support-strip">
         <div>
           <Badge tone="mint" icon="heart">Поддержать автора</Badge>
           <h2>Помочь развивать 100spasibo</h2>
-          <p>Небольшая поддержка помогает уделять проекту больше времени, улучшать и делать платформу понятнее.</p>
+          <p>Небольшая поддержка помогает уделять проекту больше времени, улучшать и делать платформу понятнее</p>
         </div>
         <Button variant="soft" onClick={() => onNavigate("/support-author")}>
           <Icon name="spark" />
@@ -462,7 +461,7 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
         <div>
           <Badge icon="heart">Люди помогают людям</Badge>
           <h1>Кому нужна помощь</h1>
-          <p>Выберите человека, которому вы хотите помочь сегодня.</p>
+          <p>Выберите человека, которому вы хотите помочь сегодня</p>
         </div>
         <WatercolorHero type="hands" />
       </div>
@@ -471,8 +470,8 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
         <FilterSidebar count={requests.length} />
         <div className="catalog-main">
           <div className="banner-grid">
-            <InfoBanner tone="peach" icon="hands" title="Даже 100 рублей имеют значение" text="Небольшая помощь от многих людей меняет чью-то жизнь к лучшему." />
-            <InfoBanner tone="mint" icon="shield" title="Все заявки проходят проверку" text="Мы проверяем документы и историю каждого заявителя, чтобы помощь была честной и адресной." />
+            <InfoBanner tone="peach" icon="hands" title="Даже 100 рублей имеют значение" text="Небольшая помощь от многих людей меняет чью-то жизнь к лучшему" />
+            <InfoBanner tone="mint" icon="shield" title="Все заявки проходят проверку" text="Мы проверяем документы и историю каждого заявителя, чтобы помощь была честной и адресной" />
           </div>
           <div className="catalog-toolbar">
             <label className="search-box">
@@ -499,7 +498,7 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
             <EmptyStateCard
               icon="heart"
               title={query ? "По этому поиску заявок нет" : "Заявок пока нет"}
-              text={query ? "Попробуйте изменить запрос. Сейчас на платформе еще нет опубликованных заявок." : "Мы еще не опубликовали первые проверенные заявки. Как только они появятся, здесь можно будет выбрать человека и помочь напрямую."}
+              text={query ? "Попробуйте изменить запрос. Сейчас на платформе еще нет опубликованных заявок" : "Мы еще не опубликовали первые проверенные заявки. Как только они появятся, здесь можно будет выбрать человека и помочь напрямую"}
               actionLabel="Подать заявку"
               onAction={() => onNavigate("/apply")}
             />
@@ -549,7 +548,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
         <EmptyStateCard
           icon="heart"
           title="Эта заявка больше не опубликована"
-          text="Сейчас на платформе нет открытых заявок. Когда появятся первые проверенные заявки, они будут доступны во вкладке «Помочь»."
+          text="Сейчас на платформе нет открытых заявок. Когда появятся первые проверенные заявки, они будут доступны во вкладке «Помочь»"
           actionLabel="Перейти во вкладку «Помочь»"
           onAction={() => onNavigate("/requests")}
         />
@@ -586,7 +585,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
                 ))}
                 <p className="story-edit-note">
                   Текст истории бережно отредактирован командой 100spasibo: мы сохранили смысл рассказа и сделали его
-                  более читабельным для публикации.
+                  более читабельным для публикации
                 </p>
               </div>
               <div className="detail-actions">
@@ -636,7 +635,7 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
               <h2>Видеоотчет о погашении долга</h2>
               <p>
                 После полного закрытия долга {request.name} предоставит видеоотчет и документы, подтверждающие оплату.
-                Мы публикуем отчеты — это часть нашей прозрачности.
+                Мы публикуем отчеты — это часть нашей прозрачности
               </p>
             </div>
           </section>
@@ -647,36 +646,63 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
   );
 }
 
-function ApplyPage() {
+function ApplyPage({ requests, onToast }: { requests: HelpRequest[]; onToast: (message: string) => void }) {
+  const [showMutualAidModal, setShowMutualAidModal] = useState(true);
+  const suggestedRequest = useMemo(() => {
+    const eligible = requests.filter(
+      (request) =>
+        request.verified &&
+        request.recipient?.name &&
+        request.recipient.bank &&
+        (request.recipient.card || request.recipient.sbpPhone),
+    );
+    if (!eligible.length) return undefined;
+
+    const olga = eligible.find((request) => request.id === "olga");
+    if (olga && Math.random() < 0.8) return olga;
+
+    const otherRequests = eligible.filter((request) => request.id !== "olga");
+    const pool = otherRequests.length ? otherRequests : eligible;
+    return pool[Math.floor(Math.random() * pool.length)];
+  }, [requests]);
+
   const videoSteps = [
     {
       title: "Представьтесь и спокойно расскажите о себе",
-      text: "Назовите имя, город и коротко объясните, почему сейчас вам нужна поддержка.",
+      text: "Назовите имя, город и коротко объясните, почему сейчас вам нужна поддержка",
     },
     {
       title: "Расскажите свою историю",
-      text: "Что произошло, из-за чего появилась сложная ситуация и почему самостоятельно закрыть обязательства сейчас трудно.",
+      text: "Что произошло, из-за чего появилась сложная ситуация и почему самостоятельно закрыть обязательства сейчас трудно",
     },
     {
       title: "Объясните, на что брались кредиты",
-      text: "Расскажите, для каких расходов оформлялись кредиты или займы: лечение, аренда, учеба, бытовые расходы, работа или другая причина.",
+      text: "Расскажите, для каких расходов оформлялись кредиты или займы: лечение, аренда, учеба, бытовые расходы, работа или другая причина",
     },
     {
       title: "Покажите личный кабинет банка",
-      text: "Возьмите телефон в руки, откройте личный кабинет банка или МФО и покажите раздел с кредитами так, чтобы были видны активные обязательства.",
+      text: "Возьмите телефон в руки, откройте личный кабинет банка или МФО и покажите раздел с кредитами так, чтобы были видны активные обязательства",
     },
     {
       title: "Покажите сумму и статус",
-      text: "В кадре должны быть понятны банк, тип обязательства, остаток долга или платеж. Если кредитов несколько, покажите каждый кабинет по очереди.",
+      text: "В кадре должны быть понятны банк, тип обязательства, остаток долга или платеж. Если кредитов несколько, покажите каждый кабинет по очереди",
     },
     {
       title: "Скажите, какую помощь просите",
-      text: "Назовите примерную сумму, которую нужно собрать, и подтвердите, что после помощи готовы записать отчет о закрытии долга.",
+      text: "Назовите примерную сумму, которую нужно собрать, и подтвердите, что после помощи готовы записать отчет о закрытии долга",
     },
   ];
 
   return (
     <section className="page shell apply-page">
+      {showMutualAidModal && suggestedRequest ? (
+        <MutualAidBeforeApplyModal
+          request={suggestedRequest}
+          onClose={() => setShowMutualAidModal(false)}
+          onToast={onToast}
+        />
+      ) : null}
+
       <div className="apply-hero">
         <div>
           <Badge icon="heart">Люди помогают людям</Badge>
@@ -685,7 +711,7 @@ function ApplyPage() {
           </h1>
           <p>
             Запишите короткое видео для заявки. Так команда сможет лучше понять вашу ситуацию, а история будет
-            выглядеть живой, честной и понятной для тех, кто захочет помочь.
+            выглядеть живой, честной и понятной для тех, кто захочет помочь
           </p>
         </div>
         <WatercolorHero type="apply" />
@@ -699,7 +725,7 @@ function ApplyPage() {
               <h2>Что нужно снять</h2>
               <p>
                 Запишите видео на телефон в спокойной обстановке. Не нужно говорить официально: важно честно объяснить
-                ситуацию и показать подтверждение кредитов в личных кабинетах банков.
+                ситуацию и показать подтверждение кредитов в личных кабинетах банков
               </p>
             </div>
           </div>
@@ -722,7 +748,7 @@ function ApplyPage() {
               <h3>Важно про безопасность</h3>
               <p>
                 Не показывайте пароли, SMS-коды, CVV, полные номера карт и паспорт. Если на экране есть лишние данные,
-                закройте их рукой или переключитесь на раздел, где видна только информация по кредиту.
+                закройте их рукой или переключитесь на раздел, где видна только информация по кредиту
               </p>
             </div>
           </div>
@@ -730,7 +756,7 @@ function ApplyPage() {
           <div className="send-video-card">
             <div>
               <h3>Готово? Отправьте видео в Telegram</h3>
-              <p>После отправки команда посмотрит видео и напишет вам, если нужно будет уточнить детали.</p>
+              <p>После отправки команда посмотрит видео и напишет вам, если нужно будет уточнить детали</p>
             </div>
             <div className="send-video-action">
               <a className="button button-primary big wide" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
@@ -738,8 +764,8 @@ function ApplyPage() {
                 Отправить видео
               </a>
               <p>
-                Отправляя видео-заявку, вы соглашаетесь на обработку персональных данных и размещение после модерации
-                безопасной части вашей истории, имени, города, суммы сбора и реквизитов на платформе 100spasibo.
+                Отправляя заявку, вы соглашаетесь на обработку персональных данных и размещение после модерации
+                безопасной части вашей истории, имени, города, суммы сбора и реквизитов на платформе 100spasibo
               </p>
             </div>
           </div>
@@ -752,7 +778,7 @@ function ApplyPage() {
           <div className="sidebar-card contact-help">
             <Icon name="heart" />
             <h3>Есть вопрос?</h3>
-            <p>Если не уверены, как лучше снять видео, напишите нам в Telegram.</p>
+            <p>Если не уверены, как лучше снять видео, напишите нам в Telegram</p>
             <a href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer"><Icon name="telegram" />Написать в Telegram</a>
           </div>
         </aside>
@@ -767,6 +793,113 @@ function FormSection({ number, title, children, wide = false }: { number: number
       <h2><span>{number}</span>{title}</h2>
       <div className="form-grid">{children}</div>
     </section>
+  );
+}
+
+function MutualAidBeforeApplyModal({
+  request,
+  onClose,
+  onToast,
+}: {
+  request: HelpRequest;
+  onClose: () => void;
+  onToast: (message: string) => void;
+}) {
+  const recipient = request.recipient;
+  const percent = getPercent(request);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  const copy = async (value: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      onToast(`${label} скопировано`);
+    } catch {
+      onToast("Можно выделить и скопировать вручную");
+    }
+  };
+
+  return (
+    <div className="mutual-aid-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mutual-aid-title">
+      <div className="mutual-aid-modal">
+        <button className="mutual-aid-close" type="button" onClick={onClose} aria-label="Закрыть">
+          <Icon name="x" />
+        </button>
+
+        <div className="mutual-aid-copy">
+          <Badge tone="mint" icon="heart">Перед заявкой</Badge>
+          <h2 id="mutual-aid-title">Сначала маленький жест помощи</h2>
+          <p>
+            Если можете, поддержите другого человека напрямую перед тем, как отправить свою историю. Даже небольшая
+            сумма помогает запускать круг взаимопомощи
+          </p>
+        </div>
+
+        <article className="mutual-aid-request-card">
+          <RequestVisual request={request} />
+          <div>
+            <h3>
+              {request.name}, {request.city}
+            </h3>
+            <p>{request.reason}</p>
+            <div className="mutual-aid-progress">
+              <div>
+                <span>Собрано</span>
+                <strong>{formatRubles(request.collectedAmount)}</strong>
+              </div>
+              <div>
+                <span>Цель</span>
+                <strong>{formatRubles(request.targetAmount)}</strong>
+              </div>
+            </div>
+            <ProgressBar percent={percent} />
+          </div>
+        </article>
+
+        <div className="mutual-aid-requisites">
+          <div>
+            <span>Получатель</span>
+            <strong>{recipient?.name}</strong>
+          </div>
+          {recipient?.card ? (
+            <button type="button" onClick={() => void copy(recipient.card ?? "", "Номер карты")}>
+              <span>Карта</span>
+              <strong>{recipient.card}</strong>
+              <Icon name="copy" />
+            </button>
+          ) : null}
+          {recipient?.sbpPhone ? (
+            <button type="button" onClick={() => void copy(recipient.sbpPhone ?? "", "Телефон СБП")}>
+              <span>СБП</span>
+              <strong>{recipient.sbpPhone}</strong>
+              <small>{recipient.sbpBank ?? recipient.bank}</small>
+              <Icon name="copy" />
+            </button>
+          ) : null}
+        </div>
+
+        <div className="mutual-aid-actions">
+          <a className="button button-primary" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
+            <Icon name="telegram" />
+            Отправить чек в Telegram
+          </a>
+          <button type="button" onClick={onClose}>
+            Пропустить
+          </button>
+        </div>
+
+        <p className="mutual-aid-note">
+          Это не комиссия и не обязательный платеж. 100spasibo не принимает деньги: перевод идет напрямую человеку
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -999,8 +1132,8 @@ function AdminAccessPage({ onNavigate, onToast, onUnlock }: { onNavigate: Naviga
     event.preventDefault();
     const passwordHash = await getSha256(password.trim());
     if (passwordHash !== ADMIN_PASSWORD_HASH) {
-      setError("Пожалуйста, проверьте пароль администратора.");
-      onToast("Пароль не подошел.");
+      setError("Пожалуйста, проверьте пароль администратора");
+      onToast("Пароль не подошел");
       return;
     }
     setError("");
@@ -1014,7 +1147,7 @@ function AdminAccessPage({ onNavigate, onToast, onUnlock }: { onNavigate: Naviga
         <h1>Вход в админ-панель</h1>
         <p>
           Админка вынесена отдельно от публичного мини-приложения. Введите пароль администратора, чтобы открыть очередь заявок,
-          чеков и отчетов.
+          чеков и отчетов
         </p>
         <form className="admin-access-form" onSubmit={handleSubmit}>
           <label className="form-field">
@@ -1039,7 +1172,7 @@ function AdminAccessPage({ onNavigate, onToast, onUnlock }: { onNavigate: Naviga
         </form>
         <div className="admin-access-note">
           <Icon name="shield" />
-          <span>Это статичная защита для MVP. Чувствительные данные нельзя хранить в таком интерфейсе без backend-авторизации.</span>
+          <span>Это статичная защита для MVP. Чувствительные данные нельзя хранить в таком интерфейсе без backend-авторизации</span>
         </div>
       </div>
     </section>
@@ -1055,7 +1188,7 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
     try {
       setApplications(await listApplications());
     } catch {
-      onToast("Не получилось загрузить заявки из базы.");
+      onToast("Не получилось загрузить заявки из базы");
     } finally {
       setLoading(false);
     }
@@ -1070,9 +1203,9 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
       await updateApplicationStatus(id, "published");
       await loadApplications();
       await onPublished();
-      onToast("Заявка опубликована в мини-аппе.");
+      onToast("Заявка опубликована в мини-аппе");
     } catch {
-      onToast("Не получилось опубликовать заявку.");
+      onToast("Не получилось опубликовать заявку");
     }
   };
 
@@ -1080,9 +1213,9 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
     try {
       await updateApplicationStatus(id, "rejected");
       await loadApplications();
-      onToast("Заявка перенесена в отклоненные.");
+      onToast("Заявка перенесена в отклоненные");
     } catch {
-      onToast("Не получилось изменить статус.");
+      onToast("Не получилось изменить статус");
     }
   };
 
@@ -1095,14 +1228,14 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
       <DashboardHero
         badge="Админ-панель"
         title="Заявки из мини-аппа"
-        text="Новые заявки попадают сюда после проверки. Нажмите «Опубликовать», и карточка появится в каталоге помощи."
+        text="Новые заявки попадают сюда после проверки. Нажмите «Опубликовать», и карточка появится в каталоге помощи"
       />
       {!isBackendConfigured ? (
         <div className="backend-mode-note">
           <Icon name="shield" />
           <p>
             Сейчас включен демо-режим: заявки сохраняются только в этом браузере. Для живой работы подключите Supabase
-            через переменные `VITE_SUPABASE_URL` и `VITE_SUPABASE_ANON_KEY`.
+            через переменные `VITE_SUPABASE_URL` и `VITE_SUPABASE_ANON_KEY`
           </p>
         </div>
       ) : null}
@@ -1130,7 +1263,7 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
               <div className="empty-admin-state">
                 <Icon name="file" />
                 <h3>Новых заявок пока нет</h3>
-                <p>Когда человек отправит заявку из мини-аппа, она появится здесь.</p>
+                <p>Когда человек отправит заявку из мини-аппа, она появится здесь</p>
               </div>
             ) : null}
             {newApplications.map((application) => (
@@ -1162,15 +1295,15 @@ function AdminDashboardPage({ onNavigate, onToast, onPublished, onLogout }: { on
           <section className="dashboard-card soft-dashboard-card">
             <h2>Быстрые переходы</h2>
             <Button variant="soft" onClick={() => onNavigate("/requests/anna")}>Открыть заявку Анны</Button>
-            <Button variant="soft" onClick={() => onNavigate("/stories")}>Посмотреть отчеты</Button>
+            <Button variant="soft" onClick={() => onNavigate("/earn")}>Партнерские возможности</Button>
             <Button onClick={() => onNavigate("/apply")}>Тестовая заявка</Button>
           </section>
           <section className="dashboard-card">
             <h2>Правила публикации</h2>
             <div className="notice-list">
-              <Notice icon="lock" title="Скрывать персональные данные" text="Оригиналы документов не размещаются публично." />
-              <Notice icon="shield" title="Проверять реквизиты" text="Реквизиты должны совпадать с заявителем или доверенным получателем." />
-              <Notice icon="video" title="Отчет после сбора" text="Видео и подтверждение оплаты публикуются в безопасном виде." />
+              <Notice icon="lock" title="Скрывать персональные данные" text="Оригиналы документов не размещаются публично" />
+              <Notice icon="shield" title="Проверять реквизиты" text="Реквизиты должны совпадать с заявителем или доверенным получателем" />
+              <Notice icon="video" title="Отчет после сбора" text="Видео и подтверждение оплаты публикуются в безопасном виде" />
             </div>
           </section>
         </aside>
@@ -1226,31 +1359,14 @@ function EmptyStateCard({ icon, title, text, actionLabel, onAction }: { icon: "h
   );
 }
 
-function StoriesPage({ onNavigate }: { onNavigate: NavigateFn }) {
+function EarnPage() {
   return (
-    <section className="page shell stories-page">
-      <div className="stories-hero">
-        <div>
-          <Badge icon="heart">Истории помощи</Badge>
-          <h1>Первые истории еще впереди</h1>
-          <p>
-            Мы пока никому не помогли через платформу, поэтому не будем показывать выдуманные отчеты. Как только первая
-            помощь будет оказана и получатель пришлет отчет, история появится здесь.
-          </p>
-        </div>
-      </div>
-
-      <section className="stories-empty-card">
-        <Badge tone="mint" icon="shield">Честный старт</Badge>
-        <h2>Пока здесь нет историй помощи</h2>
-        <p>
-          Это нормально: проект только начинает путь. Скоро здесь появятся первые проверенные заявки, люди смогут помочь
-          напрямую, а после закрытия сбора мы опубликуем настоящий отчет.
-        </p>
-        <Button onClick={() => onNavigate("/requests")}>
-          <Icon name="heart" filled />
-          Перейти во вкладку «Помочь»
-        </Button>
+    <section className="page shell earn-page">
+      <section className="earn-empty-card">
+        <span className="earn-empty-icon" aria-hidden="true">
+          <Icon name="spark" />
+        </span>
+        <h1>Скоро здесь появится возможность заработать на закрытие своего долга</h1>
       </section>
     </section>
   );
@@ -1263,13 +1379,13 @@ function HowItWorksPage({ onNavigate }: { onNavigate: NavigateFn }) {
       <h1>Как работает 100spasibo</h1>
       <p>
         Платформа помогает человеку бережно рассказать о ситуации, пройти проверку и получить поддержку напрямую от
-        людей, которым откликнулась его история.
+        людей, которым откликнулась его история
       </p>
       <div className="steps-grid standalone">
-        <StepCard index={1} icon="video" title="Заявка" text="Человек записывает историю, рассказывает о кредитах и показывает личные кабинеты банков." />
-        <StepCard index={2} icon="shield" title="Модерация" text="Команда проверяет ситуацию и публикует только безопасную часть информации." />
-        <StepCard index={3} icon="card" title="Перевод напрямую" text="Помогающий видит реквизиты и переводит любую сумму получателю." />
-        <StepCard index={4} icon="video" title="Отчет" text="После завершения получатель показывает, как помощь была использована." />
+        <StepCard index={1} icon="video" title="Заявка" text="Человек записывает историю, рассказывает о кредитах и показывает личные кабинеты банков" />
+        <StepCard index={2} icon="shield" title="Модерация" text="Команда проверяет ситуацию и публикует только безопасную часть информации" />
+        <StepCard index={3} icon="card" title="Перевод напрямую" text="Помогающий видит реквизиты и переводит любую сумму получателю" />
+        <StepCard index={4} icon="video" title="Отчет" text="После завершения получатель показывает, как помощь была использована" />
       </div>
       <Button onClick={() => onNavigate("/requests")}>Выбрать человека</Button>
     </section>
@@ -1282,9 +1398,9 @@ function SafetyPage() {
       <Badge icon="shield">Безопасность</Badge>
       <h1>Помощь должна быть теплой и понятной</h1>
       <div className="text-cards">
-        <TrustCard icon="shield" title="Проверяем документы" text="Платформа проверяет предоставленные документы и публикует только безопасную часть информации." />
-        <TrustCard icon="lock" title="Не раскрываем лишнее" text="Оригиналы документов и персональные данные не размещаются в открытом доступе." />
-        <TrustCard icon="video" title="Просим отчет" text="Получатель помощи обязуется предоставить отчет о целевом использовании средств после завершения сбора." />
+        <TrustCard icon="shield" title="Проверяем документы" text="Платформа проверяет предоставленные документы и публикует только безопасную часть информации" />
+        <TrustCard icon="lock" title="Не раскрываем лишнее" text="Оригиналы документов и персональные данные не размещаются в открытом доступе" />
+        <TrustCard icon="video" title="Просим отчет" text="Получатель помощи обязуется предоставить отчет о целевом использовании средств после завершения сбора" />
       </div>
       <div className="legal-note">
         100spasibo не является банком, микрофинансовой организацией, платежным оператором или благотворительным фондом.
@@ -1309,7 +1425,7 @@ function SupportAuthorPage({ onNavigate }: { onNavigate: NavigateFn }) {
           <h1>История 100spasibo началась с простой мысли</h1>
           <p>
             Даже 100 рублей могут стать частью большой помощи, если вокруг одной истории собирается много неравнодушных
-            людей.
+            людей
           </p>
         </div>
         <span className="support-author-mark">
@@ -1323,7 +1439,7 @@ function SupportAuthorPage({ onNavigate }: { onNavigate: NavigateFn }) {
           <h2>Почему я сделал это приложение</h2>
           <p>
             Я хотел собрать понятный и теплый интерфейс, где человеку не страшно попросить помощи, а тому, кто помогает,
-            видно, кому именно он переводит деньги и какой результат получился после сбора.
+            видно, кому именно он переводит деньги и какой результат получился после сбора
           </p>
         </section>
         <section className="support-story-card">
@@ -1331,7 +1447,7 @@ function SupportAuthorPage({ onNavigate }: { onNavigate: NavigateFn }) {
           <h2>Что важно в проекте</h2>
           <p>
             100spasibo не принимает деньги на себя. Идея в прямой поддержке: заявка проходит проверку, человек получает
-            помощь напрямую, а после закрытия сбора появляется отчет.
+            помощь напрямую, а после закрытия сбора появляется отчет
           </p>
         </section>
       </div>
@@ -1342,7 +1458,7 @@ function SupportAuthorPage({ onNavigate }: { onNavigate: NavigateFn }) {
           <h2>Если хочется поддержать развитие</h2>
           <p>
             Поддержка автора помогает продолжать работу над интерфейсом, админкой, отчетами и следующими версиями
-            мини-приложения.
+            мини-приложения
           </p>
         </div>
         <a className="button button-primary big wide" href={AUTHOR_DONATE_URL} target="_blank" rel="noreferrer">

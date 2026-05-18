@@ -544,7 +544,7 @@ export function Header({ onNavigate }: { onNavigate: NavigateFn }) {
     { label: "Как это работает", to: "/how-it-works" },
     { label: "Нужна помощь", to: "/apply" },
     { label: "Хочу помочь", to: "/requests" },
-    { label: "Истории", to: "/stories" },
+    { label: "Заработать", to: "/earn" },
   ];
 
   const handleNavigate = (to: string) => {
@@ -597,7 +597,7 @@ export function Footer({ onNavigate }: { onNavigate: NavigateFn }) {
         ["Как это работает", "/how-it-works"],
         ["Нужна помощь", "/apply"],
         ["Хочу помочь", "/requests"],
-        ["Истории", "/stories"],
+        ["Заработать", "/earn"],
         ["Вопросы и ответы", "/faq"],
       ],
     },
@@ -607,7 +607,7 @@ export function Footer({ onNavigate }: { onNavigate: NavigateFn }) {
         ["О нас", "/how-it-works"],
         ["Правила платформы", "/terms"],
         ["Безопасность", "/safety"],
-        ["Отчеты", "/stories"],
+        ["Партнерские возможности", "/earn"],
         ["Контакты", "/faq"],
       ],
     },
@@ -618,7 +618,7 @@ export function Footer({ onNavigate }: { onNavigate: NavigateFn }) {
       <div className="shell footer-grid">
         <div className="footer-brand">
           <Logo onNavigate={onNavigate} />
-          <p>Прозрачно помогаем реальным людям в трудной жизненной ситуации.</p>
+          <p>Прозрачно помогаем реальным людям в трудной жизненной ситуации</p>
         </div>
         {columns.map((column) => (
           <div key={column.title} className="footer-column">
@@ -873,7 +873,7 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
             <strong>Реквизиты скоро появятся</strong>
             <p>
               Сейчас мы уточняем данные для прямого перевода. Как только реквизиты будут готовы, здесь появится
-              способ помочь {helpName}.
+              способ помочь {helpName}
             </p>
           </div>
         </div>
@@ -883,7 +883,7 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
         </a>
         <p className="security-note">
           <Icon name="lock" />
-          Платформа не принимает деньги. Помощь переводится напрямую человеку после публикации реквизитов.
+          Платформа не принимает деньги. Помощь переводится напрямую человеку после публикации реквизитов
         </p>
       </aside>
     );
@@ -936,7 +936,7 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
       </div>
       <p className="reassurance">
         <Icon name="shield" />
-        Мы проверяем заявки и публикуем отчеты. Каждый перевод — это реальная помощь.
+        Мы проверяем заявки и публикуем отчеты. Каждый перевод — это реальная помощь
       </p>
       <div className="receipt-telegram-card">
         <span className="receipt-telegram-icon">
@@ -944,7 +944,7 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
         </span>
         <div>
           <strong>Отправьте чек нам в Telegram</strong>
-          <small>После проверки чека мы обновим собранную сумму в этой заявке.</small>
+          <small>После проверки чека мы обновим собранную сумму в этой заявке</small>
         </div>
       </div>
       <a className="telegram-receipt-link" href={TELEGRAM_CONTACT_URL} target="_blank" rel="noreferrer">
@@ -953,7 +953,7 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
       </a>
       <p className="security-note">
         <Icon name="lock" />
-        Данные защищены и не передаются третьим лицам.
+        Данные защищены и не передаются третьим лицам
       </p>
     </aside>
   );
@@ -973,8 +973,8 @@ export function VerifiedDocuments({ documents, verified = true }: { documents: s
       </ul>
       <p className="tiny">
         {verified
-          ? "Все документы проверены модераторами платформы. Публично отображается только безопасная информация."
-          : "Команда проверяет материалы и публикует только безопасную часть информации."}
+          ? "Все документы проверены модераторами платформы. Публично отображается только безопасная информация"
+          : "Команда проверяет материалы и публикует только безопасную часть информации"}
       </p>
     </section>
   );
