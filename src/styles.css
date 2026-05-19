@@ -6241,21 +6241,18 @@ body {
   z-index: 340;
   display: flex;
   justify-content: center;
-  padding: 0;
-  align-items: stretch;
+  padding: 10px;
+  align-items: start;
 }
 
 .telegram-mini-app .mutual-aid-modal {
-  flex: 0 1 min(100%, 430px);
-  width: min(100%, 430px);
-  max-width: 430px;
-  min-height: 100%;
-  max-height: 100dvh;
+  flex: 0 1 min(100%, 390px);
+  width: min(100%, 390px);
+  max-width: 390px;
+  max-height: calc(100dvh - 20px);
   margin-inline: auto;
-  padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
-  border-right: 0;
-  border-left: 0;
-  border-radius: 0;
+  padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
+  border-radius: 24px;
 }
 
 .telegram-mini-app .mutual-aid-copy h2 {
@@ -6456,7 +6453,7 @@ body {
 .telegram-mini-app .shell,
 .telegram-mini-main,
 .telegram-topbar {
-  max-width: 430px;
+  max-width: 390px;
 }
 
 .telegram-mini-app .shell {
@@ -6468,7 +6465,7 @@ body {
 }
 
 .telegram-topbar {
-  width: min(100%, 430px);
+  width: min(100%, 390px);
   gap: 8px;
   padding: 8px 10px 6px;
 }
