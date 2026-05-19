@@ -6246,9 +6246,9 @@ body {
 }
 
 .telegram-mini-app .mutual-aid-modal {
-  flex: 0 1 min(100%, 390px);
-  width: min(100%, 390px);
-  max-width: 390px;
+  flex: 0 1 min(100%, 430px);
+  width: min(100%, 430px);
+  max-width: 430px;
   min-height: 100%;
   max-height: 100dvh;
   margin-inline: auto;
@@ -6456,7 +6456,7 @@ body {
 .telegram-mini-app .shell,
 .telegram-mini-main,
 .telegram-topbar {
-  max-width: 390px;
+  max-width: 430px;
 }
 
 .telegram-mini-app .shell {
@@ -6468,7 +6468,7 @@ body {
 }
 
 .telegram-topbar {
-  width: min(100%, 390px);
+  width: min(100%, 430px);
   gap: 8px;
   padding: 8px 10px 6px;
 }
