@@ -745,6 +745,7 @@ p {
 
 .platform-support-card h2 {
   font-size: clamp(26px, 3vw, 38px);
+  font-weight: 900;
   line-height: 1.08;
 }
 
@@ -757,6 +758,13 @@ p {
 .platform-support-card .button {
   min-height: 52px;
   white-space: nowrap;
+}
+
+.telegram-chat-card {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(234, 248, 241, 0.95), transparent 18rem),
+    radial-gradient(circle at 94% 80%, rgba(255, 227, 216, 0.8), transparent 19rem),
+    rgba(255, 255, 255, 0.9);
 }
 
 .request-head {

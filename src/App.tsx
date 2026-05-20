@@ -35,6 +35,7 @@ const ADMIN_PASSWORD_HASH = "89dff4423dd73af217eb641b9050a34ce2623f392919258ee75
 const ADMIN_SESSION_KEY = "100spasibo:admin-unlocked";
 const ONBOARDING_KEY = "100spasibo:onboarding-seen";
 const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
+const TELEGRAM_CHAT_URL = "https://t.me/chat100spasibo";
 const AUTHOR_DONATE_URL = "https://pay.cloudtips.ru/p/dab39b3d";
 const REQUESTS_PER_PAGE = 8;
 type RequestSort = "amountAsc" | "amountDesc" | "progress";
@@ -507,8 +508,12 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
                 <RequestCard key={request.id} request={request} onNavigate={onNavigate} />,
               ];
 
-              if (absoluteIndex % 5 === 0) {
+              if (absoluteIndex % 6 === 3) {
                 items.push(<PlatformSupportCard key={`platform-support-${absoluteIndex}`} />);
+              }
+
+              if (absoluteIndex % 6 === 0) {
+                items.push(<TelegramChatCard key={`telegram-chat-${absoluteIndex}`} />);
               }
 
               return items;
@@ -567,6 +572,22 @@ function PlatformSupportCard() {
       <a className="button button-primary" href={AUTHOR_DONATE_URL} target="_blank" rel="noreferrer">
         <Icon name="heart" filled />
         Поддержать платформу
+      </a>
+    </article>
+  );
+}
+
+function TelegramChatCard() {
+  return (
+    <article className="platform-support-card telegram-chat-card">
+      <div>
+        <Badge tone="mint" icon="telegram">Подписаться на чат</Badge>
+        <h2>Подписывайтесь на наш чат</h2>
+        <p>Там появляются новые истории, отчеты, новости платформы и подтверждения помощи</p>
+      </div>
+      <a className="button button-mint" href={TELEGRAM_CHAT_URL} target="_blank" rel="noreferrer">
+        <Icon name="telegram" />
+        Перейти в Telegram
       </a>
     </article>
   );
