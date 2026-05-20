@@ -218,7 +218,7 @@ export const requests: HelpRequest[] = [
   },
 ];
 
-export const featuredRequests = requests.slice(0, 3);
+export const featuredRequests = requests.slice(0, 5);
 
 export function findRequest(id: string | undefined) {
   return requests.find((item) => item.id === id) ?? requests[0];

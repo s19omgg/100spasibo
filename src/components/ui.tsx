@@ -444,6 +444,8 @@ export function PrettySelect({
   options,
   placeholder,
   defaultValue,
+  value,
+  onChange,
   className = "",
 }: {
   label?: string;
@@ -451,14 +453,23 @@ export function PrettySelect({
   options: SelectOption[];
   placeholder?: string;
   defaultValue?: string;
+  value?: string;
+  onChange?: (value: string) => void;
   className?: string;
 }) {
   const normalized = options.map((option) => (typeof option === "string" ? { label: option, value: option } : option));
   const initialValue = defaultValue ?? (placeholder ? "" : normalized[0]?.value ?? "");
-  const [value, setValue] = useState(initialValue);
+  const [internalValue, setInternalValue] = useState(initialValue);
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const selected = normalized.find((option) => option.value === value);
+  const currentValue = value ?? internalValue;
+  const selected = normalized.find((option) => option.value === currentValue);
+
+  const selectValue = (nextValue: string) => {
+    setInternalValue(nextValue);
+    onChange?.(nextValue);
+    setOpen(false);
+  };
 
   useEffect(() => {
     const closeOnOutsideClick = (event: PointerEvent) => {
@@ -482,7 +493,7 @@ export function PrettySelect({
   return (
     <div className={`pretty-select ${className}`} ref={rootRef}>
       {label ? <span className="pretty-select-label">{label}</span> : null}
-      {name ? <input type="hidden" name={name} value={value} /> : null}
+      {name ? <input type="hidden" name={name} value={currentValue} /> : null}
       <button
         type="button"
         className={`pretty-select-trigger ${open ? "is-open" : ""}`}
@@ -504,15 +515,12 @@ export function PrettySelect({
           {placeholder ? (
             <button
               type="button"
-              className={`pretty-select-option ${!value ? "selected" : ""}`}
+              className={`pretty-select-option ${!currentValue ? "selected" : ""}`}
               role="option"
-              aria-selected={!value}
-              onClick={() => {
-                setValue("");
-                setOpen(false);
-              }}
+              aria-selected={!currentValue}
+              onClick={() => selectValue("")}
             >
-              {!value ? <Icon name="check" /> : <span aria-hidden="true" />}
+              {!currentValue ? <Icon name="check" /> : <span aria-hidden="true" />}
               <span>{placeholder}</span>
             </button>
           ) : null}
@@ -520,15 +528,12 @@ export function PrettySelect({
             <button
               type="button"
               key={option.value}
-              className={`pretty-select-option ${option.value === value ? "selected" : ""}`}
+              className={`pretty-select-option ${option.value === currentValue ? "selected" : ""}`}
               role="option"
-              aria-selected={option.value === value}
-              onClick={() => {
-                setValue(option.value);
-                setOpen(false);
-              }}
+              aria-selected={option.value === currentValue}
+              onClick={() => selectValue(option.value)}
             >
-              {option.value === value ? <Icon name="check" /> : <span aria-hidden="true" />}
+              {option.value === currentValue ? <Icon name="check" /> : <span aria-hidden="true" />}
               <span>{option.label}</span>
             </button>
           ))}

@@ -37,6 +37,7 @@ const ONBOARDING_KEY = "100spasibo:onboarding-seen";
 const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
 const AUTHOR_DONATE_URL = "https://pay.cloudtips.ru/p/dab39b3d";
 const REQUESTS_PER_PAGE = 8;
+type RequestSort = "amountAsc" | "amountDesc" | "progress";
 
 declare global {
   interface Window {
@@ -373,7 +374,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
         </div>
         {requests.length ? (
           <div className="featured-grid">
-            {requests.slice(0, 3).map((request) => (
+            {requests.slice(0, 5).map((request) => (
               <RequestCard key={request.id} request={request} onNavigate={onNavigate} compact />
             ))}
           </div>
@@ -411,6 +412,7 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
 
 function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigate: NavigateFn }) {
   const [query, setQuery] = useState("");
+  const [sortBy, setSortBy] = useState<RequestSort>("amountAsc");
   const [page, setPage] = useState(1);
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -422,11 +424,19 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
     );
   }, [query, requests]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredRequests.length / REQUESTS_PER_PAGE));
+  const sortedRequests = useMemo(() => {
+    return [...filteredRequests].sort((first, second) => {
+      if (sortBy === "amountDesc") return second.targetAmount - first.targetAmount;
+      if (sortBy === "progress") return getPercent(second) - getPercent(first);
+      return first.targetAmount - second.targetAmount;
+    });
+  }, [filteredRequests, sortBy]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedRequests.length / REQUESTS_PER_PAGE));
   const pageOffset = (page - 1) * REQUESTS_PER_PAGE;
   const visible = useMemo(() => {
-    return filteredRequests.slice(pageOffset, pageOffset + REQUESTS_PER_PAGE);
-  }, [filteredRequests, pageOffset]);
+    return sortedRequests.slice(pageOffset, pageOffset + REQUESTS_PER_PAGE);
+  }, [sortedRequests, pageOffset]);
   const paginationItems = useMemo<(number | "ellipsis")[]>(() => {
     if (totalPages <= 5) return Array.from({ length: totalPages }, (_, index) => index + 1);
 
@@ -441,7 +451,7 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
 
   useEffect(() => {
     setPage(1);
-  }, [query]);
+  }, [query, sortBy]);
 
   useEffect(() => {
     setPage((current) => Math.min(current, totalPages));
@@ -481,11 +491,12 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
             <PrettySelect
               label="Сортировать:"
               className="sort-box"
-              defaultValue="new"
+              value={sortBy}
+              onChange={(value) => setSortBy(value as RequestSort)}
               options={[
-                { label: "Сначала новые", value: "new" },
+                { label: "Меньшая сумма", value: "amountAsc" },
+                { label: "Большая сумма", value: "amountDesc" },
                 { label: "Ближе к цели", value: "progress" },
-                { label: "Сначала срочные", value: "urgent" },
               ]}
             />
           </div>
@@ -512,7 +523,7 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
               onAction={() => onNavigate("/apply")}
             />
           ) : null}
-          {filteredRequests.length ? (
+          {sortedRequests.length ? (
             <nav className="pagination" aria-label="Страницы заявок">
               <button type="button" aria-label="Предыдущая страница" disabled={page === 1} onClick={() => changePage(page - 1)}>
                 ←
@@ -683,11 +694,10 @@ function ApplyPage({ requests, onToast }: { requests: HelpRequest[]; onToast: (m
     );
     if (!eligible.length) return undefined;
 
-    const olga = eligible.find((request) => request.id === "olga");
-    if (olga && Math.random() < 0.8) return olga;
-
-    const otherRequests = eligible.filter((request) => request.id !== "olga");
-    const pool = otherRequests.length ? otherRequests : eligible;
+    const priorityRequests = eligible.filter((request) => request.id === "olga" || request.id === "sergey");
+    const otherRequests = eligible.filter((request) => request.id !== "olga" && request.id !== "sergey");
+    const shouldShowPriority = priorityRequests.length > 0 && (otherRequests.length === 0 || Math.random() < 0.8);
+    const pool = shouldShowPriority ? priorityRequests : otherRequests;
     return pool[Math.floor(Math.random() * pool.length)];
   }, [requests]);
 
