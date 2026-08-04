@@ -841,7 +841,6 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
   const hasRequisites = Boolean(recipient?.name && recipient?.bank && (recipient.card || recipient.sbpPhone));
   const helpName = getHelpName(request.name);
   const [tab, setTab] = useState<"bank" | "sbp">(() => (recipient?.card ? "bank" : "sbp"));
-  const [amount, setAmount] = useState("100");
   const rows: Array<[string, string]> =
     tab === "bank"
       ? [
@@ -918,20 +917,6 @@ export function DonationPanel({ request, onToast }: { request: HelpRequest; onTo
           </div>
         ))}
       </div>
-      <div className="quick-amounts" aria-label="Быстрые суммы">
-        {["100", "300", "500"].map((value) => (
-          <button key={value} type="button" className={amount === value ? "active" : ""} onClick={() => setAmount(value)}>
-            {value} ₽
-          </button>
-        ))}
-        <button type="button" className={amount === "custom" ? "active" : ""} onClick={() => setAmount("custom")}>
-          Своя сумма
-        </button>
-      </div>
-      <label className="amount-input">
-        <span>Введите сумму</span>
-        <input inputMode="numeric" value={amount === "custom" ? "" : amount} onChange={(event) => setAmount(event.target.value)} placeholder="Например, 700" />
-      </label>
       <div className="purpose-note">
         <Icon name="spark" />
         <div>

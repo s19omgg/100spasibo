@@ -39,6 +39,124 @@ const TELEGRAM_CHAT_URL = "https://t.me/chat100spasibo";
 const AUTHOR_DONATE_URL = "https://pay.cloudtips.ru/p/dab39b3d";
 const REQUESTS_PER_PAGE = 8;
 type RequestSort = "amountAsc" | "amountDesc" | "progress";
+type VacancyFilter = "all" | "field" | "hybrid" | "noExperience" | "flexible";
+type VacancyLocation = {
+  city: string;
+  income?: string;
+  format: string;
+  schedule: string;
+  experience: string;
+  telegramUrl: string;
+  filters: VacancyFilter[];
+};
+type Vacancy = {
+  id: string;
+  title: string;
+  company: string;
+  duties: string[];
+  locations: VacancyLocation[];
+};
+
+const vacancyFilters: Array<{ label: string; value: VacancyFilter }> = [
+  { label: "Все вакансии", value: "all" },
+  { label: "Разъездной", value: "field" },
+  { label: "Гибрид", value: "hybrid" },
+  { label: "Без опыта", value: "noExperience" },
+  { label: "Свободный график", value: "flexible" },
+];
+
+const fieldVacancyLocation = (city: string, income: string): VacancyLocation => ({
+  city,
+  income,
+  format: "Разъездной",
+  schedule: "Свободный график",
+  experience: "Без опыта",
+  filters: ["field", "flexible", "noExperience"],
+  telegramUrl: TELEGRAM_CHAT_URL,
+});
+
+const fieldBusinessLocation = (city: string, income: string): VacancyLocation => ({
+  city,
+  income,
+  format: "Разъездной",
+  schedule: "Свободный график",
+  experience: "Опыт от 6 мес.",
+  filters: ["field", "flexible"],
+  telegramUrl: TELEGRAM_CHAT_URL,
+});
+
+const hybridSupportLocation = (city: string, income: string): VacancyLocation => ({
+  city,
+  income,
+  format: "Гибрид",
+  schedule: "5/2 или 2/2",
+  experience: "Без опыта",
+  filters: ["hybrid", "noExperience"],
+  telegramUrl: TELEGRAM_CHAT_URL,
+});
+
+const vacancies: Vacancy[] = [
+  {
+    id: "representative",
+    title: "Представитель",
+    company: "Т-Банк",
+    duties: [
+      "Доставлять продукты компании клиентам, рассказывать о их выгоде и преимуществах",
+      "Предлагать дополнительные услуги и продукты",
+    ],
+    locations: [
+      fieldVacancyLocation("Москва и МО", "от 150 000 ₽"),
+      fieldVacancyLocation("Санкт-Петербург и ЛО", "от 120 000 ₽"),
+      fieldVacancyLocation("Краснодарский край", "от 20 000 ₽"),
+      fieldVacancyLocation("Новосибирская область", "от 53 000 ₽"),
+      fieldVacancyLocation("Свердловская область", "от 45 000 ₽"),
+      fieldVacancyLocation("Ростовская область", "от 55 000 ₽"),
+      fieldVacancyLocation("Волгоградская область", "от 53 000 ₽"),
+      fieldVacancyLocation("Республика Татарстан", "от 47 000 ₽"),
+      fieldVacancyLocation("Нижегородская область", "от 53 000 ₽"),
+      fieldVacancyLocation("Самарская область", "от 45 000 ₽"),
+      fieldVacancyLocation("Республика Башкортостан", "от 53 000 ₽"),
+      fieldVacancyLocation("Саратовская область", "от 45 000 ₽"),
+    ],
+  },
+  {
+    id: "t-business-representative",
+    title: "Представитель Т-Бизнес",
+    company: "Т-Банк",
+    duties: [
+      "Доставлять продукты банка клиентам Т-Бизнес",
+      "Консультировать клиентов по банковским предложениям, продавать дополнительные услуги банка",
+      "Помогать клиентам с оформлением документов, проверять корректность их заполнения",
+      "Получать и передавать в банк материалы, необходимые для работы с клиентами",
+    ],
+    locations: [
+      fieldBusinessLocation("Москва и МО", "от 150 000 ₽"),
+      fieldBusinessLocation("Санкт-Петербург и ЛО", "от 130 000 ₽"),
+      fieldBusinessLocation("Новосибирская область", "от 90 000 ₽"),
+      fieldBusinessLocation("Ростовская область", "от 110 000 ₽"),
+    ],
+  },
+  {
+    id: "evening-support-consultant",
+    title: "Вечерний консультант поддержки",
+    company: "Т-Банк",
+    duties: [
+      "Консультировать юридических лиц на входящих и исходящих звонках: помогать с вопросами по банковским продуктам, сервисам и работе с личным кабинетом",
+      "Помогать клиентам в оформлении заявок, решать вопросы по бизнес-продуктам и внешним факторам: госорганы и другие ситуации",
+    ],
+    locations: [
+      hybridSupportLocation("Москва", "от 80 000 ₽"),
+      hybridSupportLocation("Санкт-Петербург", "от 72 000 ₽"),
+      hybridSupportLocation("Краснодар", "от 56 000 ₽"),
+      hybridSupportLocation("Новосибирск", "от 60 000 ₽"),
+      hybridSupportLocation("Екатеринбург", "от 60 000 ₽"),
+      hybridSupportLocation("Казань", "от 56 000 ₽"),
+      hybridSupportLocation("Уфа", "от 52 000 ₽"),
+      hybridSupportLocation("Нижний Новгород", "от 56 000 ₽"),
+      hybridSupportLocation("Самара", "от 52 000 ₽"),
+    ],
+  },
+];
 
 declare global {
   interface Window {
@@ -231,7 +349,10 @@ function MiniAppTopBar({ onNavigate }: { onNavigate: NavigateFn }) {
           <BrandMark />
         </span>
         <span>
-          <strong><span>100</span>spasibo</strong>
+          <span className="telegram-brand-line">
+            <strong><span>100</span>spasibo</strong>
+            <em>by labenzo</em>
+          </span>
           <small>платформа взаимопомощи</small>
         </span>
       </button>
@@ -273,13 +394,8 @@ const onboardingSlides = [
   },
   {
     icon: "shield",
-    title: "Заявки проходят проверку",
-    text: "Мы смотрим документы и публикуем только безопасную часть истории, чтобы помощь была честной и адресной",
-  },
-  {
-    icon: "video",
-    title: "После сбора есть отчет",
-    text: "Получатель показывает результат: чек, видеоотчет и благодарность всем, кто помог",
+    title: "Проверка и отчетность",
+    text: "Мы проверяем заявки до публикации, а после сбора получатель показывает, как была использована помощь",
   },
 ] as const;
 
@@ -305,15 +421,15 @@ function OnboardingOverlay({ onComplete }: { onComplete: (nextPath?: string) => 
           </div>
         </div>
         <div className="onboarding-copy">
-          <Badge tone={step === 1 ? "mint" : "peach"} icon={slide.icon}>{step + 1} из {onboardingSlides.length}</Badge>
+          <span className="onboarding-step">Шаг {step + 1} из {onboardingSlides.length}</span>
           <h2 id="onboarding-title">{slide.title}</h2>
           <p>{slide.text}</p>
         </div>
         <div className="onboarding-actions">
-          <Button variant="ghost" onClick={() => onComplete()}>Пропустить</Button>
           <Button onClick={() => (isLast ? onComplete("/requests") : setStep((current) => current + 1))}>
             {isLast ? "Смотреть заявки" : "Дальше"}
           </Button>
+          <button className="onboarding-skip" type="button" onClick={() => onComplete()}>Пропустить</button>
         </div>
       </div>
     </div>
@@ -344,10 +460,6 @@ function HomePage({ requests, onNavigate }: { requests: HelpRequest[]; onNavigat
               <Icon name="heart" />
               Хочу помочь
             </Button>
-          </div>
-          <div className="social-proof social-proof-empty">
-            <span><Icon name="spark" /></span>
-            <p>{hasRequests ? "Проверенные заявки доступны на платформе. Помощь идет напрямую человеку" : "Первые заявки скоро появятся на платформе"}</p>
           </div>
         </div>
         <WatercolorHero />
@@ -481,7 +593,6 @@ function RequestsPage({ requests, onNavigate }: { requests: HelpRequest[]; onNav
         <FilterSidebar count={requests.length} />
         <div className="catalog-main">
           <div className="banner-grid">
-            <InfoBanner tone="peach" icon="hands" title="Даже 100 рублей имеют значение" text="Небольшая помощь от многих людей меняет чью-то жизнь к лучшему" />
             <InfoBanner tone="mint" icon="shield" title="Все заявки проходят проверку" text="Мы проверяем документы и историю каждого заявителя, чтобы помощь была честной и адресной" />
           </div>
           <div className="catalog-toolbar">
@@ -618,7 +729,6 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
   const percent = targetAmount > 0 ? Math.min(100, Math.round((collectedAmount / targetAmount) * 100)) : 0;
   const remaining = targetAmount - collectedAmount;
   const collectionNote = collectedAmount > 0 ? "Есть первые переводы" : "Сбор только начинается";
-  const hasRequisites = Boolean(request.recipient?.name && request.recipient?.bank && (request.recipient.card || request.recipient.sbpPhone));
   const canShareStory = Boolean(request.storyShareUrl);
 
   return (
@@ -657,13 +767,6 @@ function RequestDetailPage({ requests, id, onNavigate, onToast }: { requests: He
                   <Icon name="share" />
                   Поделиться историей
                 </Button>
-              </div>
-              <div className="chip-row">
-                <Badge tone={request.verified ? "mint" : "peach"} icon={request.verified ? "shield" : "file"}>
-                  {request.verified ? "Документы проверены" : "Документы на проверке"}
-                </Badge>
-                <Badge tone="white" icon="card">{hasRequisites ? "Прямой перевод" : "Реквизиты скоро"}</Badge>
-                <Badge tone="white" icon="video">Отчет обязателен</Badge>
               </div>
             </div>
           </div>
@@ -1416,14 +1519,98 @@ function EmptyStateCard({ icon, title, text, actionLabel, onAction }: { icon: "h
 }
 
 function EarnPage() {
+  const [activeFilter, setActiveFilter] = useState<VacancyFilter>("all");
+  const visibleVacancies = vacancies.filter(
+    (vacancy) => activeFilter === "all" || vacancy.locations.some((location) => location.filters.includes(activeFilter)),
+  );
+
   return (
     <section className="page shell earn-page">
-      <section className="earn-empty-card">
-        <span className="earn-empty-icon" aria-hidden="true">
-          <Icon name="spark" />
-        </span>
-        <h1>Скоро здесь появится возможность заработать на закрытие своего долга</h1>
+      <section className="earn-hero">
+        <Badge icon="card">Вакансии</Badge>
+        <h1>Найдите работу или подработку</h1>
+        <p>
+          Здесь собраны вакансии, которые можно спокойно посмотреть, сравнить по условиям и выбрать подходящий вариант
+          для себя
+        </p>
       </section>
+
+      <div className="vacancy-filter-row" role="tablist" aria-label="Фильтр вакансий">
+        {vacancyFilters.map((filter) => (
+          <button
+            key={filter.value}
+            type="button"
+            className={filter.value === activeFilter ? "active" : ""}
+            onClick={() => setActiveFilter(filter.value)}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="vacancy-grid">
+        {visibleVacancies.map((vacancy) => {
+          const visibleLocations =
+            activeFilter === "all"
+              ? vacancy.locations
+              : vacancy.locations.filter((location) => location.filters.includes(activeFilter));
+          const primaryLocation = visibleLocations[0] ?? vacancy.locations[0];
+
+          return (
+            <article className="vacancy-card" key={vacancy.id}>
+              <div className="vacancy-company" aria-label={`Компания: ${vacancy.company}`}>
+                <span className="vacancy-company-mark" aria-hidden="true">T</span>
+                <span className="vacancy-company-text">
+                  <strong>{vacancy.company}</strong>
+                  <span>вакансия от компании</span>
+                </span>
+              </div>
+
+              <div className="vacancy-card-head">
+                <span className="vacancy-icon" aria-hidden="true">
+                  <Icon name={primaryLocation.format === "Гибрид" ? "home" : "card"} />
+                </span>
+                <div>
+                  <h2>{vacancy.title}</h2>
+                </div>
+              </div>
+
+              <div className="vacancy-meta">
+                <span>{primaryLocation.format}</span>
+                <span>{primaryLocation.experience}</span>
+                <span>{primaryLocation.schedule}</span>
+              </div>
+
+              <div className="vacancy-duties">
+                <h3>Что вы будете делать</h3>
+                <ul>
+                  {vacancy.duties.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="vacancy-locations">
+                <h3>Доступные города</h3>
+                <ul className="vacancy-location-list">
+                  {visibleLocations.map((location) => (
+                    <li className="vacancy-location-row" key={`${vacancy.id}-${location.city}`}>
+                      <span>
+                        <strong>{location.city}</strong>
+                        {location.income ? <span>{location.income}</span> : null}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <a className="button button-primary vacancy-link" href={primaryLocation.telegramUrl} target="_blank" rel="noreferrer">
+                  <Icon name="telegram" />
+                  Откликнуться
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </div>
     </section>
   );
 }

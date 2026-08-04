@@ -2904,47 +2904,269 @@ textarea {
 }
 
 .earn-page {
-  min-height: min(560px, calc(100dvh - 180px));
   display: grid;
-  align-items: center;
+  gap: 24px;
 }
 
-.earn-empty-card {
-  min-height: 380px;
+.earn-hero {
   display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 22px;
-  padding: clamp(26px, 6vw, 56px);
-  text-align: center;
+  gap: 16px;
+  padding: clamp(26px, 5vw, 48px);
   background:
-    radial-gradient(circle at 14% 8%, rgba(255, 227, 216, 0.9), transparent 18rem),
-    radial-gradient(circle at 88% 72%, rgba(234, 248, 241, 0.96), transparent 21rem),
+    radial-gradient(circle at 10% 0%, rgba(255, 227, 216, 0.92), transparent 18rem),
+    radial-gradient(circle at 92% 72%, rgba(234, 248, 241, 0.96), transparent 21rem),
     rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(120, 80, 50, 0.12);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow);
 }
 
-.earn-empty-icon {
-  width: 86px;
-  height: 86px;
+.earn-hero h1 {
+  max-width: 760px;
+  font-size: clamp(38px, 5vw, 64px);
+  line-height: 1.04;
+}
+
+.earn-hero p {
+  max-width: 720px;
+  color: #5b5550;
+  font-size: 18px;
+}
+
+.vacancy-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.vacancy-filter-row button {
+  min-height: 46px;
+  padding: 0 18px;
+  color: var(--mint-strong);
+  background: rgba(234, 248, 241, 0.82);
+  border: 1px solid rgba(94, 155, 131, 0.22);
+  border-radius: 999px;
+  font-weight: 900;
+  transition: transform 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.vacancy-filter-row button:hover,
+.vacancy-filter-row button.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #9ad6be, #6fb89a);
+  box-shadow: 0 12px 24px rgba(94, 155, 131, 0.18);
+  transform: translateY(-1px);
+}
+
+.vacancy-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.vacancy-card {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(120, 80, 50, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.vacancy-card:hover {
+  border-color: rgba(255, 107, 87, 0.26);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.vacancy-card-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.vacancy-icon {
+  width: 58px;
+  height: 58px;
   display: grid;
   place-items: center;
   color: var(--coral);
   background: var(--peach);
-  border-radius: 28px;
+  border-radius: 20px;
 }
 
-.earn-empty-icon .icon {
-  width: 40px;
-  height: 40px;
+.vacancy-icon .icon {
+  width: 28px;
+  height: 28px;
 }
 
-.earn-empty-card h1 {
-  max-width: 760px;
-  font-size: clamp(34px, 5vw, 58px);
-  line-height: 1.08;
+.vacancy-card h2 {
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.vacancy-company {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  color: #2d2d2d;
+  background:
+    radial-gradient(circle at 10% 18%, rgba(255, 221, 45, 0.22), transparent 8rem),
+    linear-gradient(135deg, rgba(255, 249, 222, 0.86), rgba(234, 248, 241, 0.54));
+  border: 1px solid rgba(255, 211, 40, 0.42);
+  border-radius: 20px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 10px 22px rgba(80, 49, 31, 0.04);
+}
+
+.vacancy-company-mark {
+  width: 34px;
+  height: 36px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: start center;
+  padding-top: 4px;
+  color: #2b2b2b;
+  background: #ffdd2d;
+  border-radius: 10px 10px 13px 13px;
+  clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%);
+  box-shadow: 0 8px 14px rgba(255, 205, 24, 0.2);
+  font-size: 22px;
+  font-weight: 1000;
+  line-height: 1;
+}
+
+.vacancy-company-text {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.vacancy-company-text strong {
+  font-size: 16px;
+  font-weight: 1000;
+  line-height: 1.1;
+}
+
+.vacancy-company-text span {
+  color: #6d665f;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.vacancy-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.vacancy-meta span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 11px;
+  color: #5e716a;
+  background: rgba(234, 248, 241, 0.78);
+  border: 1px solid rgba(94, 155, 131, 0.14);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.vacancy-duties,
+.vacancy-locations {
+  display: grid;
+  gap: 9px;
+}
+
+.vacancy-duties h3,
+.vacancy-locations h3 {
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.vacancy-duties ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.vacancy-duties li {
+  position: relative;
+  padding-left: 18px;
+  color: #5b5550;
+  font-size: 15px;
+}
+
+.vacancy-duties li::before {
+  content: "";
+  position: absolute;
+  top: 0.68em;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  background: var(--coral);
+  border-radius: 999px;
+  transform: translateY(-50%);
+}
+
+.vacancy-locations {
+  margin-top: 2px;
+}
+
+.vacancy-location-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 12px;
+  list-style: none;
+  background: linear-gradient(135deg, rgba(255, 248, 242, 0.88), rgba(255, 255, 255, 0.96));
+  border: 1px solid rgba(120, 80, 50, 0.1);
+  border-radius: 18px;
+}
+
+.vacancy-location-row {
+  min-width: 0;
+  display: block;
+}
+
+.vacancy-location-row > span {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.vacancy-location-row strong {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.vacancy-location-row span {
+  color: var(--coral);
+  font-size: 13px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.vacancy-link {
+  width: 100%;
+  min-height: 48px;
 }
 
 .story-featured {
@@ -6324,30 +6546,71 @@ body {
 }
 
 .telegram-mini-app .earn-page {
-  min-height: calc(100dvh - 160px);
+  gap: 14px;
 }
 
-.telegram-mini-app .earn-empty-card {
-  min-height: 330px;
-  padding: 24px 18px;
+.telegram-mini-app .earn-hero {
+  padding: 20px 16px;
   border-radius: 24px;
 }
 
-.telegram-mini-app .earn-empty-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 24px;
-}
-
-.telegram-mini-app .earn-empty-icon .icon {
-  width: 34px;
-  height: 34px;
-}
-
-.telegram-mini-app .earn-empty-card h1 {
-  max-width: 340px;
+.telegram-mini-app .earn-hero h1 {
   font-size: 30px;
   line-height: 1.12;
+}
+
+.telegram-mini-app .earn-hero p,
+.telegram-mini-app .vacancy-duties ul {
+  font-size: 14px;
+}
+
+.telegram-mini-app .vacancy-duties h3,
+.telegram-mini-app .vacancy-locations h3 {
+  font-size: 15px;
+}
+
+.telegram-mini-app .vacancy-filter-row {
+  gap: 8px;
+}
+
+.telegram-mini-app .vacancy-filter-row button {
+  min-height: 40px;
+  padding: 0 13px;
+  font-size: 13px;
+}
+
+.telegram-mini-app .vacancy-meta {
+  gap: 6px;
+}
+
+.telegram-mini-app .vacancy-meta span {
+  padding: 7px 9px;
+  font-size: 12px;
+}
+
+.telegram-mini-app .vacancy-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.telegram-mini-app .vacancy-card {
+  gap: 13px;
+  padding: 16px;
+  border-radius: 22px;
+}
+
+.telegram-mini-app .vacancy-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 18px;
+}
+
+.telegram-mini-app .vacancy-card h2 {
+  font-size: 20px;
+}
+
+.telegram-mini-app .vacancy-location-list {
+  padding: 11px;
 }
 
 .telegram-mini-app .story-featured {
@@ -6730,6 +6993,17 @@ body {
   gap: 6px;
 }
 
+.telegram-mini-app .request-money {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
+.telegram-mini-app .request-money > span {
+  min-height: 72px;
+  display: grid;
+  align-content: center;
+}
+
 .telegram-mini-app .request-money span,
 .telegram-mini-app .request-bottom span,
 .telegram-mini-app .collection-bottom span,
@@ -7105,5 +7379,727 @@ body {
   .telegram-brand-mark {
     width: 38px;
     height: 38px;
+  }
+}
+
+/* Human-centered visual system pass. Keep this final so the mini app stays consistent. */
+:root {
+  --font-ui: "Onest Variable", Onest, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg: #fffaf6;
+  --bg-soft: #fffaf6;
+  --surface: #ffffff;
+  --surface-warm: #fff7f1;
+  --text: #292725;
+  --muted: #6d6864;
+  --border: #eadfd7;
+  --shadow: none;
+  --shadow-hover: none;
+  --radius-xl: 16px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  font-family: var(--font-ui);
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-ui);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-ui);
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+h1,
+h2 {
+  font-weight: 720;
+}
+
+h3 {
+  font-weight: 680;
+}
+
+.button {
+  border-radius: 12px;
+  font-weight: 680;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, opacity 160ms ease;
+}
+
+.button:hover {
+  transform: none;
+}
+
+.button-primary,
+.button-primary:hover {
+  color: #fff;
+  background: var(--coral);
+  box-shadow: none;
+}
+
+.button-primary:hover {
+  background: var(--coral-hover);
+}
+
+.button-mint,
+.button-mint:hover {
+  color: var(--mint-strong);
+  background: #fff;
+  border: 1px solid rgba(94, 155, 131, 0.42);
+  box-shadow: none;
+}
+
+.button-mint:hover {
+  background: var(--mint-soft);
+}
+
+.button-soft,
+.button-ghost {
+  background: transparent;
+  border-color: rgba(255, 107, 87, 0.34);
+}
+
+.badge {
+  min-height: 30px;
+  padding: 6px 10px;
+  font-weight: 650;
+}
+
+.badge-peach {
+  background: #fff2ec;
+}
+
+.badge-mint {
+  background: #edf8f3;
+}
+
+.telegram-mini-app {
+  max-width: none;
+  background: var(--bg);
+  font-family: var(--font-ui);
+}
+
+.telegram-mini-app .shell,
+.telegram-mini-main,
+.telegram-topbar {
+  max-width: 390px;
+}
+
+.telegram-mini-app .shell {
+  padding-inline: 16px;
+}
+
+.telegram-topbar {
+  width: min(100%, 390px);
+  padding: 10px 16px 9px;
+  background: rgba(255, 250, 246, 0.96);
+  border-bottom: 1px solid rgba(120, 80, 50, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.telegram-topbar::before {
+  display: none;
+}
+
+.telegram-brand strong {
+  font-weight: 760;
+}
+
+.telegram-brand-line {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.telegram-brand-line strong {
+  display: inline;
+}
+
+.telegram-brand-line em {
+  color: #8b827c;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.telegram-brand small {
+  color: #756f6a;
+  font-weight: 560;
+}
+
+.telegram-contact-link {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  align-self: center;
+  padding: 0;
+  background: transparent;
+  border-color: var(--border);
+  border-radius: 12px;
+}
+
+.telegram-contact-link .icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+}
+
+.telegram-bottom-nav {
+  width: min(calc(100% - 24px), 378px);
+  gap: 3px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.96);
+  border-color: var(--border);
+  border-radius: 18px;
+  box-shadow: 0 10px 28px rgba(62, 49, 38, 0.12);
+}
+
+.telegram-bottom-nav button {
+  border-radius: 12px;
+  color: #7b746f;
+  font-weight: 620;
+}
+
+.telegram-bottom-nav button.active {
+  color: var(--coral);
+  background: #fff1eb;
+}
+
+.telegram-mini-app :is(h1, h2, h3, p, li, blockquote, small, strong, a, button, label, span) {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.telegram-mini-app h1,
+.telegram-mini-app .request-hero-card h1 {
+  font-size: clamp(34px, 9vw, 40px);
+  font-weight: 720;
+  line-height: 1.08;
+}
+
+.telegram-mini-app .request-hero-card h1 {
+  max-width: 100%;
+  font-size: clamp(28px, 7.8vw, 32px);
+  line-height: 1.14;
+  overflow: visible;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-wrap: balance;
+}
+
+.telegram-mini-app h2,
+.telegram-mini-app .donation-panel h2,
+.telegram-mini-app .dashboard-card h2 {
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+.telegram-mini-app h3 {
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.telegram-mini-app .page {
+  padding-top: 18px;
+}
+
+.telegram-mini-app .section {
+  padding: 24px 0;
+}
+
+.telegram-mini-app section.section.shell:not(.trust-strip):not(.author-support-strip) {
+  padding-inline: 16px;
+}
+
+.telegram-mini-app .hero.shell {
+  padding-inline: 16px;
+}
+
+.telegram-mini-app .hero {
+  padding-top: 20px;
+}
+
+.telegram-mini-app .hero-copy {
+  gap: 18px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.telegram-mini-app .hero-copy > .badge:first-child {
+  width: fit-content;
+  justify-content: flex-start;
+}
+
+.telegram-mini-app .hero-copy h1 span::after,
+.telegram-mini-app .apply-hero h1 span::after,
+.telegram-mini-app .center-heading h2::after {
+  display: none;
+}
+
+.telegram-mini-app .hero-copy p,
+.telegram-mini-app .catalog-hero p,
+.telegram-mini-app .apply-hero p {
+  color: #5f5a56;
+  font-size: 16px;
+  line-height: 1.52;
+}
+
+.telegram-mini-app .hero-actions {
+  gap: 9px;
+}
+
+.telegram-mini-app .hero-actions .button {
+  min-height: 52px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.telegram-mini-app .social-proof {
+  gap: 9px;
+  margin-top: 0;
+  padding-top: 2px;
+}
+
+.telegram-mini-app .social-proof-empty > span {
+  width: 24px;
+  height: 24px;
+  flex-basis: 24px;
+  background: transparent;
+}
+
+.telegram-mini-app .social-proof-empty .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.telegram-mini-app .social-proof p {
+  color: #5f5a56;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.telegram-mini-app .center-heading {
+  margin-bottom: 14px;
+}
+
+.telegram-mini-app .center-heading h2 {
+  font-size: 27px;
+}
+
+.telegram-mini-app .steps-grid {
+  gap: 0;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.telegram-mini-app .step-card {
+  min-height: 0;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.telegram-mini-app .step-card:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.telegram-mini-app .steps-grid .step-card:hover,
+.telegram-mini-app .steps-grid .step-card:active {
+  border-color: var(--border);
+  box-shadow: none;
+  transform: none;
+}
+
+.telegram-mini-app .step-icon,
+.telegram-mini-app .trust-icon,
+.telegram-mini-app .info-banner > span {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.telegram-mini-app .step-icon .icon,
+.telegram-mini-app .trust-icon .icon,
+.telegram-mini-app .info-banner > span .icon {
+  width: 22px;
+  height: 22px;
+}
+
+.telegram-mini-app .step-index {
+  top: -6px;
+  left: -6px;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+}
+
+.telegram-mini-app .steps-grid .step-card h3 {
+  margin-bottom: 4px;
+  font-size: 17px;
+  font-weight: 680;
+}
+
+.telegram-mini-app .steps-grid .step-card p {
+  color: #706a65;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.telegram-mini-app .section-row {
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.telegram-mini-app .section-row h2 {
+  font-size: 27px;
+}
+
+.telegram-mini-app .section-row p {
+  margin-top: 7px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.telegram-mini-app .section-row .button {
+  min-height: 42px;
+  justify-self: start;
+  width: auto;
+  padding-inline: 14px;
+}
+
+.telegram-mini-app .featured-grid,
+.telegram-mini-app .requests-grid {
+  gap: 12px;
+}
+
+.telegram-mini-app :is(
+  .request-card,
+  .request-card-compact,
+  .info-banner,
+  .legal-section-card,
+  .collection-card,
+  .report-card,
+  .soft-card,
+  .sidebar-card,
+  .donation-panel,
+  .story-card,
+  .story-featured,
+  .story-detail-hero,
+  .story-video-report,
+  .story-thanks-card,
+  .video-application-card,
+  .empty-state-card,
+  .stories-empty-card,
+  .stories-summary,
+  .stories-cta,
+  .admin-access-card,
+  .dashboard-card,
+  .dashboard-stat,
+  .application-admin-card,
+  .form-section,
+  .vacancy-card
+) {
+  background: #fff;
+  border-color: var(--border);
+  border-radius: 16px;
+  box-shadow: none;
+}
+
+.telegram-mini-app .request-card:hover,
+.telegram-mini-app .vacancy-card:hover {
+  border-color: rgba(255, 107, 87, 0.34);
+  box-shadow: none;
+  transform: none;
+}
+
+.telegram-mini-app .request-money span,
+.telegram-mini-app .collection-stats div,
+.telegram-mini-app .dashboard-stat {
+  background: var(--surface-warm);
+  border-radius: 12px;
+}
+
+.telegram-mini-app .progress span {
+  background: var(--coral);
+}
+
+.telegram-mini-app .trust-strip {
+  width: calc(100% - 32px);
+  margin-inline: auto;
+  margin-bottom: 18px;
+  gap: 0;
+  overflow: hidden;
+  padding: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.telegram-mini-app .trust-card {
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.telegram-mini-app .trust-card:not(:last-child) {
+  border: 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.telegram-mini-app .trust-card h3 {
+  font-size: 16px;
+}
+
+.telegram-mini-app .trust-card p {
+  margin-top: 3px;
+  color: #706a65;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.telegram-mini-app :is(.platform-support-card, .telegram-chat-card, .author-support-strip, .earn-hero) {
+  background: #fff;
+  border-color: var(--border);
+  border-radius: 16px;
+  box-shadow: none;
+}
+
+.telegram-mini-app .section.author-support-strip {
+  width: calc(100% - 32px);
+  margin-top: 0;
+  margin-inline: auto;
+  padding: 18px;
+  border-radius: 16px;
+}
+
+.telegram-mini-app .section.author-support-strip h2 {
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.telegram-mini-app .section.author-support-strip .button {
+  min-height: 44px;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.telegram-mini-app .banner-grid {
+  gap: 0;
+}
+
+.telegram-mini-app .info-banner {
+  grid-template-columns: 42px minmax(0, 1fr);
+  padding: 14px;
+}
+
+.telegram-mini-app .category-visual-coral,
+.telegram-mini-app .category-visual-peach {
+  background: #fff2ec;
+}
+
+.telegram-mini-app .category-visual-mint,
+.telegram-mini-app .category-visual-sage {
+  background: #edf8f3;
+}
+
+.telegram-mini-app .earn-hero {
+  padding: 8px 0 4px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.telegram-mini-app .earn-hero h1 {
+  font-size: 32px;
+}
+
+.telegram-mini-app .vacancy-filter-row button {
+  min-height: 40px;
+  padding-inline: 13px;
+  border-radius: 999px;
+  font-weight: 620;
+}
+
+.telegram-mini-app .vacancy-filter-row button:hover,
+.telegram-mini-app .vacancy-filter-row button.active {
+  color: var(--mint-strong);
+  background: #e7f5ef;
+  border-color: rgba(94, 155, 131, 0.42);
+  box-shadow: none;
+  transform: none;
+}
+
+.telegram-mini-app .vacancy-card {
+  gap: 14px;
+  padding: 16px;
+}
+
+.telegram-mini-app .vacancy-card h2 {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.telegram-mini-app .vacancy-company {
+  min-height: 48px;
+  padding: 8px 10px;
+  background: #fffbea;
+  border-color: rgba(224, 186, 35, 0.34);
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.telegram-mini-app .vacancy-company-mark {
+  box-shadow: none;
+}
+
+.telegram-mini-app .mutual-aid-modal-backdrop {
+  background: rgba(41, 39, 37, 0.24);
+  backdrop-filter: blur(5px);
+}
+
+.telegram-mini-app .mutual-aid-modal {
+  background: #fff;
+  border-color: var(--border);
+  border-radius: 18px;
+  box-shadow: 0 18px 48px rgba(62, 49, 38, 0.18);
+}
+
+.telegram-mini-app .mutual-aid-request-card,
+.telegram-mini-app .mutual-aid-requisites {
+  background: #fffaf6;
+  border-color: var(--border);
+  border-radius: 14px;
+  box-shadow: none;
+}
+
+.onboarding-overlay {
+  place-items: center;
+  padding: 0;
+  background: var(--bg);
+  backdrop-filter: none;
+}
+
+.onboarding-card {
+  width: min(100%, 390px);
+  min-height: 100dvh;
+  align-content: center;
+  gap: 24px;
+  padding: max(28px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
+  background: var(--bg);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.onboarding-close {
+  top: max(18px, env(safe-area-inset-top));
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border-color: var(--border);
+  border-radius: 12px;
+}
+
+.onboarding-visual {
+  gap: 18px;
+  padding-top: 0;
+}
+
+.onboarding-icon {
+  width: 80px;
+  height: 80px;
+  color: var(--coral);
+  background: #fff0e9;
+  border-radius: 20px;
+}
+
+.onboarding-icon .icon {
+  width: 34px;
+  height: 34px;
+}
+
+.onboarding-copy {
+  gap: 10px;
+}
+
+.onboarding-step {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 620;
+}
+
+.onboarding-copy h2 {
+  font-family: var(--font-ui);
+  font-size: 32px;
+  font-weight: 720;
+  line-height: 1.12;
+}
+
+.onboarding-copy p {
+  max-width: 350px;
+  color: #625d59;
+  font-size: 16px;
+  line-height: 1.52;
+}
+
+.onboarding-actions {
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.onboarding-actions .button {
+  min-height: 52px;
+  border-radius: 12px;
+}
+
+.onboarding-skip {
+  min-height: 42px;
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  font-weight: 600;
+}
+
+.onboarding-skip:hover {
+  color: var(--text);
+}
+
+@media (max-width: 360px) {
+  .telegram-mini-app .shell,
+  .telegram-mini-app .hero.shell {
+    padding-inline: 14px;
+  }
+
+  .telegram-mini-app h1,
+  .telegram-mini-app .request-hero-card h1 {
+    font-size: 32px;
+  }
+
+  .telegram-mini-app h2,
+  .telegram-mini-app .donation-panel h2,
+  .telegram-mini-app .dashboard-card h2 {
+    font-size: 25px;
   }
 }
