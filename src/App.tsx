@@ -37,6 +37,7 @@ const ONBOARDING_KEY = "100spasibo:onboarding-seen";
 const TELEGRAM_CONTACT_URL = "https://t.me/stospasibo?direct";
 const TELEGRAM_CHAT_URL = "https://t.me/chat100spasibo";
 const AUTHOR_DONATE_URL = "https://pay.cloudtips.ru/p/dab39b3d";
+const HIDDEN_REQUEST_IDS = new Set(["sergey"]);
 const REQUESTS_PER_PAGE = 8;
 type RequestSort = "amountAsc" | "amountDesc" | "progress";
 type VacancyFilter = "all" | "field" | "hybrid" | "noExperience" | "flexible";
@@ -264,7 +265,10 @@ export default function App() {
   useTelegramMiniApp(path, navigate);
 
   const allRequests = useMemo(
-    () => [...publishedRequests, ...seedRequests].sort((first, second) => first.targetAmount - second.targetAmount),
+    () =>
+      [...publishedRequests, ...seedRequests]
+        .filter((request) => !HIDDEN_REQUEST_IDS.has(request.id))
+        .sort((first, second) => first.targetAmount - second.targetAmount),
     [publishedRequests],
   );
 
@@ -811,6 +815,7 @@ function ApplyPage({ requests, onToast }: { requests: HelpRequest[]; onToast: (m
   const suggestedRequest = useMemo(() => {
     const eligible = requests.filter(
       (request) =>
+        !HIDDEN_REQUEST_IDS.has(request.id) &&
         request.verified &&
         request.recipient?.name &&
         request.recipient.bank &&
@@ -818,8 +823,8 @@ function ApplyPage({ requests, onToast }: { requests: HelpRequest[]; onToast: (m
     );
     if (!eligible.length) return undefined;
 
-    const priorityRequests = eligible.filter((request) => request.id === "olga" || request.id === "sergey");
-    const otherRequests = eligible.filter((request) => request.id !== "olga" && request.id !== "sergey");
+    const priorityRequests = eligible.filter((request) => request.id === "olga");
+    const otherRequests = eligible.filter((request) => request.id !== "olga");
     const shouldShowPriority = priorityRequests.length > 0 && (otherRequests.length === 0 || Math.random() < 0.8);
     const pool = shouldShowPriority ? priorityRequests : otherRequests;
     return pool[Math.floor(Math.random() * pool.length)];

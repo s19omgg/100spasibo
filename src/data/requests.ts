@@ -43,7 +43,7 @@ export type HelpRequest = {
   }>;
 };
 
-export const requests: HelpRequest[] = [
+const allRequests: HelpRequest[] = [
   {
     id: "olga",
     name: "Ольга",
@@ -277,6 +277,9 @@ export const requests: HelpRequest[] = [
     ],
   },
 ];
+
+export const pausedRequests = allRequests.filter((request) => request.id === "sergey");
+export const requests = allRequests.filter((request) => request.id !== "sergey");
 
 export const featuredRequests = requests.slice(0, 5);
 
