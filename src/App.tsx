@@ -72,7 +72,7 @@ const fieldVacancyLocation = (city: string, income: string): VacancyLocation => 
   schedule: "Свободный график",
   experience: "Без опыта",
   filters: ["field", "flexible", "noExperience"],
-  telegramUrl: TELEGRAM_CHAT_URL,
+  telegramUrl: TELEGRAM_CONTACT_URL,
 });
 
 const fieldBusinessLocation = (city: string, income: string): VacancyLocation => ({
@@ -82,7 +82,7 @@ const fieldBusinessLocation = (city: string, income: string): VacancyLocation =>
   schedule: "Свободный график",
   experience: "Опыт от 6 мес.",
   filters: ["field", "flexible"],
-  telegramUrl: TELEGRAM_CHAT_URL,
+  telegramUrl: TELEGRAM_CONTACT_URL,
 });
 
 const hybridSupportLocation = (city: string, income: string): VacancyLocation => ({
@@ -92,7 +92,7 @@ const hybridSupportLocation = (city: string, income: string): VacancyLocation =>
   schedule: "5/2 или 2/2",
   experience: "Без опыта",
   filters: ["hybrid", "noExperience"],
-  telegramUrl: TELEGRAM_CHAT_URL,
+  telegramUrl: TELEGRAM_CONTACT_URL,
 });
 
 const vacancies: Vacancy[] = [
